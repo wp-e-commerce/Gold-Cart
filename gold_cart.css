@@ -184,3 +184,7 @@ div.wpsc_product_search #wpsc_search_autocomplete{
 a.hidden_gallery_link{
  display: none;
 }
+/* Quick fix for thick box displaying mulitple images */
+#TB_ThumbnailLink_0 {
+	display:none;
+}
