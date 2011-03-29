@@ -98,6 +98,12 @@ if($gold_shpcrt_active === 'true') {
     echo "var TXT_WPSC_USE = '".TXT_WPSC_USE."';\n\r";
     echo "var TXT_WPSC_PXHEIGHTBY = '".TXT_WPSC_PXHEIGHTBY."';\n\r";
     echo "var TXT_WPSC_PXWIDTH = '".TXT_WPSC_PXWIDTH."';\n\r";
+
+	$product_view = get_option( 'product_view' );
+	echo "var WPSC_DISPLAY_MODE = '" . esc_js( $product_view ) . "';";
+	if ( $product_view == 'grid' ) {
+		echo 'var WPSC_ITEMS_PER_ROW = ' . esc_js( get_option( 'grid_number_per_row' ) ) . ';';
+	}
     ?>
     </script>
     <script src="<?php echo get_plugin_url(); ?>/gold_cart.js" type="text/javascript"></script>
@@ -807,4 +813,24 @@ function wpsc_gc_setup_widgets(){
 
 add_action('widgets_init', 'wpsc_gc_setup_widgets');
 
+function wpsc_grid_custom_styles() {
+	$items_per_row = get_option( 'grid_number_per_row' );
+	
+	// roughly calculate the percentage, this will be corrected with JS later
+	$percentage = floor( 100 / $items_per_row ) - 7;
+	$percentage = apply_filters( 'wpsc_grid_view_column_width', $percentage, $items_per_row ); // themes can override this calculation
+	?>
+	<!-- Gold Cart Plugin custom styles -->
+	<style type="text/css">
+		.product_grid_display .product_grid_item {
+			width:<?php echo $percentage; ?>%;
+		}
+	</style>
+	<!-- / Gold Cart Plugin custom styles -->
+	<?php
+}
+
+if ( get_option( 'product_view' ) ) {
+	add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
+}
 ?>
