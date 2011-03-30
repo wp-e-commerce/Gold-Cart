@@ -56,6 +56,16 @@ function gold_shpcrt_install() {
 
 //  if gold cart is activated add the necessary functions  
 if($gold_shpcrt_active === 'true') {
+	add_action('admin_head', 'gold_shpcrt_javascript', 20);
+	add_action('wp_head', 'gold_shpcrt_javascript', 20);
+	add_action('wp_print_styles', 'wpsc_gold_cart_styles' );
+	
+	function wpsc_gold_cart_styles() {
+		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/gold_cart.css' );
+		if ( get_option( 'product_view' ) == 'grid' )
+			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/grid_view.css', array( 'wpsc-gold-cart' ) );
+	}
+	
   //include necessary js and css files and dynamic JS
   function gold_shpcrt_javascript() {
     $siteurl = get_option('siteurl');
@@ -82,20 +92,7 @@ if($gold_shpcrt_active === 'true') {
     ?>
     </script>
     <script src="<?php echo get_plugin_url(); ?>/gold_cart.js" type="text/javascript"></script>
-      <link href='<?php echo get_plugin_url(); ?>/gold_cart.css' rel="stylesheet" type="text/css" />
     <?php
-    if(function_exists('product_display_grid')) {
-      ?>      
-      <link href='<?php echo get_plugin_url(); ?>/grid_view.css' rel="stylesheet" type="text/css" />
-	    <style type="text/css">
-	  .item_image a {
-    display: block;
-    height: <?php echo get_option('product_image_height'); ?>px;
-    width: <?php echo get_option('product_image_width'); ?>px;
-}
-	  </style>
-      <?php
-    }
   }
   
   // function to display search bar and execute search
@@ -756,8 +753,6 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	if(get_option('show_search') == 1) {
 		add_action('wpsc_top_of_products_page', 'gold_shpcrt_search_form');
 	}
-  add_action('admin_head', 'gold_shpcrt_javascript', 20);
-  add_action('wp_head', 'gold_shpcrt_javascript', 20);
   add_action('init', 'wpsc_gold_shpcrt_ajax');
 	//exit(get_option('show_live_search'));
 //  add_action('init', 'gold_shpcrt_preview_image');
@@ -801,12 +796,17 @@ function wpsc_grid_custom_styles() {
 		.product_grid_display .product_grid_item {
 			width:<?php echo $percentage; ?>%;
 		}
+		.item_image a {
+			display: block;
+			height: <?php echo get_option('product_image_height'); ?>px;
+			width: <?php echo get_option('product_image_width'); ?>px;
+		}
 	</style>
 	<!-- / Gold Cart Plugin custom styles -->
 	<?php
 }
 
-if ( get_option( 'product_view' ) ) {
+if ( get_option( 'product_view' ) == 'grid' ) {
 	add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
 }
 ?>
