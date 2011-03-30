@@ -191,10 +191,6 @@
 	margin:0;
 }
 
-.product_grid_display .price_container {
-	height:25px;	
-}
-
 .product_grid_display .grid_product_info span.oldprice {
 	text-decoration:line-through;
 	color:#666;
