@@ -216,6 +216,7 @@ function submit_linkpoint() {
 }
 
 function form_linkpoint() {
+	$linkpoint_test1 = $linkpoint_test2 = '';
 	if (get_option('linkpoint_test')==1){
 		$linkpoint_test1 = "checked='checked'";
 	} else {

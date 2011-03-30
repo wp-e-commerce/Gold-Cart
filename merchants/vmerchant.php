@@ -108,7 +108,7 @@ function form_vmerchant() {
 	if(get_option('ssl_user_id')!=''){
 		$ssl_user_id = get_option('ssl_user_id');
 	}else{
-		$ssl_merchant_id = '';
+		$ssl_user_id = '';
 	}
 	
 	if(get_option('ssl_pin')!=''){

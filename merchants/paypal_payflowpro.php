@@ -249,206 +249,197 @@ function gateway_paypal_payflow($seperator, $sessionid) {
 
 function submit_paypal_payflow()
 {
-   if($_POST['paypal_payflow_user'] != null)
-{
-   update_option('paypal_payflow_user', $_POST['paypal_payflow_user']);
-}
-
-  if($_POST['paypal_payflow_pass'] != null)
-{
-   update_option('paypal_payflow_pass', $_POST['paypal_payflow_pass']);
-}
-
-  if($_POST['paypal_payflow_curcode'] != null)
-{
-   update_option('paypal_payflow_curcode', $_POST['paypal_payflow_curcode']);
-}
-
-  if($_POST['paypal_payflow_vendor'] != null)
-{
-   update_option('paypal_payflow_vendor', $_POST['paypal_payflow_vendor']);
-}
-
- if($_POST['paypal_payflow_partner'] != null)
-{
-   update_option('paypal_payflow_partner', $_POST['paypal_payflow_partner']);
-}
-
- if($_POST['paypal_payflow_method'] != null)
-{
-   update_option('paypal_payflow_method', $_POST['paypal_payflow_method']);
-}
- if($_POST['paypal_payflow_test'] != null)
-{
-   update_option('paypal_payflow_test', 1); //set option to 1 if checkbox is checked
-}
-else
-{
-   update_option('paypal_payflow_test', 0); //set option to 0 if checkbox is not checked
-}
-foreach((array)$_POST['paypal_form'] as $form => $value) {
-   update_option(('paypal_form_'.$form), $value);
-}
-  return true;
+	$fields = array(
+		'user',
+		'pass',
+		'curcode',
+		'vendor',
+		'partner',
+		'method',
+		'test',
+	);
+	foreach ( $fields as $field ) {
+		$key = "paypal_payflow_{$field}";
+		if ( isset( $_POST[$key] ) && $_POST[$key] !== '' ) {
+			update_option( $key, $_POST[$key] );
+		}
+			
+		elseif ( $field == 'test' )
+			update_option( $key, 0 );
+	}
+	
+	
+	foreach( (array) $_POST['paypal_form'] as $form => $value ) {
+		update_option( 'paypal_form_' . $form , $value);
+	}
+	
+	return true;
 }
 
 function form_paypal_payflow()
 {
-  $select_currency[get_option('paypal_payflow_curcode')] = "selected='selected'";
-  if (get_option('paypal_payflow_method')=='0'){
-     $paypal_payflow_method_check1="checked";
-  } else {
-     $paypal_payflow_method_check2="checked";
-  }
-    if (get_option('paypal_payflow_test')=='1')
-   $checked="checked='checked'";
-else
-   $checked='';
-  $output = "
-  <tr>
-      <td>
-      PayPal Payflow Pro User
-      </td>
-      <td>
-        <input type='text' value='".get_option('paypal_payflow_user')."' name='paypal_payflow_user' />
-      </td>
-  </tr>
-  <tr>
-      <td>
-     PayPal Payflow Pro Password
-      </td>
-      <td>
-        <input type='text' value='".get_option('paypal_payflow_pass')."' name='paypal_payflow_pass' />
-      </td>
-  </tr>
-  <tr>
-     <td>
-        PayPal Payflow Pro Vendor
-     </td>
-     <td>
-        <input type='text' value='".get_option('paypal_payflow_vendor')."' name='paypal_payflow_vendor' />
-     </td>
+	$currencies = array(
+		'USD' => __( 'U.S. Dollar', 'wpsc' ),
+		'CAD' => __( 'Canadian Dollar', 'wpsc' ),
+		'AUD' => __( 'Australian Dollar', 'wpsc' ),
+		'EUR' => __( 'Euro', 'wpsc' ),
+		'GBP' => __( 'Pound Sterling', 'wpsc' ),
+		'JPY' => __( 'Japanese Yen', 'wpsc' ),
+	);
+	$chosen_currency = get_option( 'paypal_payflow_curcode' );
+	
+	$methods = array(
+		__( 'Payment Express', 'wpsc' ),
+		__( 'Credit Card Direct Payment', 'wpsc' ),
+	);
+	$chosen_method = get_option( 'paypal_payflow_method' );
+	$payflow_test = get_option( 'paypal_payflow_test' );
+	
+	ob_start();
+?>
 <tr>
-      <td>
-      PayPal Testing enviroment
-      </td>
-      <td>
-   <input type='checkbox' $checked value='1' name='paypal_payflow_test'>
-      </td>
-   </tr>
-  </tr>
+	<td>
+		PayPal Payflow Pro User
+	</td>
+	<td>
+		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_user') ); ?>' name='paypal_payflow_user' />
+	</td>
+</tr>
+<tr>
+	<td>
+		PayPal Payflow Pro Password
+	</td>
+	<td>
+		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_pass') ); ?>' name='paypal_payflow_pass' />
+	</td>
+</tr>
+<tr>
+	<td>
+		PayPal Payflow Pro Vendor
+	</td>
+	<td>
+		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_vendor') ); ?>' name='paypal_payflow_vendor' />
+	</td>
+<tr>
+	<td>
+		PayPal Testing Environment
+	</td>
+	<td>
+		<label><input type='checkbox'<?php echo $payflow_test == 1 ? ' checked="checked"' : ''; ?> value='1' name='paypal_payflow_test' /><?php _e( 'Enable', 'wpsc' ); ?></label>
+	</td>
+	</tr>
+</tr>
 
-        <tr>
-        <td>
-        </td>
-        <td>
-        <input type='radio' ".$paypal_payflow_method_check1." value='0' name='paypal_payflow_method' /> Payment Express <input type='radio' ".$paypal_payflow_method_check2." value='1' name='paypal_payflow_method' /> Credit Card Direct Payment
-        </td>
-        </tr>
-        <tr>
-        <td>
-        PayPal Payflow Pro Partner
-        </td>
-        <td>
-        <input type='text' value='".get_option('paypal_payflow_partner')."' name='paypal_payflow_partner' />
-        </td>
-        </tr>
-  ";
+<tr>
+	<td>
+		<?php _e( 'Payment Method', 'wpsc' ); ?>
+	</td>
+	<td>
+		<?php foreach ( $methods as $method => $title ) {
+			$selected = $chosen_method == $method ? ' checked="checked"' : '';
+			echo "<label><input type='radio'{$selected} value='{$method}' name='paypal_payflow_method' />{$title}</label><br />";
+		} ?>
+	</td>
+</tr>
+<tr>
+	<td>
+		PayPal Payflow Pro Partner
+	</td>
+	<td>
+		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_partner') ); ?>' name='paypal_payflow_partner' />
+	</td>
+</tr>
+<tr>
+	<td>
+		PayPal Accepted Currency (e.g. USD, AUD)
+	</td>
+	<td>
+	<select name='paypal_payflow_curcode'>
+		<?php
+		foreach ( $currencies as $currency => $title ) {
+			$selected = $chosen_currency == $currency ? ' selected="selected"' : '';
+			echo "<option{$selected} value='{$currency}'>" . esc_html( $title ) . "</option>";
+		}
+		?>
+	  </select>
+	</td>
+</tr>
 
-$output .= "
-  <tr>
-      <td>
-      PayPal Accepted Currency (e.g. USD, AUD)
-      </td>
-      <td>
-      <select name='paypal_payflow_curcode'>
-          <option ".$select_currency['USD']." value='USD'>U.S. Dollar</option>
-          <option ".$select_currency['CAD']." value='CAD'>Canadian Dollar</option>
-          <option ".$select_currency['AUD']." value='AUD'>Australian Dollar</option>
-          <option ".$select_currency['EUR']." value='EUR'>Euro</option>
-          <option ".$select_currency['GBP']." value='GBP'>Pound Sterling</option>
-          <option ".$select_currency['JPY']." value='JPY'>Yen</option>
-        </select>
-      </td>
-   </tr>
-
-</table>
-
-<h2>Forms Sent to Gateway</h2>
-  <table>
-    <tr>
-      <td>
-      First Name Field
-      </td>
-      <td>
-      <select name='paypal_form[first_name]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_first_name'))."
-      </select>
-      </td>
-  </tr>
-    <tr>
-      <td>
-      Last Name Field
-      </td>
-      <td>
-      <select name='paypal_form[last_name]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_last_name'))."
-      </select>
-      </td>
-  </tr>
-    <tr>
-      <td>
-      Address Field
-      </td>
-      <td>
-      <select name='paypal_form[address]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_address'))."
-      </select>
-      </td>
-  </tr>
-  <tr>
-      <td>
-      City Field
-      </td>
-      <td>
-      <select name='paypal_form[city]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_city'))."
-      </select>
-      </td>
-  </tr>
-  <tr>
-      <td>
-      State Field
-      </td>
-      <td>
-      <select name='paypal_form[state]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_state'))."
-      </select>
-      </td>
-  </tr>
-  <tr>
-      <td>
-      Postal code/Zip code Field
-      </td>
-      <td>
-      <select name='paypal_form[post_code]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_post_code'))."
-      </select>
-      </td>
-  </tr>
-  <tr>
-      <td>
-      Country Field
-      </td>
-      <td>
-      <select name='paypal_form[country]'>
-      ".nzshpcrt_form_field_list(get_option('paypal_form_country'))."
-      </select>
-      </td>
-  </tr>
-</table>
-";
-  return $output;
+<tr>
+	<td colspan="2"><h2>Forms Sent to Gateway</h2></td>
+</tr>
+<tr>
+	<td>
+		First Name Field
+	</td>
+	<td>
+		<select name='paypal_form[first_name]'>
+			<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_first_name' ) ); ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		Last Name Field
+	</td>
+	<td>
+	<select name='paypal_form[last_name]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_last_name' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		Address Field
+	</td>
+	<td>
+	<select name='paypal_form[address]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_address' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		City Field
+	</td>
+	<td>
+	<select name='paypal_form[city]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_city' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		State Field
+	</td>
+	<td>
+	<select name='paypal_form[state]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_state' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		Postal code/Zip code Field
+	</td>
+	<td>
+	<select name='paypal_form[post_code]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_post_code' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		Country Field
+	</td>
+	<td>
+	<select name='paypal_form[country]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'paypal_form_country' ) ); ?>
+	</select>
+	</td>
+</tr>
+<?php
+	return ob_get_clean();
 }
 
 function fetch_data($unique_id, $submiturl, $data) {

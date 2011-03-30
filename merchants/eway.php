@@ -304,12 +304,14 @@ function submit_eway() {
   
 function form_eway() {
 	$eway_cvn = get_option('eway_cvn');
+	$eway_cvn1 = $eway_cvn2 = '';
 	if ($eway_cvn=='1') {
 		$eway_cvn1="checked='checked'";
 	} else {
 		$eway_cvn2="checked='checked'";
 	}
 	$eway_test = get_option('eway_test');
+	$eway_test1 = $eway_test2 = '';
 	if ($eway_test=='1') {
 		$eway_test1="checked='checked'";
 	} else {
@@ -343,7 +345,6 @@ function form_eway() {
 		</td>
 	</tr>";
 	$output .= "
-	<table>
 		<tr>
 			<td>First Name Field</td>
 			<td>
@@ -407,8 +408,7 @@ function form_eway() {
 					".nzshpcrt_form_field_list(get_option('eway_form_email'))."
 				</select>
 			</td>
-		</tr>
-	</table> ";
+		</tr>";
 	return $output;
 }
  ?>

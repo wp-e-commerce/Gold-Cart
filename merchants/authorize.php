@@ -345,7 +345,7 @@ function submit_authorize()
 
 function form_authorize()
   {
-  $output .= "
+  $output = "
   <tr>
       <td>
       Authorize API Login ID

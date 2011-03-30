@@ -174,6 +174,7 @@ jQuery(document).ready(function($){
 			border, margin, padding, width;
 		
 		function toInt(s) {
+			s = s || '';
 			return + s.replace(/[^\d\.]/g, '');
 		}
 		

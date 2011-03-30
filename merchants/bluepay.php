@@ -182,7 +182,7 @@ function submit_bluepay()
 
 function form_bluepay()
   {
-  $output .= "
+  $output = "
   <tr>
       <td>
       Bluepay Login

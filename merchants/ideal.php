@@ -99,137 +99,145 @@ function submit_ideal() {
 }
 
 function form_ideal() {
-	if (get_option('ideal_language') == 'en_US'){
-		$language1="selected";
-	} else if (get_option('ideal_language') == 'nl_NL') {
-		$language2="selected";
-	} else if (get_option('ideal_language') == 'fr_FR') {
-		$language3="selected";
-	}
-	
-	if (get_option('ideal_currency') == 'EUR'){
-		$currency1="selected";
-	} else if(get_option('ideal_currency') == 'USD') {
-		$currency2="selected";
-	} else if(get_option('ideal_currency') == 'GBP') {
-		$currency3="selected";
-	}
-	$output = "
-	<tr>
-		<td>
-			iDeal PSPID
-		</td>
-		<td>
-			<input type='text' size='20' value='".get_option('ideal_id')."' name='ideal_id' />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			iDeal Currency
-		</td>
-		<td>
-			<select value='".get_option('ideal_currency')."' name='ideal_currency'>
-				<option $currency1 value='EUR'> EUR </option>
-				<option $currency2 value='USD'> USD </option>
-				<option $currency3 value='GBP'> GBP </option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			iDeal Language
-		</td>
-		<td>
-			<select value='".get_option('ideal_language')."' name='ideal_language'>
-				<option $language1 value='en_US'> English </option>
-				<option $language2 value='nl_NL'> Dutch </option>
-				<option $language3 value='fr_FR'> Français </option>
-			</select>
-		</td>
-	</tr>";
-	$output.="<h2>Forms Sent to Gateway</h2>
-		<table>
-			<tr>
-				<td>
-				First Name Field
-				</td>
-				<td>
-				<select name='ideal_form[first_name]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_first_name'))."
-				</select>
-				</td>
-		</tr>
-			<tr>
-				<td>
-				Last Name Field
-				</td>
-				<td>
-				<select name='ideal_form[last_name]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_last_name'))."
-				</select>
-				</td>
-		</tr>
-		<tr>
-				<td>
-				Email Field
-				</td>
-				<td>
-				<select name='ideal_form[email]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_email'))."
-				</select>
-				</td>
-		</tr>
-			<tr>
-				<td>
-				Address Field
-				</td>
-				<td>
-				<select name='ideal_form[address]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_address'))."
-				</select>
-				</td>
-		</tr>
-		<tr>
-				<td>
-				City Field
-				</td>
-				<td>
-				<select name='ideal_form[city]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_city'))."
-				</select>
-				</td>
-		</tr>
-		<tr>
-				<td>
-				State Field
-				</td>
-				<td>
-				<select name='ideal_form[state]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_state'))."
-				</select>
-				</td>
-		</tr>
-		<tr>
-				<td>
-				Postal code/Zip code Field
-				</td>
-				<td>
-				<select name='ideal_form[post_code]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_post_code'))."
-				</select>
-				</td>
-		</tr>
-		<tr>
-				<td>
-				Country Field
-				</td>
-				<td>
-				<select name='ideal_form[country]'>
-				".nzshpcrt_form_field_list(get_option('ideal_form_country'))."
-				</select>
-				</td>
-		</tr>
-	</table> ";
-	return $output;
+	$languages = array(
+		'en_US' => 'English',
+		'nl_NL' => 'Dutch',
+		'fr_FR' => 'Français',
+	);
+
+	$currencies = array(
+		'EUR',
+		'USD',
+		'GBP',
+	);
+
+	$selected_language = get_option( 'ideal_language' );
+	$selected_currency = get_option( 'ideal_currency' );
+
+	ob_start();
+?>
+<tr>
+	<td>
+		iDeal PSPID
+	</td>
+	<td>
+		<input type='text' size='20' value='<?php echo esc_attr( get_option('ideal_id') ); ?>' name='ideal_id' />
+	</td>
+</tr>
+<tr>
+	<td>
+		iDeal Currency
+	</td>
+	<td>
+		<select name='ideal_currency'>
+			<?php
+			foreach ( $currencies as $currency ) {
+				$selected = $currency == $selected_currency ? ' selected="selected"' : '';
+				echo "<option{$selected} value='{$currency}'>{$currency}</option>";
+			}
+			?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		iDeal Language
+	</td>
+	<td>
+		<select name='ideal_language'>
+			<?php
+			foreach ( $languages as $code => $language ) {
+				$selected = $language == $selected_language ? ' selected="selected"' : '';
+				echo "<option{$selected} value='{$code}'>{$language}</option>";
+			}
+			?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td colspan="2"><h2>Forms Sent to Gateway</h2></td>
+</tr>
+<tr>
+	<td>
+	First Name Field
+	</td>
+	<td>
+	<select name='ideal_form[first_name]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_first_name' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	Last Name Field
+	</td>
+	<td>
+	<select name='ideal_form[last_name]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_last_name' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	Email Field
+	</td>
+	<td>
+	<select name='ideal_form[email]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_email' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	Address Field
+	</td>
+	<td>
+	<select name='ideal_form[address]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_address' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	City Field
+	</td>
+	<td>
+	<select name='ideal_form[city]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_city' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	State Field
+	</td>
+	<td>
+	<select name='ideal_form[state]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_state' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	Postal code/Zip code Field
+	</td>
+	<td>
+	<select name='ideal_form[post_code]'>
+		<?php echo nzshpcrt_form_field_list( get_option('ideal_form_post_code' ) ); ?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td>
+	Country Field
+	</td>
+	<td>
+	<select name='ideal_form[country]'>
+		<?php echo nzshpcrt_form_field_list( get_option( 'ideal_form_country' ) ); ?>
+	</select>
+	</td>
+</tr>
+<?php
+	return ob_get_clean();
 }
 ?>

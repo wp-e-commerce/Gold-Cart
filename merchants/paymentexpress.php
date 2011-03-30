@@ -25,7 +25,7 @@ $nzshpcrt_gateways[$num] = array(
 );
 
 function paymentexpress_form(){
-	$output .= "<tr>\n\r";
+	$output = "<tr>\n\r";
 	$output .= "	<td>\n\r";
 	$output .= "		Username:";
 	$output .= "	</td>\n\r";
