@@ -230,7 +230,8 @@ if($gold_shpcrt_active === 'true') {
 				}
 			}
 			$output .= "</ul>";
-			$_SESSION['live_search_results'] = $product_list;
+			if ( ! empty( $product_list ) )
+				$_SESSION['live_search_results'] = $product_list;
 			exit($output);
 		}
 		
