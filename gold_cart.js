@@ -2,12 +2,10 @@
 jQuery(document).ready(function($){
 	jQuery(function() {
 		jQuery('.wpsc_live_search').each(function(){
-			jQuery(this).keyup(function(event){
-				var str = event.target.value,
-					element = jQuery(event.target).parent().parent().find('.blind_down');
-				if(!event){
-					event=window.event;
-				}
+			var t = $(this);
+			t.keyup(function(){
+				var str = t.val(),
+					element = t.parent().parent().find('.blind_down');
 				if (str !== '') {
 					ajax.post("index.php",function(results){ 
 						element.html(results);
