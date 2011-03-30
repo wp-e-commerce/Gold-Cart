@@ -331,11 +331,11 @@ function submit_authorize()
   //exit("<pre>".print_r($_POST,true)."</pre>");
   update_option('authorize_login', $_POST['authorize_login']);
   update_option('authorize_password', $_POST['authorize_password']);
-  if($_POST['authorize_testmode'] == 1) {
+  if( ! empty( $_POST['authorize_testmode'] ) ) {
     update_option('authorize_testmode', 1);
-	} else {
+  } else {
     update_option('authorize_testmode', 0);
-	}
+  }
   
   foreach((array)$_POST['authorize_form'] as $form => $value) {
     update_option(('authorize_form_'.$form), $value);
