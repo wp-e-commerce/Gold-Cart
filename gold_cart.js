@@ -7,13 +7,20 @@ jQuery(document).ready(function($){
 				var str = t.val(),
 					element = t.parent().parent().find('.blind_down');
 				if (str !== '') {
-					ajax.post("index.php",function(results){ 
-						element.html(results);
-						if (element.css('display')!='block') {
-							element.slideDown(200);
+					$.post(
+						'index.php',
+						{
+							wpsc_live_search : 'true',
+							wpsc_search_widget : 'true',
+							keyword : str
+						},
+						function(results) {
+							element.html(results);
+							if (element.css('display')!='block') {
+								element.slideDown(200);
+							}	
 						}
-						return true;
-					},"wpsc_live_search=true&wpsc_search_widget=true&keyword="+str);
+					);
 				} else {
 					element.slideUp(100);
 				}
