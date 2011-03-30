@@ -715,7 +715,7 @@ function gold_shpcrt_add_gateways($nzshpcrt_gateways){
   return $nzshpcrt_gateways;
  }
   
-add_action('wpsc_gateway_modules','gold_shpcrt_add_gateways');
+add_filter('wpsc_gateway_modules','gold_shpcrt_add_gateways');
 
 
 if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
