@@ -33,7 +33,14 @@ function wpsc_activate_gold_module() {
 					update_option( 'activation_state','true' );
 					gold_shpcrt_install();
 				}
-				echo '<div class="updated"><p>'.__("Thanks, the Gold Cart upgrade has been activated.","wpsc").'</p></div>';
+				?>
+<div class="updated" style="min-width:45%; max-width:463px;">
+	<p>
+		<?php _e( 'Thanks! The Gold Cart upgrade has been activated.', 'wpsc'); ?><br />
+		<?php printf( __( 'New options have been added to %s, and your payment gateway list has been extended.', 'wpsc'), sprintf( '<a href="options-general.php?page=wpsc-settings&tab=presentation">%s</a>', __( 'Settings -> Presentation', 'wpsc' ) ) ); ?>
+	</p>
+</div>
+				<?php
 			} else {
 				update_option( 'activation_state',"false" );
 				echo '<div class="error"><p>'.__("Sorry, the API key was incorrect.","wpsc").'</p></div>';
