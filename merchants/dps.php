@@ -4,6 +4,7 @@ $nzshpcrt_gateways[$num]['internalname'] = 'dps';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_dps';
 $nzshpcrt_gateways[$num]['form'] = "form_dps";
 $nzshpcrt_gateways[$num]['submit_function'] = "submit_dps";
+$nzshpcrt_gateways[$num]['payment_type'] = 'credit_card';
 
 function gateway_dps($seperator, $sessionid)
   {
@@ -94,7 +95,6 @@ function form_dps() {
   if($access_url == '') {
 		update_option('access_url', "https://www.paymentexpress.com/pxpay/pxpay.aspx");
   }
-  $select_currency[get_option('dps_curcode')] = "selected='selected'";
   $output = " \n\r";
 	//   $output = "
 	$output .= "  <tr>\n\r";
@@ -137,32 +137,40 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 
 	
+	$currencies = array(
+		'USD' => __( 'United States Dollar', 'wpsc' ),
+		'CAD' => __( 'Canadian Dollar', 'wpsc' ),
+		'CHF' => __( 'Swiss Franc', 'wpsc' ),
+		'EUR' => __( 'Euro', 'wpsc' ),
+		'FRF' => __( 'French Franc', 'wpsc' ),
+		'GBP' => __( 'United Kingdom Pound', 'wpsc' ),
+		'HKD' => __( 'Hong Kong Dollar', 'wpsc' ),
+		'JPY' => __( 'Japanese Yen', 'wpsc' ),
+		'NZD' => __( 'New Zealand Dollar', 'wpsc' ),
+		'SGD' => __( 'Singapore Dollar', 'wpsc' ),
+		'ZAR' => __( 'Rand', 'wpsc' ),
+		'AUD' => __( 'Australian Dollar', 'wpsc' ),
+		'WST' => __( 'Samoan Tala', 'wpsc' ),
+		'VUV' => __( 'Vanuatu Vatu', 'wpsc' ),
+		'TOP' => __( "Tongan Pa'anga", 'wpsc' ),
+		'SBD' => __( 'Solomon Islands Dollar', 'wpsc' ),
+		'PGK' => __( 'Papua New Guinea Kina', 'wpsc' ),
+		'MYR' => __( 'Malaysian Ringgit', 'wpsc' ),
+		'KWD' => __( 'Kuwaiti Dinar', 'wpsc' ),
+		'FJD' => __( 'Fiji Dollar', 'wpsc' ),
+	);
+	$chosen_currency = get_option( 'dps_curcode' );
+	
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "Currency sent to DPS\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "        <select name='dps_curcode'>\n\r";
-	$output .= "					<option ".$select_currency['USD']." value='USD'>United States Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['CAD']." value='CAD'>Canadian Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['CHF']." value='CHF'>Swiss Franc</option>\n\r";
-	$output .= "					<option ".$select_currency['EUR']." value='EUR'>Euro</option>\n\r";
-	$output .= "					<option ".$select_currency['FRF']." value='FRF'>French Franc</option>\n\r";
-	$output .= "					<option ".$select_currency['GBP']." value='GBP'>United Kingdom Pound</option>\n\r";
-	$output .= "					<option ".$select_currency['HKD']." value='HKD'>Hong Kong Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['JPY']." value='JPY'>Japanese Yen</option>\n\r";
-	$output .= "					<option ".$select_currency['NZD']." value='NZD'>New Zealand Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['SGD']." value='SGD'>Singapore Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['ZAR']." value='ZAR'>Rand</option>\n\r";
-	$output .= "					<option ".$select_currency['AUD']." value='AUD'>Australian Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['WST']." value='WST'>Samoan Tala</option>\n\r";
-	$output .= "					<option ".$select_currency['VUV']." value='VUV'>Vanuatu Vatu</option>\n\r";
-	$output .= "					<option ".$select_currency['TOP']." value='TOP'>Tongan Pa'anga</option>\n\r";
-	$output .= "					<option ".$select_currency['SBD']." value='SBD'>Solomon Islands Dollar</option>\n\r";
-	$output .= "					<option ".$select_currency['PGK']." value='PGK'>Papua New Guinea Kina</option>\n\r";
-	$output .= "					<option ".$select_currency['MYR']." value='MYR'>Malaysian Ringgit</option>\n\r";
-	$output .= "					<option ".$select_currency['KWD']." value='KWD'>Kuwaiti Dinar</option>\n\r";
-	$output .= "					<option ".$select_currency['FJD']." value='FJD'>Fiji Dollar</option>\n\r";
+	foreach ( $currencies as $currency => $title ) {
+		$selected = $currency == $chosen_currency ? ' selected="selected"' : '';
+		$output .= "<option{$selected} value='{$currency}'>" . esc_html( $title ) . "</option>\n";
+	}
 	$output .= "				</select>\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "  </tr>\n\r";
