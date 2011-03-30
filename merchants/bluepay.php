@@ -164,7 +164,7 @@ function submit_bluepay()
   //exit("<pre>".print_r($_POST,true)."</pre>");
   update_option('bluepay_login', $_POST['bluepay_login']);
   update_option('bluepay_password', $_POST['bluepay_password']);
-  if($_POST['bluepay_testmode'] == 1)
+  if( ! empty( $_POST['bluepay_testmode'] ) )
     {
     update_option('bluepay_testmode', 1);
     }
