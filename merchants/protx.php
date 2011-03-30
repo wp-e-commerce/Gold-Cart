@@ -286,11 +286,9 @@ if ( !function_exists('gateway_sagepay') ) {
 						}
 						$output .= "</select>
 				</td>
-			</tr>
-		</table>";
+			</tr>";
 		
-		$output .= "<h2>Forms Sent to Gateway</h2>
-		<table>
+		$output .= "<tr><td colspan='2'><h2>Forms Sent to Gateway</h2></td></tr>
 			<tr>
 				<td>
 					First Name Field
@@ -360,8 +358,7 @@ if ( !function_exists('gateway_sagepay') ) {
 					".nzshpcrt_form_field_list(get_option('protx_form_country'))."
 					</select>
 				</td>
-			</tr>
-		</table> ";
+			</tr>";
 		return $output;
 	}
 	
