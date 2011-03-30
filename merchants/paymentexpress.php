@@ -19,7 +19,7 @@ $nzshpcrt_gateways[$num] = array(
 	),
 	
 	'form' => 'paymentexpress_form',
-	
+	'payment_type' => 'credit_card',
 	// this may be legacy, not yet decided
 	'internalname' => 'wpsc_merchant_paymentexpress',
 );
