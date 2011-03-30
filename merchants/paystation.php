@@ -17,8 +17,9 @@ function gateway_paystation($seperator, $sessionid){
 
 
 function submit_paystation(){
-  update_option('paystation_id', $_POST['paystation_id']);
-  return true;
+	if ( ! empty( $_POST['paystation_id'] ) )
+		update_option('paystation_id', $_POST['paystation_id']);
+	return true;
 }
 
 function form_paystation(){

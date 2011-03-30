@@ -267,12 +267,11 @@ function submit_paypal_payflow()
 		elseif ( $field == 'test' )
 			update_option( $key, 0 );
 	}
-	
-	
-	foreach( (array) $_POST['paypal_form'] as $form => $value ) {
-		update_option( 'paypal_form_' . $form , $value);
-	}
-	
+	if ( ! empty( $_POST['paypal_form'] ) ) {
+		foreach( (array) $_POST['paypal_form'] as $form => $value ) {
+			update_option( 'paypal_form_' . $form , $value);
+		}
+	}	
 	return true;
 }
 

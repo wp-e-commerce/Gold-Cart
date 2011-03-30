@@ -189,28 +189,23 @@ if ( !function_exists('gateway_sagepay') ) {
 	}
 	
 	function submit_sagepay() {
-		if ( $_POST['protx_name'] != null ) {
-			update_option('protx_name', $_POST['protx_name']);
+		$options = array(
+			'name',
+			'protocol',
+			'enc_key',
+			'cur',
+			'server_type',
+		);
+		foreach ( $options as $option ) {
+			$field = "protx_{$option}";
+			if ( ! empty( $_POST[$field] ) )
+				update_option( $field, $_POST[$field] );
 		}
 		
-		if ( $_POST['protx_protocol'] != null ) {
-			update_option('protx_protocol', $_POST['protx_protocol']);
-		}
-		
-		if ( $_POST['protx_enc_key'] != null ) {
-			update_option('protx_enc_key', $_POST['protx_enc_key']);
-		}
-		
-		if ( $_POST['protx_cur'] != null) {
-			update_option('protx_cur', $_POST['protx_cur']);
-		}
-		
-		if ( $_POST['protx_server_type'] != null ) {
-			update_option('protx_server_type', $_POST['protx_server_type']);
-		}
-		
-		foreach( (array)$_POST['protx_form'] as $form => $value ) {
-			update_option(('protx_form_'.$form), $value);
+		if ( ! empty( $_POST['protx_form'] ) ) {
+			foreach( (array)$_POST['protx_form'] as $form => $value ) {
+				update_option(('protx_form_'.$form), $value);
+			}
 		}
 		return true;
 	}

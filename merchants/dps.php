@@ -54,14 +54,18 @@ function gateway_dps($seperator, $sessionid)
   }
 
 function submit_dps() {
-  update_option('access_url', $_POST['access_url']);
-  update_option('access_userid', $_POST['access_userid']);
-  update_option('access_key', $_POST['access_key']);
-  update_option('mac_key', $_POST['mac_key']);
-  if($_POST['dps_curcode'] != null) {
-    update_option('dps_curcode', $_POST['dps_curcode']);
+	$options = array(
+		'access_url',
+		'access_userid',
+		'access_key',
+		'mac_key',
+		'dps_curcode',
+	);
+	foreach ( $options as $option ) {
+		if ( ! empty( $_POST[$option] ) )
+			update_option( $option, $_POST[$option] );
 	}
-  return true;
+	return true;
 }
 
 function decrypt_dps_response(){

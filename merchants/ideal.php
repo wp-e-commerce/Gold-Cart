@@ -83,17 +83,19 @@ document.write("<input type=\"hidden\" NAME=\"amount\" value=\"" + AM + "\" />")
 }
 
 function submit_ideal() {
-	if($_POST['ideal_id'] != null) {
-		update_option('ideal_id', $_POST['ideal_id']);
+	$options = array(
+		'ideal_id',
+		'ideal_currency',
+		'ideal_language',
+	);
+	foreach ( $options as $option ) {
+		if ( ! empty( $_POST[$option] ) )
+			update_option( $option, $_POST[$option] );
 	}
-	if($_POST['ideal_currency'] != null) {
-		update_option('ideal_currency', $_POST['ideal_currency']);
-	}
-	if($_POST['ideal_language'] != null) {
-		update_option('ideal_language', $_POST['ideal_language']);
-	}
-	foreach((array)$_POST['ideal_form'] as $form => $value) {
-		update_option(('ideal_form_'.$form), $value);
+	if ( ! empty( $_POST['ideal_form'] ) ) {
+		foreach((array)$_POST['ideal_form'] as $form => $value) {
+			update_option(('ideal_form_'.$form), $value);
+		}
 	}
 	return true;
 }

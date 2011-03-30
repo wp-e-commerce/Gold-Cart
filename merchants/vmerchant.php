@@ -84,17 +84,16 @@ function gateway_vmerchant($seperator, $sessionid) {
 }
 
 function submit_vmerchant() {
-	if($_POST['ssl_merchant_id'] != ''){
-	 update_option('ssl_merchant_id', $_POST['ssl_merchant_id']);
-	}
-	if($_POST['ssl_pin'] != ''){
-	 update_option('ssl_pin', $_POST['ssl_pin']);
-	}
-	if($_POST['ssl_user_id'] != ''){
-	 update_option('ssl_user_id', $_POST['ssl_user_id']);
-	}
-	
-	
+	$options = array(
+		'merchant_id',
+		'pin',
+		'user_id',
+	);
+	foreach ( $options as $option ) {
+		$field = "ssl_{$option}";
+		if ( ! empty( $_POST[$field] ) )
+			update_option( $field, $_POST[$field] );
+	}	
 	return true;
 }
 

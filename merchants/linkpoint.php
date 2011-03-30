@@ -210,8 +210,15 @@ function gateway_linkpoint($seperator, $sessionid) {
 }
 
 function submit_linkpoint() {
-	update_option('linkpoint_store_number', $_POST['linkpoint_store_number']);
-	update_option('linkpoint_test', $_POST['linkpoint_test']);
+	$options = array(
+		'store_number',
+		'test',
+	);
+	foreach ( $options as $option ) {
+		$field = "linkpoint_{$option}";
+		if ( ! empty( $_POST[$field] ) )
+			update_option( $field, $_POST[$field] );
+	}
 	return true;
 }
 

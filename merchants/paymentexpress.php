@@ -398,6 +398,7 @@ if(in_array('wpsc_merchant_paymentexpress',(array)get_option('custom_gateway_opt
 	$curryear = date( 'Y' );
 	$curryear_2 = date( 'y' );
 	//generate year options
+	$years = '';
 	for ( $i = 0; $i < 10; $i++ ) {
 		$years .= "<option value='" . $curryear_2 . "'>" . $curryear . "</option>\r\n";
 		$curryear++;

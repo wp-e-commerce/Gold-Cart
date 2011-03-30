@@ -287,17 +287,19 @@ function gateway_eway($seperator, $sessionid) {
 }
 
 function submit_eway() {
-	if($_POST['ewayCustomerID_id'] != null) {
-		update_option('ewayCustomerID_id', $_POST['ewayCustomerID_id']);
+	$options = array(
+		'ewayCustomerID_id',
+		'eway_cvn',
+		'eway_test',
+	);
+	foreach ( $options as $option ) {
+		if ( ! empty( $_POST[$option] ) )
+			update_option( $option, $_POST[$option] );
 	}
-	if($_POST['eway_cvn'] != null) {
-		update_option('eway_cvn', $_POST['eway_cvn']);
-	}
-	if($_POST['eway_test'] != null) {
-		update_option('eway_test', $_POST['eway_test']);
-	}
-	foreach((array)$_POST['eway_form'] as $form => $value) {
-		update_option(('eway_form_'.$form), $value);
+	if ( ! empty( $_POST['eway_form'] ) ) {
+		foreach((array)$_POST['eway_form'] as $form => $value) {
+			update_option(('eway_form_'.$form), $value);
+		}
 	}
 	return true;
 }
