@@ -68,37 +68,12 @@ if($gold_shpcrt_active === 'true') {
 				?>
 				<script type="text/javascript" src="<?php echo $siteurl;?>/wp-content/plugins/<?php echo WPSC_DIR_NAME; ?>/js/iautocompleter.js"></script>
 				<?php
-			else:
-				?>
-				<script type="text/javascript" src="<?php echo $siteurl;?>/wp-content/plugins/<?php echo WPSC_DIR_NAME; ?>/wpsc-core/js/iautocompleter.js"></script>
-				<?php
 			endif;
 		}
 		?>
     <script type='text/javascript'>
     <?php
 	
-	if(!defined('TXT_WPSC_PRODUCTIMAGE')) {
-		define( 'TXT_WPSC_PRODUCTIMAGE', 'Product Image');
-	}
-	if(!defined('TXT_WPSC_USEDEFAULTHEIGHTANDWIDTH')) {
-		define('TXT_WPSC_USEDEFAULTHEIGHTANDWIDTH', 'use default height and width');
-	}
-	if(!defined('TXT_WPSC_USE')) {
-		define( 'TXT_WPSC_USE', 'use');
-	}
-	if(!defined('TXT_WPSC_PXHEIGHTBY')) {
-		define('TXT_WPSC_PXHEIGHTBY', 'px height by');
-	}
-	if(!defined('TXT_WPSC_PXWIDTH')) {
-		define('TXT_WPSC_PXWIDTH', 'px width');
-	}
-    echo "var TXT_WPSC_PRODUCTIMAGE = '".TXT_WPSC_PRODUCTIMAGE."';\n\r";
-    echo "var TXT_WPSC_USEDEFAULTHEIGHTANDWIDTH = '".TXT_WPSC_USEDEFAULTHEIGHTANDWIDTH."';\n\r";
-    echo "var TXT_WPSC_USE = '".TXT_WPSC_USE."';\n\r";
-    echo "var TXT_WPSC_PXHEIGHTBY = '".TXT_WPSC_PXHEIGHTBY."';\n\r";
-    echo "var TXT_WPSC_PXWIDTH = '".TXT_WPSC_PXWIDTH."';\n\r";
-
 	$product_view = get_option( 'product_view' );
 	echo "var WPSC_DISPLAY_MODE = '" . esc_js( $product_view ) . "';";
 	if ( $product_view == 'grid' ) {
