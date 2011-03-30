@@ -56,45 +56,38 @@ function gold_shpcrt_install() {
 
 //  if gold cart is activated add the necessary functions  
 if($gold_shpcrt_active === 'true') {
-	add_action('admin_head', 'gold_shpcrt_javascript', 20);
-	add_action('wp_head', 'gold_shpcrt_javascript', 20);
-	add_action('wp_print_styles', 'wpsc_gold_cart_styles' );
+/*	add_action('admin_head', 'gold_shpcrt_javascript', 20);
+	add_action('wp_head', 'gold_shpcrt_javascript', 20); */
+	add_action( 'wp_enqueue_scripts', 'wpsc_gold_cart_scripts' );
+	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	
 	function wpsc_gold_cart_styles() {
 		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/gold_cart.css' );
 		if ( get_option( 'product_view' ) == 'grid' )
 			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/grid_view.css', array( 'wpsc-gold-cart' ) );
 	}
-	
-  //include necessary js and css files and dynamic JS
-  function gold_shpcrt_javascript() {
-    $siteurl = get_option('siteurl');
-		if(is_ssl()) {
-			$siteurl = str_replace("http://", "https://", $siteurl);
+		
+	//include necessary js and css files and dynamic JS
+	function wpsc_gold_cart_scripts() {
+		$deps = array( 'jquery' );
+		if ((get_option('show_search') == 1) && (get_option('show_live_search') == 1)) {
+			if ( (float)WPSC_VERSION < 3.8 ) {
+				$siteurl = get_option('siteurl');
+				if(is_ssl()) {
+					$siteurl = str_replace("http://", "https://", $siteurl);
+				}
+				$deps[] = 'wpsc-iautocompleter';
+				wp_enqueue_script( 'wpsc-iautocompleter', "{$site_url}/wp-content/plugins/" . WPSC_DIR_NAME . '/js/iautocompleter.js', array( 'jquery' ) );
+			}
 		}
-
-    if ((get_option('show_search') == 1) && (get_option('show_live_search') == 1)) {
-			if ( (float)WPSC_VERSION < 3.8 ):
-				?>
-				<script type="text/javascript" src="<?php echo $siteurl;?>/wp-content/plugins/<?php echo WPSC_DIR_NAME; ?>/js/iautocompleter.js"></script>
-				<?php
-			endif;
-		}
-		?>
-    <script type='text/javascript'>
-    <?php
-	
-	$product_view = get_option( 'product_view' );
-	echo "var WPSC_DISPLAY_MODE = '" . esc_js( $product_view ) . "';";
-	if ( $product_view == 'grid' ) {
-		echo 'var WPSC_ITEMS_PER_ROW = ' . esc_js( get_option( 'grid_number_per_row' ) ) . ';';
+		wp_enqueue_script( 'wpsc-gold-cart', get_plugin_url() . '/gold_cart.js', $deps );
+		$product_view = get_option( 'product_view' );
+		$vars = array( 'displayMode' => $product_view );
+		if ( $product_view == 'grid' )
+			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
+		wp_localize_script( 'wpsc-gold-cart', 'WPSC_GoldCart', $vars );
 	}
-    ?>
-    </script>
-    <script src="<?php echo get_plugin_url(); ?>/gold_cart.js" type="text/javascript"></script>
-    <?php
-  }
-  
+
   // function to display search bar and execute search
   function wpsc_gold_shpcrt_ajax($id) {
 		global $wpdb;

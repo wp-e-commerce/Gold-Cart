@@ -1,18 +1,14 @@
+/*globals ajax, WPSC_GoldCart*/
 jQuery(document).ready(function($){
 	jQuery(function() {
 		jQuery('.wpsc_live_search').each(function(){
 			jQuery(this).keyup(function(event){
+				var str = event.target.value,
+					element = jQuery(event.target).parent().parent().find('.blind_down');
 				if(!event){
 					event=window.event;
 				}
-				if(event.keyCode){
-					keyPressed=event.keyCode;
-				}else if(event.which){
-					keyPressed=event.which;
-				}
-				str = event.target.value;
-				element = jQuery(event.target).parent().parent().find('.blind_down');
-				if (str != '') {
+				if (str !== '') {
 					ajax.post("index.php",function(results){ 
 						element.html(results);
 						if (element.css('display')!='block') {
@@ -39,13 +35,13 @@ jQuery(document).ready(function($){
 				border = toInt(dummy_item.css('borderLeftWidth')) + toInt(dummy_item.css('borderRightWidth'));
 				margin = toInt(dummy_item.css('marginLeft')) + toInt(dummy_item.css('marginRight'));
 				padding = toInt(dummy_item.css('paddingLeft')) + toInt(dummy_item.css('paddingRight'));
-				width = Math.floor(container_width / WPSC_ITEMS_PER_ROW - border - margin - padding);
+				width = Math.floor(container_width / WPSC_GoldCart.itemsPerRow - border - margin - padding);
 			
 				$('.product_grid_item').css('width', width + 'px');
 			}
 		}
 	
-		if ( WPSC_DISPLAY_MODE == 'grid' ) {
+		if ( WPSC_GoldCart.displayMode == 'grid' ) {
 			adjust_item_width();
 		}
 	});
