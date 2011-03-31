@@ -58,6 +58,32 @@ div.blind_down{
   display: none;
 }
 
+#wpsc-main-search .wpsc-products-view-mode {
+	float:left;
+	padding-top:2px;
+	margin-right:15px;
+}
+
+#wpsc-main-search .wpsc-products-view-mode img {
+	border:0;
+}
+
+#wpsc-main-search .wpsc-products-sort, #wpsc-main-search .wpsc-products-per-pae {
+	float:left;
+	margin-right:15px;
+	overflow:hidden;
+}
+
+#wpsc-main-search .wpsc-products-sort select, #wpsc-main-search .wpsc-products-per-page select {
+	float:left;
+	margin:0;
+}
+
+#wpsc-main-search .wpsc-products-sort span, #wpsc-main-search .wpsc-products-per-page span{
+	margin:2px 5px 0 0;
+	float:left;
+}
+
 .widget_wpsc_live_search div.blind_down{
 	position: relative;
 	float: left;
@@ -156,8 +182,8 @@ div.wpsc_product_search {
 div.wpsc_product_search #wpsc_search_autocomplete{
 	float:right;
 	font-size:14px;
-	height:16px;
-	line-height: 1;
+	padding:1px 3px;
+	line-height:1em;
 }
 
 #affiliate_wrap {

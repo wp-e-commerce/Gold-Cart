@@ -341,139 +341,95 @@ $output = '';
     return $output;
   }
 
-  // function to display search box
-  function gold_shpcrt_search_form(){
-  
-	if ( (float)WPSC_VERSION < 3.8 )
+// function to display search box
+function gold_shpcrt_search_form(){
+	if ( (float) WPSC_VERSION < 3.8 )
 		$images_dir = 'images';
 	else
 		$images_dir = 'wpsc-core/images';
   
-		$siteurl = get_option('siteurl'); 
+		$siteurl = get_option( 'siteurl' ); 
     $output = '';
-    if(get_option('permalink_structure') != '') {
+    if ( get_option( 'permalink_structure' ) != '' ) {
     	$seperator ="?";
     } else {
     	$seperator ="&amp;";
     }
-    $output .= "<div class='wpsc_product_search'>";
-
-    if($seperator == "&amp;") {
-      $output .= "<form action='".get_option('product_list_url')."' method='GET' name='product_search'  class='product_search'>\n\r";
-      $url_parameters = explode("&",$_SERVER['QUERY_STRING']);
-      foreach($url_parameters as $url_parameter) {
-        $split_parameter = explode("=",$url_parameter);
-        if(($split_parameter[0] != "product_search") && ($split_parameter[0] != "search")) {
-					if (isset($_GET['page_number']) || $split_parameter[0]=='page_id') {
-						$output .= "  <input type='hidden' value='".$split_parameter[1]."' name='".$split_parameter[0]."' />\n\r";
-					}
-				}
-			}
+	
+	wp_parse_str( $_SERVER['QUERY_STRING'], $params );
+	$params = array_diff_key( $params, array( 'product_search' => '', 'search' => '' ) );
+	$params = array_intersect_key( $params, array( 'page_number' => '', 'page_id' => '' ) );
+	
+	if (!isset($_GET['view_type'])){
+		if(get_option('product_view')=='grid'){
+			$_SESSION['customer_view'] = 'grid';
 		} else {
-			$output .= "<form action='".get_option('product_list_url')."' method='get' name='product_search' class='product_search'>\n\r";
+			$_SESSION['customer_view'] = 'default';
 		}
-		//written by allen
-		if (!isset($_GET['view_type'])){
-			if(get_option('product_view')=='grid'){
-				$_SESSION['customer_view'] = 'grid';
-			} else {
-				$_SESSION['customer_view'] = 'default';
-			}
-		} else {
-			$_SESSION['customer_view'] = $_GET['view_type'];
-		}
-		$output .= "<div style='float:left;padding-top:2px; padding-right:10px;'>";
-		$output .= "<div id='out_view_type' ><input type='hidden' id='view_type' name='view_type' value='".$_SESSION['customer_view']."'></div>";
-		if (get_option('show_advanced_search')=='1') {
-			if($_SESSION['customer_view'] =='grid'){
-				$output .= "&nbsp;&nbsp;";
-
-				
-				$output .= "<a href='".add_query_arg('view_type', 'default', wpsc_this_page_url())."' id='out_default_pic'><img style='cursor:pointer;border:0px;' id='default_pic' src='".WPSC_URL."/".$images_dir."/default-off.gif'></a>";
-				$output .= "  ";
-				$output .= "<span id='out_grid_pic'><img id='grid_pic' style='border:0px;' src='".$siteurl."/wp-content/plugins/".WPSC_DIR_NAME."/".$images_dir."/grid-on.gif'></span>";
-			} else {
-				$output .= "&nbsp;&nbsp;";
-				$output .= "<span  id='out_default_pic'><img id='default_pic' style='border:0px;' src='".$siteurl."/wp-content/plugins/".WPSC_DIR_NAME."/".$images_dir."/default-on.gif'></span>";
-				$output .= "  ";
-				$output .= "<a href='".add_query_arg('view_type', 'grid', wpsc_this_page_url())."' id='out_grid_pic'><img style='cursor:pointer;border:0px;' id='grid_pic' src='".WPSC_URL."/".$images_dir."/grid-off.gif'></a>";
-			}
-		}
-		if (isset($_GET['order']) && $_GET['order']!=null) {
-			$order = $_GET['order'];
-		} else {
-			$order = "ASC";
-		}
-		//$output.="<a style='cursor:pointer;' onclick='change_order(\"$order\")'>A</a>";
-		
-		$output.="</div>";
-		$output.="<div style='float:left;'>";
-		$output.="<div style='float:left;top:3px;'>Sort:&nbsp;</div> <div style='float:left;cursor:pointer;'>";
-		$output .= '<select name="prod_order" style="margin:0px" onchange="if(this.value!=0){location.href=this.value;}" >';
-		$output.="  <option value='". remove_query_arg('product_order') ."'>Select</option>\n\r";
-		$output.="  <option ";
-		if( isset($_GET['product_order']) && $_GET['product_order'] == 'ASC' )
-			$output .= 'selected="selected"';
-		$output.=" value='".add_query_arg('product_order', 'ASC', wpsc_this_page_url())."'>&raquo;&nbsp;Ascending</option>\n\r";
-		$output.="  <option ";
-		if( isset($_GET['product_order']) && $_GET['product_order'] == 'DESC' )
-			$output .= 'selected="selected"';
-		$output.=" value='".add_query_arg('product_order', 'DESC', wpsc_this_page_url())."'>&raquo;&nbsp;Descending</option>\n\r";
-		$output.="</select>\n\r";
-		
-		$output.="</div>";
-		$output.="</div>";
-		
-		if (isset($_GET['item_per_page'])){
-			if ($_GET['item_per_page'] == 10){
-				$selected1 = "selected = true";
-			} else if($_GET['item_per_page'] == 20) {
-				$selected2 = "selected = true";
-			} else if($_GET['item_per_page'] == 50) {
-				$selected3 = "selected = true";
-			} else if($_GET['item_per_page'] == 0) {
-				$selected4 = "selected = true";
-			}
-		}
-		$output .= "<div style='float:left;'>";
-		$output .= "<div style='float:left;top:3px;'>&nbsp;&nbsp;Show:&nbsp;&nbsp; </div>";
-		$output .= '<select name="prod_per_page" style="margin:0px" onchange="if(this.value)location.href=this.value;" >';
-		$output.="  <option value='". remove_query_arg('items_per_page') ."'>Select</option>\n\r";
-		$output.="  <option ";
-		if(isset($_GET['item_per_page']) && $_GET['items_per_page'] == '10' )
-			$output .= 'selected="selected"';
-		$output.=" value='".add_query_arg('items_per_page', '10', wpsc_this_page_url())."'>&raquo;&nbsp;10 per page</option>\n\r";
-		$output.="  <option ";
-		if(isset($_GET['item_per_page']) && $_GET['items_per_page'] == '20' )
-			$output .= 'selected="selected"';
-		$output.="  value='".add_query_arg('items_per_page', '20', wpsc_this_page_url())."'>&raquo;&nbsp;20 per page</option>\n\r";
-		$output.="  <option ";
-		if(isset($_GET['item_per_page']) && $_GET['items_per_page'] == '50' )
-			$output .= 'selected="selected"';
-		$output.="  value='".add_query_arg('items_per_page', '50', wpsc_this_page_url())."'>&raquo;&nbsp;50 per page</option>\n\r";
-		$output.="  <option ";
-		if(isset($_GET['item_per_page']) && $_GET['items_per_page'] == 'all' )
-			$output .= 'selected="selected"';
-		$output.="  value='".add_query_arg('items_per_page', 'all', wpsc_this_page_url())."'>&raquo;&nbsp;Show All</option>\n\r";
-		$output.="</select>\n\r";
-		
-		$output .="</div>";
-		if(isset($_GET['product_search']))
-			$product_search = $_GET['product_search'];
-		else
-			$product_search = '';
-		if(get_option('show_live_search') == 1) {
-			$output .= "  <input type='text' value='".$product_search."' onkeyup='autocomplete(event)' autocomplete='off' name='product_search' class='wpsc_product_search wpsc_live_search' id='wpsc_search_autocomplete' />\n\r";
-		} else {
-			$output .= "  <input type='text' value='".$product_search."' name='product_search' class='wpsc_product_search' id='wpsc_search_autocomplete' />\n\r";
-		}
-		
-		//$output .= "  <input type='submit' value='Search' name='product_search' class='submit' />\n\r";
-		$output .= "</form>\n\r";
-		$output .="<div class='blind_down'></div>"; //This div is for live searching, Please don't remove this line.
-		$output .= "</div>";
-		echo $output;
+	} else {
+		$_SESSION['customer_view'] = $_GET['view_type'];
 	}
+	$_SERVER['REQUEST_URI'] = remove_query_arg( 'view_type' );
+	$show_advanced_search = get_option( 'show_advanced_search' ) == '1';
+	$show_live_search = get_option( 'show_live_search' ) == 1;
+	$customer_view = $_SESSION['customer_view'];
+	$order = empty( $_GET['product_order'] ) ? '' : $_GET['product_order'];
+	$item_per_page_options = array(
+		'10' => esc_html__( '10 per page', 'wpsc' ),
+		'20' => esc_html__( '20 per page', 'wpsc' ),
+		'50' => esc_html__( '50 per page', 'wpsc' ),
+		'all' => esc_html__( 'Show All', 'wpsc' ),
+	);
+	$selected_item_per_page = empty( $_GET['items_per_page'] ) ? '' : $_GET['items_per_page'];
+	$product_search = isset( $_GET['product_search'] ) ? $_GET['product_search'] : '';
+	ob_start();
+	?>
+	<div class='wpsc_product_search' id="wpsc-main-search">
+		<form action="<?php echo esc_url( get_option( 'product_list_url' ) ); ?>" method="GET" class="product_search">
+			<?php if ( ! empty( $params ) ): ?>
+				<?php foreach ( $params as $key => $value ): ?>
+					<input type="hidden" value="<?php echo esc_attr( $value ); ?>" name="<?php echo esc_attr( $key ); ?>" />
+				<?php endforeach ?>
+			<?php endif ?>
+			<div class="wpsc-products-view-mode">
+				<input type='hidden' id='view_type' name='view_type' value='<?php echo esc_attr( $customer_view ); ?>'>
+				
+				<?php if ( $show_advanced_search ): ?>
+					<?php if ( $customer_view == 'grid' ): ?>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'default' ) ); ?>" id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-off.gif" ); ?>" alt="" id="default_pic" /></a>
+						<span id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-on.gif" ); ?>" alt="" id="grid_pic" /></span>
+					<?php else: ?>
+						<span id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-on.gif" ); ?>" alt="" id="default_pic" /></span>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'grid' ) ); ?>" id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-off.gif" ); ?>" alt="" id="grid_pic" /></a>
+					<?php endif ?>
+				<?php endif ?>
+			</div>
+			<div class="wpsc-products-sort">
+				<span>Sort: </span>
+				<select name="prod_order" onchange="if(this.value!=0){location.href=this.value;}">
+					<option value="<?php echo esc_url( remove_query_arg( 'product_order' ) ); ?>">Select</option>
+					<option value="<?php echo esc_url( add_query_arg( 'product_order', 'ASC' ) ); ?>"<?php echo $order == 'ASC' ? ' selected="selected"' : ''; ?>>Ascending</option>
+					<option value="<?php echo esc_url( add_query_arg( 'product_order', 'DESC' ) ); ?>"<?php echo $order == 'DESC' ? ' selected="selected"' : ''; ?>>Descending</option>
+				</select>
+			</div>
+			<div class="wpsc-products-per-page">
+				<span>Show: </span>
+				<select name="prod_order" onchange="if(this.value!=0){location.href=this.value;}">
+					<option value="<?php echo esc_url( remove_query_arg( 'product_order' ) ); ?>">Select</option>
+					<?php
+					foreach ( $item_per_page_options as $value => $title ) {
+						$selected = $selected_item_per_page == $value ? ' selected="selected"' : '';
+						echo "<option{$selected} value='" . esc_url( add_query_arg( 'items_per_page', $value ) ) . "'>{$title}</option>";
+					}
+					?>
+				</select>
+			</div>
+			<input type="text" id="wpsc_search_autocomplete" name="product_search" value="<?php echo esc_attr( $product_search ); ?>" class="wpsc_product_search<?php echo $show_live_search ? ' wpsc_live_search' : '' ?>" />
+		</form>
+		<div class="blind_down"></div>
+	</div>
+	<?php
+}
   
   
   function product_display_list($product_list, $group_type, $group_sql = '', $search_sql = '')
