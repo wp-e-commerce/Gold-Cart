@@ -61,7 +61,7 @@ div.blind_down{
 #wpsc-main-search .wpsc-products-view-mode {
 	float:left;
 	padding-top:2px;
-	margin-right:15px;
+	margin:0 15px 0 10px;
 }
 
 #wpsc-main-search .wpsc-products-view-mode img {
