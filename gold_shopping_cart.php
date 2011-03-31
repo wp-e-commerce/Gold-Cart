@@ -85,6 +85,14 @@ if($gold_shpcrt_active === 'true') {
 		$vars = array( 'displayMode' => $product_view );
 		if ( $product_view == 'grid' )
 			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
+			
+		$product_list_classes = array(
+			'grid' => apply_filters( 'wpsc_gc_product_grid_class', 'product_grid_display' ),
+			'list' => apply_filters( 'wpsc_gc_product_list_class', 'list_productdisplay' ),
+			'default' => apply_filters( 'wpsc_gc_product_default_class', 'default_product_display' ),
+		);
+		$vars['productListClass'] = $product_list_classes[$product_view];
+		
 		wp_localize_script( 'wpsc-gold-cart', 'WPSC_GoldCart', $vars );
 	}
 
@@ -382,7 +390,12 @@ function gold_shpcrt_search_form(){
 	);
 	$selected_item_per_page = empty( $_GET['items_per_page'] ) ? '' : $_GET['items_per_page'];
 	$product_search = isset( $_GET['product_search'] ) ? $_GET['product_search'] : '';
-	ob_start();
+	$search_box_classes = array( 'wpsc_product_search' );
+	if ( $show_live_search ) {
+		$embed_results = apply_filters( 'wpsc_gc_embed_results', true );
+		$search_box_classes[] = $embed_results ? 'wpsc_live_search_embed' : 'wpsc_live_search';
+	}
+	$search_box_classes = implode( ' ', $search_box_classes );
 	?>
 	<div class='wpsc_product_search' id="wpsc-main-search">
 		<form action="<?php echo esc_url( get_option( 'product_list_url' ) ); ?>" method="GET" class="product_search">
@@ -424,9 +437,11 @@ function gold_shpcrt_search_form(){
 					?>
 				</select>
 			</div>
-			<input type="text" id="wpsc_search_autocomplete" name="product_search" value="<?php echo esc_attr( $product_search ); ?>" class="wpsc_product_search<?php echo $show_live_search ? ' wpsc_live_search' : '' ?>" />
+			<input type="text" id="wpsc_search_autocomplete" name="product_search" value="<?php echo esc_attr( $product_search ); ?>" class="<?php echo esc_attr( $search_box_classes ); ?>" />
 		</form>
-		<div class="blind_down"></div>
+		<?php if ( empty( $embed_results ) ): ?>
+			<div class="blind_down"></div>
+		<?php endif ?>
 	</div>
 	<?php
 }
