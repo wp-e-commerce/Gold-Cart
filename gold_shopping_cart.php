@@ -718,8 +718,37 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 		add_action('wpsc_top_of_products_page', 'gold_shpcrt_search_form');
 	}
   add_action('init', 'wpsc_gold_shpcrt_ajax');
-	//exit(get_option('show_live_search'));
-//  add_action('init', 'gold_shpcrt_preview_image');
+	
+	function wpsc_gc_live_search_where( $where ) {
+		$where .= " AND post_parent=0 ";
+		return $where;
+	}
+	
+	function wpsc_gc_live_search_embed() {
+		extract( $_REQUEST, EXTR_SKIP );
+		add_filter( 'posts_where', 'wpsc_gc_live_search_where' );
+		
+		query_posts(
+			array(
+				'post_type' => 'wpsc-product',
+				'post_status' => 'publish',
+				's' => $keywords,
+				'posts_per_page' => -1,
+			)
+		);
+		
+		wpsc_include_products_page_template( get_option( 'product_view' ) );
+		exit;
+	}
+	add_action( 'wpsc_gc_ajax_live_search_embed', 'wpsc_gc_live_search_embed' );
+	
+	
+	function wpsc_gc_ajax_handler() {
+		if ( ! empty( $_REQUEST['wpsc_gc_action'] ) ) {
+			do_action( "wpsc_gc_ajax_{$_REQUEST['wpsc_gc_action']}" );
+		}
+	}
+	add_action( 'init', 'wpsc_gc_ajax_handler', 10 );
 }
 
 function wpsc_gc_list_dir($dirname) {

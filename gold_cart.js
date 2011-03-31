@@ -8,14 +8,16 @@
 			var str = t.val(),
 				list = $('.' + WPSC_GoldCart.productListClass);
 				
-			$.post(
+			$.get(
 				location.href,
 				{
 					wpsc_gc_action : 'live_search_embed',
 					keywords : str
 				},
 				function(response) {
-					
+					var results = $(response);
+					// replace old list with new list
+					$('.' + WPSC_GoldCart.productListClass).replaceWith(results.find('.' + WPSC_GoldCart.productListClass));
 				}
 			);
 		}
