@@ -43,6 +43,12 @@
 					product_search : str
 				};
 			$.query.SET('product_search', str);
+			$('#wpsc-main-search .wpsc-products-view-mode').find('a').each(function(){
+				var t = $(this),
+					href = t.attr('href');
+				
+				t.attr('href', $.query.load(href).SET('product_search', str));
+			});
 			$('#wpsc-main-search select').each(function(){
 				var t = $(this);
 				if (t.val() !== '') {
