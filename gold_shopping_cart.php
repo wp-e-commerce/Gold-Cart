@@ -724,7 +724,8 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	
 	function wpsc_gc_live_search_pre_get_posts( &$q ) {
 		if ( ! empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] = 'wpsc-product' && ! empty( $q->query_vars['post_status'] ) ) {
-			$q->query_vars['s'] = $_REQUEST['keywords'];
+			$q->query_vars['s'] = $_REQUEST['product_search'];
+			var_dump($_REQUEST['product_search']);
 		}		
 		return true;
 	}
@@ -736,7 +737,7 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 		$wp_query = new WP_Query( 'pagename='.$post->post_name );
 		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
 		wpsc_start_the_query();
-		remove_filter( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+		remove_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
 		list($wp_query, $wpsc_query) = array( $wpsc_query, $wp_query ); // swap the wpsc_query object
 		$GLOBALS['nzshpcrt_activateshpcrt'] = true;
 
@@ -752,6 +753,19 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	
 	if ( ! empty( $_REQUEST['wpsc_gc_action'] ) && $_REQUEST['wpsc_gc_action'] == 'live_search_embed' ) {
 		add_action( 'init', 'wpsc_gc_live_search_embed', 10 );
+	}
+	
+	function wpsc_gc_register_template_redirect() {
+		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+	}
+	
+	function wpsc_gc_deregister_template_redirect() {
+		remove_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+	}
+	
+	if ( ! empty( $_REQUEST['product_search'] ) ) {
+		add_action( 'template_redirect', 'wpsc_gc_register_template_redirect', 7 );
+		add_action( 'template_redirect', 'wpsc_gc_deregister_template_redirect', 9 ); // don't want to mess up other queries
 	}
 }
 

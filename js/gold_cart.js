@@ -10,9 +10,9 @@
 				list = $('.' + WPSC_GoldCart.productListClass),
 				data = {
 					wpsc_gc_action : 'live_search_embed',
-					keywords : str
+					product_search : str
 				};
-			
+			$.query.SET('product_search', str);
 			$('#wpsc-main-search select').each(function(){
 				var t = $(this);
 				if (t.val() !== '') {
@@ -40,9 +40,9 @@
 	});
 	
 	$('#wpsc-main-search select').live('change', function(){
-		var t = $(this);
+		var t = $(this), qs;
 		if (t.val() !== '') {
-			location.search = $.query.SET(t.attr('name'), t.val()).toString();
+			location.search = $.query.SET(t.attr('name'), t.val());
 		}
 	});
 	
