@@ -84,7 +84,18 @@ if($gold_shpcrt_active === 'true') {
 			}
 		}
 		wp_enqueue_script( 'wpsc-gold-cart', get_plugin_url() . '/js/gold_cart.js', $deps );
-		$product_view = get_option( 'product_view' );
+		
+		if (!isset($_GET['view_type'])){
+			if(get_option('product_view')=='grid'){
+				$_SESSION['customer_view'] = 'grid';
+			} else {
+				$_SESSION['customer_view'] = 'default';
+			}
+		} else {
+			$_SESSION['customer_view'] = $_GET['view_type'];
+		}
+		
+		$product_view = $_SESSION['customer_view'];
 		$vars = array( 'displayMode' => $product_view );
 		if ( $product_view == 'grid' )
 			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
@@ -92,7 +103,7 @@ if($gold_shpcrt_active === 'true') {
 		$product_list_classes = array(
 			'grid' => apply_filters( 'wpsc_gc_product_grid_class', 'product_grid_display' ),
 			'list' => apply_filters( 'wpsc_gc_product_list_class', 'list_productdisplay' ),
-			'default' => apply_filters( 'wpsc_gc_product_default_class', 'default_product_display' ),
+			'default' => apply_filters( 'wpsc_gc_product_default_class', 'wpsc_default_product_list' ),
 		);
 		$vars['productListClass'] = $product_list_classes[$product_view];
 		
@@ -371,15 +382,6 @@ function gold_shpcrt_search_form(){
 	$params = array_diff_key( $params, array( 'product_search' => '', 'search' => '' ) );
 	$params = array_intersect_key( $params, array( 'page_number' => '', 'page_id' => '' ) );
 	
-	if (!isset($_GET['view_type'])){
-		if(get_option('product_view')=='grid'){
-			$_SESSION['customer_view'] = 'grid';
-		} else {
-			$_SESSION['customer_view'] = 'default';
-		}
-	} else {
-		$_SESSION['customer_view'] = $_GET['view_type'];
-	}
 	$_SERVER['REQUEST_URI'] = remove_query_arg( 'view_type' );
 	$show_advanced_search = get_option( 'show_advanced_search' ) == '1';
 	$show_live_search = get_option( 'show_live_search' ) == 1;
