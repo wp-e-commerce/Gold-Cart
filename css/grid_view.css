@@ -1,5 +1,5 @@
 /*-----GRID PRODUCT DISPLAY-----*/
-#grid_view_products_page_container, #content #grid_view_products_page_container {
+#grid_view_products_page_container, #content #grid_view_products_page_container, #content #list_view_products_page_container {
 	width:650px;	
 	position:relative;
 	line-height:1.2em;

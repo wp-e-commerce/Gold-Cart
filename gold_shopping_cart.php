@@ -415,9 +415,15 @@ function gold_shpcrt_search_form(){
 				<?php if ( $show_advanced_search ): ?>
 					<?php if ( $customer_view == 'grid' ): ?>
 						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'default' ) ); ?>" id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-off.gif" ); ?>" alt="" id="default_pic" /></a>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'list' ) ); ?>" id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-off.gif" ); ?>" alt="" id="list_pic" /></a>
 						<span id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-on.gif" ); ?>" alt="" id="grid_pic" /></span>
+					<?php elseif ( $customer_view == 'list' ): ?>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'default' ) ); ?>" id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-off.gif" ); ?>" alt="" id="default_pic" /></a>
+						<span id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-on.gif" ); ?>" alt="" id="list_pic" /></span>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'grid' ) ); ?>" id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-off.gif" ); ?>" alt="" id="grid_pic" /></a>
 					<?php else: ?>
 						<span id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-on.gif" ); ?>" alt="" id="default_pic" /></span>
+						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'list' ) ); ?>" id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-off.gif" ); ?>" alt="" id="list_pic" /></a>
 						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'grid' ) ); ?>" id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-off.gif" ); ?>" alt="" id="grid_pic" /></a>
 					<?php endif ?>
 				<?php endif ?>
