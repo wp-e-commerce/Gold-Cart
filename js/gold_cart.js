@@ -2,20 +2,6 @@
 (function($){
 	var searching = false;
 	
-	function add_query_arg(key, value) {
-		var qs = location.search.replace('?', '');
-		qs = qs === '' ? [] : qs.split('&');
-		qs = $.map(qs, function(t,i) {
-			var k = t.split('=');
-			if (k[0] == key) {
-				return null;
-			}
-			return t;
-		});
-		qs.push(key + '=' + value);
-		return '?' + qs.join('&');
-	}
-	
 	$('.wpsc_live_search_embed').live('keyup', function(){
 		var t = $(this);
 		function fetchItems() {
@@ -56,7 +42,7 @@
 	$('#wpsc-main-search select').live('change', function(){
 		var t = $(this);
 		if (t.val() !== '') {
-			location.search = add_query_arg(t.attr('name'), t.val());
+			location.search = $.query.SET(t.attr('name'), t.val()).toString();
 		}
 	});
 	

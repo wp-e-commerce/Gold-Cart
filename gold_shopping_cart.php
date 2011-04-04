@@ -69,7 +69,10 @@ if($gold_shpcrt_active === 'true') {
 		
 	//include necessary js and css files and dynamic JS
 	function wpsc_gold_cart_scripts() {
-		$deps = array( 'jquery' );
+		if ( ! wp_script_is( 'jquery-query', 'registered' ) ) {
+			wp_register_script( 'jquery-query', get_plugin_url() . '/js/jquery.query.js', array( 'jquery' ), '2.1.7' );
+		}
+		$deps = array( 'jquery', 'jquery-query' );
 		if ((get_option('show_search') == 1) && (get_option('show_live_search') == 1)) {
 			if ( (float)WPSC_VERSION < 3.8 ) {
 				$siteurl = get_option('siteurl');
