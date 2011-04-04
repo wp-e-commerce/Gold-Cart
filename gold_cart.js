@@ -1,6 +1,21 @@
 /*globals ajax, WPSC_GoldCart*/
 (function($){
 	var searching = false;
+	
+	function add_query_arg(key, value) {
+		var qs = location.search.replace('?', '');
+		qs = qs === '' ? [] : qs.split('&');
+		qs = $.map(qs, function(t,i) {
+			var k = t.split('=');
+			if (k[0] == key) {
+				return null;
+			}
+			return t;
+		});
+		qs.push(key + '=' + value);
+		return '?' + qs.join('&');
+	}
+	
 	$('.wpsc_live_search_embed').live('keyup', function(){
 		var t = $(this);
 		function fetchItems() {
@@ -29,6 +44,12 @@
 		}
 		searching = setTimeout(fetchItems, 500);
 	});
+	
+	$('#wpsc-main-search select').live('change', function(){
+		var t = $(this);
+		location.search = add_query_arg(t.attr('name'), t.val());
+	});
+	
 	jQuery(document).ready(function($){
 		// detect whether the current theme is not compatible with the new live search embed feature
 		// if not, revert to the good ol' drop down live search
