@@ -719,36 +719,37 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	}
   add_action('init', 'wpsc_gold_shpcrt_ajax');
 	
-	function wpsc_gc_live_search_where( $where ) {
-		$where .= " AND post_parent=0 ";
-		return $where;
+	function wpsc_gc_live_search_pre_get_posts( &$q ) {
+		if ( ! empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] = 'wpsc-product' && ! empty( $q->query_vars['post_status'] ) ) {
+			$q->query_vars['s'] = $_REQUEST['keywords'];
+		}		
+		return true;
 	}
 	
 	function wpsc_gc_live_search_embed() {
-		extract( $_REQUEST, EXTR_SKIP );
-		add_filter( 'posts_where', 'wpsc_gc_live_search_where' );
-		
-		query_posts(
-			array(
-				'post_type' => 'wpsc-product',
-				'post_status' => 'publish',
-				's' => $keywords,
-				'posts_per_page' => -1,
-			)
-		);
-		
-		wpsc_include_products_page_template( get_option( 'product_view' ) );
+		global $wp_query, $wpsc_query;
+		$product_page_id = wpec_get_the_post_id_by_shortcode('[productspage]');
+		$post = get_post( $product_page_id );
+		$wp_query = new WP_Query( 'pagename='.$post->post_name );
+		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+		wpsc_start_the_query();
+		remove_filter( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+		list($wp_query, $wpsc_query) = array( $wpsc_query, $wp_query ); // swap the wpsc_query object
+		$GLOBALS['nzshpcrt_activateshpcrt'] = true;
+
+		// get the display type for the productspage		
+		$display_type = get_option('product_view');
+		if ( isset( $_SESSION['wpsc_display_type'] ) ) {
+			$display_type = $_SESSION['wpsc_display_type'];
+			unset($_SESSION['wpsc_display_type']);
+		}
+		wpsc_include_products_page_template($display_type);
 		exit;
 	}
-	add_action( 'wpsc_gc_ajax_live_search_embed', 'wpsc_gc_live_search_embed' );
 	
-	
-	function wpsc_gc_ajax_handler() {
-		if ( ! empty( $_REQUEST['wpsc_gc_action'] ) ) {
-			do_action( "wpsc_gc_ajax_{$_REQUEST['wpsc_gc_action']}" );
-		}
+	if ( ! empty( $_REQUEST['wpsc_gc_action'] ) && $_REQUEST['wpsc_gc_action'] == 'live_search_embed' ) {
+		add_action( 'init', 'wpsc_gc_live_search_embed', 10 );
 	}
-	add_action( 'init', 'wpsc_gc_ajax_handler', 10 );
 }
 
 function wpsc_gc_list_dir($dirname) {
