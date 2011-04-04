@@ -427,8 +427,8 @@ function gold_shpcrt_search_form(){
 			</div>
 			<div class="wpsc-products-per-page">
 				<span>Show: </span>
-				<select name="prod_order" onchange="if(this.value!=0){location.href=this.value;}">
-					<option value="<?php echo esc_url( remove_query_arg( 'product_order' ) ); ?>">Select</option>
+				<select name="prod_per_page" onchange="if(this.value!=0){location.href=this.value;}">
+					<option value="<?php echo esc_url( remove_query_arg( 'items_per_page' ) ); ?>">Select</option>
 					<?php
 					foreach ( $item_per_page_options as $value => $title ) {
 						$selected = $selected_item_per_page == $value ? ' selected="selected"' : '';
