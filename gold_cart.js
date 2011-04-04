@@ -21,14 +21,22 @@
 		function fetchItems() {
 			searching = false;
 			var str = t.val(),
-				list = $('.' + WPSC_GoldCart.productListClass);
+				list = $('.' + WPSC_GoldCart.productListClass),
+				data = {
+					wpsc_gc_action : 'live_search_embed',
+					keywords : str
+				};
+			
+			$('#wpsc-main-search select').each(function(){
+				var t = $(this);
+				if (t.val() !== '') {
+					data[t.attr('name')] = t.val();
+				}
+			});
 				
 			$.get(
 				location.href,
-				{
-					wpsc_gc_action : 'live_search_embed',
-					keywords : str
-				},
+				data,
 				function(response) {
 					var results = $(response);
 					// replace old list with new list
@@ -47,7 +55,9 @@
 	
 	$('#wpsc-main-search select').live('change', function(){
 		var t = $(this);
-		location.search = add_query_arg(t.attr('name'), t.val());
+		if (t.val() !== '') {
+			location.search = add_query_arg(t.attr('name'), t.val());
+		}
 	});
 	
 	jQuery(document).ready(function($){
