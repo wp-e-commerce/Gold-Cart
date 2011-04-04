@@ -62,9 +62,9 @@ if($gold_shpcrt_active === 'true') {
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	
 	function wpsc_gold_cart_styles() {
-		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/gold_cart.css' );
+		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/css/gold_cart.css' );
 		if ( get_option( 'product_view' ) == 'grid' )
-			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/grid_view.css', array( 'wpsc-gold-cart' ) );
+			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/css/grid_view.css', array( 'wpsc-gold-cart' ) );
 	}
 		
 	//include necessary js and css files and dynamic JS
@@ -80,7 +80,7 @@ if($gold_shpcrt_active === 'true') {
 				wp_enqueue_script( 'wpsc-iautocompleter', "{$site_url}/wp-content/plugins/" . WPSC_DIR_NAME . '/js/iautocompleter.js', array( 'jquery' ) );
 			}
 		}
-		wp_enqueue_script( 'wpsc-gold-cart', get_plugin_url() . '/gold_cart.js', $deps );
+		wp_enqueue_script( 'wpsc-gold-cart', get_plugin_url() . '/js/gold_cart.js', $deps );
 		$product_view = get_option( 'product_view' );
 		$vars = array( 'displayMode' => $product_view );
 		if ( $product_view == 'grid' )
