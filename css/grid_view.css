@@ -93,7 +93,7 @@
 }
 
 .product_grid_display span.sale {
-	background:url(images/sale.png) no-repeat scroll 0 0 transparent;
+	background:url(../images/sale.png) no-repeat scroll 0 0 transparent;
 	position:absolute;
 	top:-3px;
 	left:-14px;
