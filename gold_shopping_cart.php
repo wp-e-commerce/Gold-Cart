@@ -72,6 +72,7 @@ if($gold_shpcrt_active === 'true') {
 		if ( ! wp_script_is( 'jquery-query', 'registered' ) ) {
 			wp_register_script( 'jquery-query', get_plugin_url() . '/js/jquery.query.js', array( 'jquery' ), '2.1.7' );
 		}
+		
 		$deps = array( 'jquery', 'jquery-query' );
 		if ((get_option('show_search') == 1) && (get_option('show_live_search') == 1)) {
 			if ( (float)WPSC_VERSION < 3.8 ) {
@@ -248,84 +249,81 @@ if($gold_shpcrt_active === 'true') {
   }
   
   
-  // function to display additional images in the image gallery  
-  function gold_shpcrt_display_gallery($product_id, $invisible = false) {
-    global $wpdb;
-    $output ='';
-    $siteurl = get_option('siteurl');
-	  /* No GD? No gallery.  No gallery option? No gallery.  Range variable set?  Apparently, no gallery. */
-    if(get_option('show_gallery') == 1 && !isset($_GET['range']) && function_exists("getimagesize")) {
-		if ( (float)WPSC_VERSION < 3.8 ) {
-        /* get data about the base product image */
-        $product = $wpdb->get_row("SELECT * FROM `".WPSC_TABLE_PRODUCT_LIST."` WHERE `id`='".$product_id."' LIMIT 1",ARRAY_A);
-        $image_link = WPSC_IMAGE_URL.$product['image']."";    
-		$image_file_name = $product['image'];
-        $imagepath = WPSC_THUMBNAIL_DIR.$image_file_name;
-        $base_image_size = @getimagesize($imagepath);
-        
-        /* get data about the extra product images */
-        $images = $wpdb->get_results("SELECT * FROM `".WPSC_TABLE_PRODUCT_IMAGES."` WHERE `product_id` = '$product_id' AND `id` NOT IN('$image_file_name')  ORDER BY `image_order` ASC",ARRAY_A);
-        $output = "";      
-		$new_height = get_option('wpsc_gallery_image_height');
-		$new_width = get_option('wpsc_gallery_image_width'); 
-		if(count($images) > 0) {
-			/* display gallery */
-			if($invisible == true) { 
-				foreach($images as $image) {         
-					$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";    
-					$extra_image_size = @getimagesize($extra_imagepath); 
-					$thickbox_link = WPSC_IMAGE_URL.$image['image']."";
-					$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";
-					$output .= "<a href='".$thickbox_link."' class='thickbox hidden_gallery_link'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."' rev='$image_link'>&nbsp;</a>";
-				}
-			} else {
-				$output .= "<h2 class='prodtitles'>".__("Gallery")."</h2>";
-				$output .= "<div class='wpcart_gallery'>";
-				if($images != null) {
-					foreach($images as $image) {         
-						$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";    
+  // function to display additional images in the image gallery	 
+function gold_shpcrt_display_gallery($product_id, $invisible = false) {
+	global $wpdb;
+	$output ='';
+	$siteurl = get_option('siteurl');
+	/* No GD? No gallery.	 No gallery option? No gallery.	 Range variable set?  Apparently, no gallery. */
+	if ( get_option( 'show_gallery' ) == 1 && ! isset( $_GET['range'] ) && function_exists( "getimagesize" ) ) {
+		if ( version_compare( WPSC_VERSION, '3.8', '<' ) ) {
+			/* get data about the base product image */
+			$product = $wpdb->get_row("SELECT * FROM `".WPSC_TABLE_PRODUCT_LIST."` WHERE `id`='".$product_id."' LIMIT 1",ARRAY_A);
+			$image_link = WPSC_IMAGE_URL.$product['image']."";	  
+			$image_file_name = $product['image'];
+			$imagepath = WPSC_THUMBNAIL_DIR.$image_file_name;
+			$base_image_size = @getimagesize($imagepath);
+		
+			/* get data about the extra product images */
+			$images = $wpdb->get_results("SELECT * FROM `".WPSC_TABLE_PRODUCT_IMAGES."` WHERE `product_id` = '$product_id' AND `id` NOT IN('$image_file_name')	ORDER BY `image_order` ASC",ARRAY_A);
+			$output = "";	   
+			$new_height = get_option('wpsc_gallery_image_height');
+			$new_width = get_option('wpsc_gallery_image_width'); 
+			if(count($images) > 0) {
+				/* display gallery */
+				if($invisible == true) { 
+					foreach($images as $image) {		 
+						$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";	 
 						$extra_image_size = @getimagesize($extra_imagepath); 
 						$thickbox_link = WPSC_IMAGE_URL.$image['image']."";
-						$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";       
-						$output .= "<a href='".$thickbox_link."' class='thickbox'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."'><img src='$image_link' alt='$product_name' title='$product_name' /></a>";
+						$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";
+						$output .= "<a href='".$thickbox_link."' class='thickbox hidden_gallery_link'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."' rev='$image_link'>&nbsp;</a>";
 					}
-				}		
-				$output .= "</div>";
+				} else {
+					$output .= "<h2 class='prodtitles'>".__("Gallery")."</h2>";
+					$output .= "<div class='wpcart_gallery'>";
+					if($images != null) {
+						foreach($images as $image) {		 
+							$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";	 
+							$extra_image_size = @getimagesize($extra_imagepath); 
+							$thickbox_link = WPSC_IMAGE_URL.$image['image']."";
+							$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";	   
+							$output .= "<a href='".$thickbox_link."' class='thickbox'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."'><img src='$image_link' alt='$product_name' title='$product_name' /></a>";
+						}
+					}		
+					$output .= "</div>";
+				}
 			}
-        }
-	}else {	
-	//closes if < 3.8 condition
-$output = '';
-
-	$product_name = $wpdb->get_var($wpdb->prepare("SELECT post_title FROM $wpdb->posts WHERE `ID`='".$product_id."' LIMIT 1"));
-	$output .= "<div class='wpcart_gallery'>";
-		$args = array(
-						'post_type' => 'attachment',
-						'post_parent' => $product_id,
-						'post_mime_type' => 'image',
-						'orderby'     => 'menu_order',
-						'order'       => 'ASC',
-						'numberposts' => -1
-						); 
-		$attachments = get_posts($args);
-		$featured_img = get_post_meta($product_id, '_thumbnail_id');
-		if ($attachments) {
-			foreach ($attachments as $post) {
-				if (in_array($post->ID, $featured_img))
-					continue; 
-				setup_postdata($post);
-				$link = wp_get_attachment_link( $post->ID, 'gold-thumbnails' );
-				$preview_link = wp_get_attachment_image_src( $post->ID, 'product-thumbnails');
-				$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
-				$output .= $link;
+		} else { 
+			$output = '';
+			$product_name = get_the_title( $product_id );
+			$output .= "<div class='wpcart_gallery'>";
+			$args = array(
+				'post_type'      => 'attachment',
+				'post_parent'    => $product_id,
+				'post_mime_type' => 'image',
+				'orderby'        => 'menu_order',
+				'order'          => 'ASC',
+				'numberposts'    => -1
+			); 
+			$attachments = get_posts($args);
+			$featured_img = get_post_meta($product_id, '_thumbnail_id');
+			if ($attachments) {
+				foreach ($attachments as $post) {
+					if (in_array($post->ID, $featured_img))
+						continue; 
+					setup_postdata($post);
+					$link = wp_get_attachment_link( $post->ID, 'gold-thumbnails' );
+					$preview_link = wp_get_attachment_image_src( $post->ID, 'product-thumbnails');
+					$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
+					$output .= $link;
+				}
 			}
-		}
-				$output .= "</div>";
-				wp_reset_query();
-	
-	}	//closes if > 3.8 condition
-  }	//closes if gallery setting condition
-    return $output;
+			$output .= "</div>";
+			wp_reset_query();
+		}	//closes if > 3.8 condition
+	} //closes if gallery setting condition
+	return $output;
 }
     
   //generated the sql statement used to search for products
