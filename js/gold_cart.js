@@ -23,6 +23,14 @@
 		}
 	}
 	
+	function thickboxPreviewFix() {
+		$('.thickbox.preview_link').each(function(){
+			var t = $(this),
+				r = t.attr('rel');
+				t.siblings('.wpcart_gallery').find('.thickbox').attr('rel', r);
+		});
+	}
+	
 	$('.wpsc_live_search_embed').live('keyup', function(){
 		var t = $(this),
 			str = $.trim(t.val()),
@@ -33,6 +41,10 @@
 
 			if ( WPSC_GoldCart.displayMode == 'grid' ) {
 				adjust_item_width();
+			}
+			
+			if (WPSC_GoldCart.thickboxFix) {
+				thickboxPreviewFix();
 			}
 		}
 		
@@ -121,6 +133,10 @@
 
 		if ( WPSC_GoldCart.displayMode == 'grid' ) {
 			adjust_item_width();
+		}
+		
+		if (WPSC_GoldCart.thickboxFix) {
+			thickboxPreviewFix();
 		}
 	});
 })(jQuery);

@@ -69,8 +69,17 @@ if($gold_shpcrt_active === 'true') {
 		
 	//include necessary js and css files and dynamic JS
 	function wpsc_gold_cart_scripts() {
+		$vars = array();
 		if ( ! wp_script_is( 'jquery-query', 'registered' ) ) {
 			wp_register_script( 'jquery-query', get_plugin_url() . '/js/jquery.query.js', array( 'jquery' ), '2.1.7' );
+		}
+		
+		if ( get_option( 'show_gallery' ) && get_option( 'show_thumbnails_thickbox' ) ) {
+			if ( wp_script_is( 'wpsc-thickbox', 'registered' ) )
+				$deps = 'wpsc-thickbox';
+			else
+				wp_enqueue_script( 'wpsc-thickbox', WPSC_CORE_JS_URL . '/thickbox.js', array( 'jquery' ), 'Instinct_e-commerce' );
+			$vars['thickboxFix'] = true;
 		}
 		
 		$deps = array( 'jquery', 'jquery-query' );
@@ -97,7 +106,7 @@ if($gold_shpcrt_active === 'true') {
 		}
 		
 		$product_view = $_SESSION['customer_view'];
-		$vars = array( 'displayMode' => $product_view );
+		$vars['displayMode'] = $product_view;
 		if ( $product_view == 'grid' )
 			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
 			
