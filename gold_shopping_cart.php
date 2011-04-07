@@ -408,8 +408,9 @@ function gold_shpcrt_search_form(){
 	$selected_item_per_page = empty( $_GET['items_per_page'] ) ? '' : $_GET['items_per_page'];
 	$product_search = isset( $_GET['product_search'] ) ? $_GET['product_search'] : '';
 	$search_box_classes = array( 'wpsc_product_search' );
+
 	if ( $show_live_search ) {
-		$embed_results = apply_filters( 'wpsc_gc_embed_results', true );
+		$embed_results = (bool) get_option( 'embed_live_search_results', '0' );
 		$search_box_classes[] = $embed_results ? 'wpsc_live_search_embed' : 'wpsc_live_search';
 	}
 	$search_box_classes = implode( ' ', $search_box_classes );
