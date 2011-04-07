@@ -112,11 +112,11 @@
 					element = t.parent().parent().find('.blind_down');
 				if (str !== '') {
 					$.post(
-						'index.php',
+						location.href,
 						{
 							wpsc_live_search : 'true',
 							wpsc_search_widget : 'true',
-							keyword : str
+							product_search : str
 						},
 						function(results) {
 							element.html(results);

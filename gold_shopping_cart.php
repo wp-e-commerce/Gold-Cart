@@ -120,16 +120,28 @@ if($gold_shpcrt_active === 'true') {
 		wp_localize_script( 'wpsc-gold-cart', 'WPSC_GoldCart', $vars );
 	}
 
+	function wpsc_gc_start_search_query() {
+		global $wp_query, $wpsc_query;
+		$product_page_id = wpec_get_the_post_id_by_shortcode('[productspage]');
+		$post = get_post( $product_page_id );
+		$wp_query = new WP_Query( 'pagename='.$post->post_name );
+		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+		wpsc_start_the_query();
+		remove_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
+		list($wp_query, $wpsc_query) = array( $wpsc_query, $wp_query ); // swap the wpsc_query object
+		$GLOBALS['nzshpcrt_activateshpcrt'] = true;
+	}
+
   // function to display search bar and execute search
   function wpsc_gold_shpcrt_ajax($id) {
 		global $wpdb;
 
 		if(isset($_POST) && !empty($_POST))
 
-		if( isset($_POST['wpsc_live_search']) && ($_POST['wpsc_live_search']==true) && (get_option('show_live_search') == 1 || true == $_POST['wpsc_search_widget']) && !empty($_POST['keyword'])){
-			$keyword=$_POST['keyword'];
+		if( isset($_POST['wpsc_live_search']) && ($_POST['wpsc_live_search']==true) && (get_option('show_live_search') == 1 || true == $_POST['wpsc_search_widget']) && !empty($_POST['product_search'])){
+			$keyword = $_POST['product_search'];
 			$output =  "<ul>";
-			if ( (float)WPSC_VERSION < 3.8 ) {
+			if ( version_compare( WPSC_VERSION, '3.8', '<' ) ) {
 				$search_sql = gold_shpcrt_search_sql($keyword);
 				$product_list = $wpdb->get_results("SELECT DISTINCT `".WPSC_TABLE_PRODUCT_LIST."`.* FROM `".WPSC_TABLE_PRODUCT_LIST."` WHERE `".WPSC_TABLE_PRODUCT_LIST."`.`active`='1' $search_sql ORDER BY `".WPSC_TABLE_PRODUCT_LIST."`.`name` ASC",ARRAY_A) ;
 				if ($product_list != null) {
@@ -161,70 +173,30 @@ if($gold_shpcrt_active === 'true') {
 					}
 				}
 			} else {
-				$keyword = '%' . urldecode($_POST['keyword']) . "%";
-				echo $keyword.'<br />';
-				/* 
-				search query starts here. select all products with keyword-like name, description, additional description, category or tag
-				maybe it should be converted to function later? wpsc_search_products($keyword); 
-				 */
-				$products = $wpdb->get_results( $wpdb->prepare( '
-					SELECT 
-						`p`.*
-					FROM 
-						`' . $wpdb->posts . '` `p` 
-					WHERE 
-						`p`.`post_type` = "wpsc-product" 
-						AND 
-						`p`.`post_status` = "publish" 
-						AND 
-						(
-							`p`.`post_title` LIKE "%1$s" 
-							OR 
-							`p`.`post_content` LIKE "%1$s" 
-							OR 
-							`p`.`post_excerpt` LIKE "%1$s" 
-							OR `p`.`id` IN 
-							( 
-								SELECT 
-									`tr`.`object_id` 
-								FROM 
-									`' . $wpdb->term_relationships . '` `tr` 
-								WHERE 
-									`tr`.`term_taxonomy_id` IN 
-									( 
-										SELECT 
-											`t`.`term_taxonomy_id` 
-										FROM 
-											`' . $wpdb->term_taxonomy . '` `t` 
-										JOIN 
-											`' . $wpdb->terms . '` `terms` 
-										ON 
-											`t`.`term_id` = `terms`.`term_id` 
-										WHERE 
-											`t`.`taxonomy` IN ( "product_tag", "wpsc_product_category" ) 
-											AND 
-											`terms`.`name` LIKE "%1$s" 
-									) 
-							) 
-						) ', $keyword ), ARRAY_A );
-				/* end of search query */
-				
-				foreach( (array)$products as $product ){
-					$output .= "<li>\n\r";
-					$output .= "	<a href='" . get_permalink( $product['ID'] ) . "'>\n\r";
-					if ( wpsc_the_product_thumbnail( 50, 50, $product['ID'] ) ) {
-						$output .= "				<img class='live-search-image' src='" . wpsc_the_product_thumbnail( 50, 50, $product['ID'], 'live-search' ) . "'>\n\r";
-					} else {
-						$output .= "				<img class='live-search-image' src='" . get_option('siteurl') . "/wp-content/plugins/".WPSC_DIR_NAME."/wpsc-theme/wpsc-images/noimage.png' style='height: 50px; width: 50px;'>\n\r";
-					}
-					$output .= "				<div class='live-search-text'>\n\r";
-					$output .= "					<strong>" . $product['post_title'] . "</strong>\n\r";
-					$output .= "					<div class='description'>" . $product['post_content'] . "</div>\n\r";
-					$output .= "				</div>\n\r";
-					$output .= "		    <br clear='both' />\n\r";
-					$output .= "		</a>\n\r";
-					$output .= "</li>\n\r";					
+				wpsc_gc_start_search_query();
+				echo '<ul>';
+				while ( wpsc_have_products() ) {
+					wpsc_the_product();
+					?>
+					<li>
+						<a style="clear:both;" href="<?php echo wpsc_the_product_permalink(); ?>">
+							<?php if ( wpsc_the_product_thumbnail() ): ?>
+								<img class="live-search-image" alt="<?php echo wpsc_the_product_title(); ?>" src="<?php echo wpsc_the_product_thumbnail( 50, 50, 0, 'live-search' ); ?>" />
+							<?php else: ?>
+								<img class="live-search-image" alt="No Image" title="<?php echo wpsc_the_product_title(); ?>" src="<?php echo WPSC_CORE_THEME_URL; ?>wpsc-images/noimage.png" style="width:50px; height:50px;" />
+							<?php endif ?>
+							<div class="live-search-text">
+								<strong><?php echo wpsc_the_product_title(); ?></strong>
+								<div class="description">
+									<?php echo wpsc_the_product_description(); ?>
+								</div>
+							</div>
+						</a>
+					</li>	
+					<?php
 				}
+				echo '</ul>';
+				exit;
 			}
 			$output .= "</ul>";
 			if ( ! empty( $product_list ) )
@@ -753,15 +725,7 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	}
 	
 	function wpsc_gc_live_search_embed() {
-		global $wp_query, $wpsc_query;
-		$product_page_id = wpec_get_the_post_id_by_shortcode('[productspage]');
-		$post = get_post( $product_page_id );
-		$wp_query = new WP_Query( 'pagename='.$post->post_name );
-		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
-		wpsc_start_the_query();
-		remove_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
-		list($wp_query, $wpsc_query) = array( $wpsc_query, $wp_query ); // swap the wpsc_query object
-		$GLOBALS['nzshpcrt_activateshpcrt'] = true;
+		wpsc_gc_start_search_query();
 
 		// get the display type for the productspage		
 		$display_type = get_option('product_view');
