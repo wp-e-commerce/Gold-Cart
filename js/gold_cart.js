@@ -99,37 +99,56 @@
 		}
 	});
 	
+	var widgetCache = {},
+		widgetSearch = false;
+	
+	$('.wpsc_live_search').live('keyup', function(){
+		var t = $(this),
+			str = $.trim(t.val());
+		
+		function displayResults(str) {
+			var e = t.parent().parent().find('.blind_down');
+			if (str === '') {
+				e.slideUp();
+			} else {
+				e.html(widgetCache[str]).slideDown(200);
+			}
+		}
+			
+		function widgetFetchItems() {
+			$.post(
+				location.href,
+				{
+					wpsc_live_search : 'true',
+					wpsc_search_widget : 'true',
+					product_search : str
+				},
+				function(response) {
+					var results = $(response);
+					widgetCache[str] = results;
+					displayResults(str);
+				}
+			);
+		}
+		
+		if (widgetSearch) {
+			clearTimeout(widgetSearch);
+			widgetSearch = false;
+		}
+		
+		if (widgetCache[str] || str === '') {
+			displayResults(str);
+		} else {
+			widgetSearch = setTimeout(widgetFetchItems, 500);
+		}
+	});
+	
 	jQuery(document).ready(function($){
 		// detect whether the current theme is not compatible with the new live search embed feature
 		// if not, revert to the good ol' drop down live search
 		if ($('.' + WPSC_GoldCart.productListClass).length === 0){
 			$('.wpsc_live_search_embed').removeClass('.wpsc_live_search_embed').addClass('.wpsc_live_search');
 		}		
-		jQuery('.wpsc_live_search').each(function(){
-			var t = $(this);
-			t.keyup(function(){
-				var str = t.val(),
-					element = t.parent().parent().find('.blind_down');
-				if (str !== '') {
-					$.post(
-						location.href,
-						{
-							wpsc_live_search : 'true',
-							wpsc_search_widget : 'true',
-							product_search : str
-						},
-						function(results) {
-							element.html(results);
-							if (element.css('display')!='block') {
-								element.slideDown(200);
-							}	
-						}
-					);
-				} else {
-					element.slideUp(100);
-				}
-			});
-		});
 
 		if ( WPSC_GoldCart.displayMode == 'grid' ) {
 			adjust_item_width();
