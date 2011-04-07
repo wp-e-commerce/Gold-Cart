@@ -372,18 +372,23 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 
 // function to display search box
 function gold_shpcrt_search_form(){
+	// don't display search form when we're viewing single products
+	if ( is_single() ) {
+		$post = get_queried_object();
+		if ( ! empty( $post->post_type ) && $post->post_type == 'wpsc-product' )
+			return;
+	}
 	if ( (float) WPSC_VERSION < 3.8 )
 		$images_dir = 'images';
 	else
 		$images_dir = 'wpsc-core/images';
-  
-		$siteurl = get_option( 'siteurl' ); 
-    $output = '';
-    if ( get_option( 'permalink_structure' ) != '' ) {
-    	$seperator ="?";
-    } else {
-    	$seperator ="&amp;";
-    }
+	$siteurl = get_option( 'siteurl' ); 
+	$output = '';
+	if ( get_option( 'permalink_structure' ) != '' ) {
+		$seperator ="?";
+	} else {
+		$seperator ="&amp;";
+	}
 	
 	wp_parse_str( $_SERVER['QUERY_STRING'], $params );
 	$params = array_diff_key( $params, array( 'product_search' => '', 'search' => '' ) );
