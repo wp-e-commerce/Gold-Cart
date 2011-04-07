@@ -410,7 +410,7 @@ function gold_shpcrt_search_form(){
 	$search_box_classes = array( 'wpsc_product_search' );
 
 	if ( $show_live_search ) {
-		$embed_results = (bool) get_option( 'embed_live_search_results', '0' );
+		$embed_results = (bool) get_option( 'embed_live_search_results', '0' ) && version_compare( WPSC_VERSION, '3.8', '>=' );
 		$search_box_classes[] = $embed_results ? 'wpsc_live_search_embed' : 'wpsc_live_search';
 	}
 	$search_box_classes = implode( ' ', $search_box_classes );
