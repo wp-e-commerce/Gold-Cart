@@ -746,6 +746,8 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	function wpsc_gc_live_search_pre_get_posts( &$q ) {
 		if ( ! empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] = 'wpsc-product' && ! empty( $q->query_vars['post_status'] ) ) {
 			$q->query_vars['s'] = $_REQUEST['product_search'];
+			if ( $q->query_vars['post_parent'] === 0 )
+				unset( $q->query_vars['post_parent'] );
 		}		
 		return true;
 	}
