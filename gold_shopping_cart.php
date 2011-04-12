@@ -56,19 +56,59 @@ function gold_shpcrt_install() {
 
 //  if gold cart is activated add the necessary functions  
 if($gold_shpcrt_active === 'true') {
-/*	add_action('admin_head', 'gold_shpcrt_javascript', 20);
-	add_action('wp_head', 'gold_shpcrt_javascript', 20); */
 	add_action( 'wp_enqueue_scripts', 'wpsc_gold_cart_scripts' );
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	
+	global $wpsc_gc_view_mode;
+
+	if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) )
+		$wpsc_gc_view_mode = $_REQUEST['view_type'];
+	elseif ( ! empty( $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH] ) )
+		$wpsc_gc_view_mode = $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH];
+	else		
+		$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
+
+	$wpsc_gc_view_mode_cookie_lifetime = apply_filters( 'wpsc_gc_view_mode_cookie_lifetime', 30000000 );
+	setcookie('wpsc_gc_view_mode_' . COOKIEHASH, $wpsc_gc_view_mode, time() + $wpsc_gc_view_mode_cookie_lifetime, COOKIEPATH, COOKIE_DOMAIN);
+
+	function wpsc_grid_custom_styles() {
+		$items_per_row = get_option( 'grid_number_per_row' );
+		
+		if ( $items_per_row ) {
+			// roughly calculate the percentage, this will be corrected with JS later
+			$percentage = floor( 100 / $items_per_row ) - 7;
+			$percentage = apply_filters( 'wpsc_grid_view_column_width', $percentage, $items_per_row ); // themes can override this calculation
+			?>
+			<!-- Gold Cart Plugin custom styles -->
+			<style type="text/css">
+				.product_grid_display .product_grid_item {
+					width:<?php echo $percentage; ?>%;
+				}
+				.item_image a {
+					display: block;
+					height: <?php echo get_option('product_image_height'); ?>px;
+					width: <?php echo get_option('product_image_width'); ?>px;
+				}
+			</style>
+			<!-- / Gold Cart Plugin custom styles -->
+			<?php
+		}
+	}
+
+	if ( $wpsc_gc_view_mode == 'grid' ) {
+		add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
+	}
+
 	function wpsc_gold_cart_styles() {
+		global $wpsc_gc_view_mode;
 		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/css/gold_cart.css' );
-		if ( get_option( 'product_view' ) == 'grid' )
+		if ( $wpsc_gc_view_mode == 'grid' )
 			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/css/grid_view.css', array( 'wpsc-gold-cart' ) );
 	}
 		
 	//include necessary js and css files and dynamic JS
 	function wpsc_gold_cart_scripts() {
+		global $wpsc_gc_view_mode;
 		$vars = array();
 		if ( ! wp_script_is( 'jquery-query', 'registered' ) ) {
 			wp_register_script( 'jquery-query', get_plugin_url() . '/js/jquery.query.js', array( 'jquery' ), '2.1.7' );
@@ -94,20 +134,9 @@ if($gold_shpcrt_active === 'true') {
 			}
 		}
 		wp_enqueue_script( 'wpsc-gold-cart', get_plugin_url() . '/js/gold_cart.js', $deps );
-		
-		if (!isset($_GET['view_type'])){
-			if(get_option('product_view')=='grid'){
-				$_SESSION['customer_view'] = 'grid';
-			} else {
-				$_SESSION['customer_view'] = 'default';
-			}
-		} else {
-			$_SESSION['customer_view'] = $_GET['view_type'];
-		}
-		
-		$product_view = $_SESSION['customer_view'];
-		$vars['displayMode'] = $product_view;
-		if ( $product_view == 'grid' )
+
+		$vars['displayMode'] = $wpsc_gc_view_mode;
+		if ( $wpsc_gc_view_mode == 'grid' )
 			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
 			
 		$product_list_classes = array(
@@ -115,7 +144,7 @@ if($gold_shpcrt_active === 'true') {
 			'list' => apply_filters( 'wpsc_gc_product_list_class', 'list_productdisplay' ),
 			'default' => apply_filters( 'wpsc_gc_product_default_class', 'wpsc_default_product_list' ),
 		);
-		$vars['productListClass'] = $product_list_classes[$product_view];
+		$vars['productListClass'] = $product_list_classes[$wpsc_gc_view_mode];
 		
 		wp_localize_script( 'wpsc-gold-cart', 'WPSC_GoldCart', $vars );
 	}
@@ -344,6 +373,7 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 
 // function to display search box
 function gold_shpcrt_search_form(){
+	global $wpsc_gc_view_mode;
 	// don't display search form when we're viewing single products
 	if ( is_single() ) {
 		$post = get_queried_object();
@@ -369,7 +399,7 @@ function gold_shpcrt_search_form(){
 	$_SERVER['REQUEST_URI'] = remove_query_arg( 'view_type' );
 	$show_advanced_search = get_option( 'show_advanced_search' ) == '1';
 	$show_live_search = get_option( 'show_live_search' ) == 1;
-	$customer_view = $_SESSION['customer_view'];
+	$customer_view = $wpsc_gc_view_mode;
 	$order = empty( $_GET['product_order'] ) ? '' : $_GET['product_order'];
 	$item_per_page_options = array(
 		'10' => esc_html__( '10 per page', 'wpsc' ),
@@ -713,15 +743,9 @@ if( defined('WPSC_MINOR_VERSION') && (int)WPSC_MINOR_VERSION < 55){
 	}
 	
 	function wpsc_gc_live_search_embed() {
+		global $wpsc_gc_view_mode;
 		wpsc_gc_start_search_query();
-
-		// get the display type for the productspage		
-		$display_type = get_option('product_view');
-		if ( isset( $_SESSION['wpsc_display_type'] ) ) {
-			$display_type = $_SESSION['wpsc_display_type'];
-			unset($_SESSION['wpsc_display_type']);
-		}
-		wpsc_include_products_page_template($display_type);
+		wpsc_include_products_page_template($wpsc_gc_view_mode);
 		exit;
 	}
 	
@@ -768,30 +792,4 @@ function wpsc_gc_setup_widgets(){
 }
 
 add_action('widgets_init', 'wpsc_gc_setup_widgets');
-
-function wpsc_grid_custom_styles() {
-	$items_per_row = get_option( 'grid_number_per_row' );
-	
-	// roughly calculate the percentage, this will be corrected with JS later
-	$percentage = floor( 100 / $items_per_row ) - 7;
-	$percentage = apply_filters( 'wpsc_grid_view_column_width', $percentage, $items_per_row ); // themes can override this calculation
-	?>
-	<!-- Gold Cart Plugin custom styles -->
-	<style type="text/css">
-		.product_grid_display .product_grid_item {
-			width:<?php echo $percentage; ?>%;
-		}
-		.item_image a {
-			display: block;
-			height: <?php echo get_option('product_image_height'); ?>px;
-			width: <?php echo get_option('product_image_width'); ?>px;
-		}
-	</style>
-	<!-- / Gold Cart Plugin custom styles -->
-	<?php
-}
-
-if ( get_option( 'product_view' ) == 'grid' ) {
-	add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
-}
 ?>
