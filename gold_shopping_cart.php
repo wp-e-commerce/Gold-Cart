@@ -398,19 +398,9 @@ function gold_shpcrt_search_form(){
 				<input type='hidden' id='view_type' name='view_type' value='<?php echo esc_attr( $customer_view ); ?>'>
 				
 				<?php if ( $show_advanced_search ): ?>
-					<?php if ( $customer_view == 'grid' ): ?>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'default' ) ); ?>" id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-off.gif" ); ?>" alt="" id="default_pic" /></a>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'list' ) ); ?>" id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-off.gif" ); ?>" alt="" id="list_pic" /></a>
-						<span id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-on.gif" ); ?>" alt="" id="grid_pic" /></span>
-					<?php elseif ( $customer_view == 'list' ): ?>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'default' ) ); ?>" id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-off.gif" ); ?>" alt="" id="default_pic" /></a>
-						<span id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-on.gif" ); ?>" alt="" id="list_pic" /></span>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'grid' ) ); ?>" id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-off.gif" ); ?>" alt="" id="grid_pic" /></a>
-					<?php else: ?>
-						<span id="out_default_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/default-on.gif" ); ?>" alt="" id="default_pic" /></span>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'list' ) ); ?>" id="out_list_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/list-off.gif" ); ?>" alt="" id="list_pic" /></a>
-						<a href="<?php echo esc_html( add_query_arg( 'view_type', 'grid' ) ); ?>" id="out_grid_pic"><img src="<?php echo esc_url( WPSC_URL . "/{$images_dir}/grid-off.gif" ); ?>" alt="" id="grid_pic" /></a>
-					<?php endif ?>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'default' ) ); ?>" class="default<?php echo $customer_view == 'default' ? ' active' : ''; ?>" title="<?php _e( 'Default View', 'wpsc' ); ?>"><?php _e( 'Default', 'wpsc' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'list' ) ); ?>" class="list<?php echo $customer_view == 'list' ? ' active' : ''; ?>" title="<?php _e( 'List View', 'wpsc' ); ?>"><?php _e( 'List', 'wpsc' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'grid' ) ); ?>" class="grid<?php echo $customer_view == 'grid' ? ' active' : ''; ?>" title="<?php _e( 'Grid View', 'wpsc' ); ?>"><?php _e( 'Grid', 'wpsc' ); ?></a>
 				<?php endif ?>
 			</div>
 			<div class="wpsc-products-sort">

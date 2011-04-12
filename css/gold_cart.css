@@ -60,16 +60,58 @@ div.blind_down{
 
 #wpsc-main-search .wpsc-products-view-mode {
 	float:left;
-	padding-top:2px;
 	margin:0 15px 0 10px;
 }
 
-#wpsc-main-search .wpsc-products-view-mode img {
-	border:0;
+#wpsc-main-search .wpsc-products-view-mode a {
+	background-image:url(../images/view-modes.png);
+	background-repeat:none;
+	display:inline-block;
+	height:20px;
+	text-indent:-9999px;
+	vertical-align:top;
+	width:20px;
 }
 
-#wpsc-main-search .wpsc-products-sort, #wpsc-main-search .wpsc-products-per-pae {
+#wpsc-main-search .default {
+	background-position:left top;
+}
+
+#wpsc-main-search .default:hover {
+	background-position:center top;
+}
+
+#wpsc-main-search .default.active {
+	background-position:right top;
+}
+
+#wpsc-main-search .grid {
+	background-position:left center;
+}
+
+#wpsc-main-search .grid:hover {
+	background-position:center center;
+}
+
+#wpsc-main-search .grid.active {
+	background-position:right center;
+}
+
+#wpsc-main-search .list {
+	background-position:left bottom;
+}
+
+#wpsc-main-search .list:hover {
+	background-position:center bottom;
+}
+
+#wpsc-main-search .list.active {
+	background-position:right bottom;
+}
+
+#wpsc-main-search .wpsc-products-sort, #wpsc-main-search .wpsc-products-per-page {
 	float:left;
+	line-height:1.3em;
 	margin-right:15px;
 	overflow:hidden;
 }
