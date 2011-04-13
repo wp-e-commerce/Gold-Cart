@@ -2,9 +2,9 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.8
+Version: 2.9
 Requires at least: 2.8
-Tested up to: 3.0.1
+Tested up to: 3.1.1
 Requires: Wp e-Commerce: 3.7.6.7
 
 == Description ==
@@ -26,9 +26,9 @@ If your WP-e-Commerce is series 3.7 and above (recommended)
 
 ==== If your WP e-Commerce is series 3.6 ====
 
-1. Upload the folder Ôgold_cart_filesÕ to the Ô/wp-content/uploads/wpsc/upgrades/Õ directory
+1. Upload the folder 'gold_cart_files' to the '/wp-content/uploads/wpsc/upgrades/' directory
 
-2. Activate ÔGold Cart filesÕ through the ÔPluginsÕ menu in WordPress
+2. Activate 'Gold Cart files' through the 'Plugins' menu in WordPress
 
 3. Activate your premium upgrade with your API key and name (can be found on your purchase receipt) by going to Store >> Upgrades
 
@@ -39,7 +39,7 @@ To do this go to Store >> Upgrades ensure your Gold Cart is currently active and
 
 ==== Upgrading Gold Cart from WP e-commerce 3.6 series to 3.7+ series ====
 
-1. Remove ALL 'gold_cart_files' files from the Ô/wp-content/uploads/wpsc/upgrades/Õ directory, This must be done first as it causes conflicts with the new files.
+1. Remove ALL 'gold_cart_files' files from the Ã”/wp-content/uploads/wpsc/upgrades/Ã• directory, This must be done first as it causes conflicts with the new files.
 
 2. Upload the 'gold_cart_files_plugin' to the '/wp-content/plugins/' directory
 
@@ -47,7 +47,7 @@ To do this go to Store >> Upgrades ensure your Gold Cart is currently active and
 
 ==== Downloading a new version ====
 
-The New Gold Cart version (2.4) has automatic plugin notification, however any premium upgrades purchased from GetShopped.org can be downloaded at:
+Since version 2.4, Gold Cart has automatic plugin notification, however any premium upgrades purchased from GetShopped.org can be downloaded at:
 
 http://getshopped.org/extend/premium-upgrades-files/
 
