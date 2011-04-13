@@ -8,7 +8,7 @@
 	* @subpackage wpsc-merchants
 */
 $nzshpcrt_gateways[$num] = array(
-	'name' => 'Payment Express',
+	'name' => 'Payment Express - PX Fusion',
 	'api_version' => 2.0,
 	'class_name' => 'wpsc_merchant_paymentexpress',
 	'has_recurring_billing' => true,

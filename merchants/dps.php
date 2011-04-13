@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = 'DPS / Payment Express';
+$nzshpcrt_gateways[$num]['name'] = 'DPS / Payment Express - PX Post';
 $nzshpcrt_gateways[$num]['internalname'] = 'dps';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_dps';
 $nzshpcrt_gateways[$num]['form'] = "form_dps";
