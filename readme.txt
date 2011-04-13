@@ -30,7 +30,7 @@ If your WP-e-Commerce is series 3.7 and above (recommended)
 
 2. Activate 'Gold Cart files' through the 'Plugins' menu in WordPress
 
-3. Activate your premium upgrade with your API key and name (can be found on your purchase receipt) by going to Store >> Upgrades
+3. Activate your premium upgrade with your API key and name (can be found on your purchase receipt) by going to Dashboard >> Store Upgrades (This is the main Dashboard link in your WordPress admin area)
 
 ==== Moving your Gold Cart to another site ====
 
