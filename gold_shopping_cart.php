@@ -58,19 +58,25 @@ function gold_shpcrt_install() {
 if($gold_shpcrt_active === 'true') {
 	add_action( 'wp_enqueue_scripts', 'wpsc_gold_cart_scripts' );
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
+	add_action( 'init', 'wpsc_gc_view_mode' );
 	
-	global $wpsc_gc_view_mode;
+	function wpsc_gc_view_mode() {
+		global $wpsc_gc_view_mode;
 
-	if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) )
-		$wpsc_gc_view_mode = $_REQUEST['view_type'];
-	elseif ( ! empty( $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH] ) )
-		$wpsc_gc_view_mode = $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH];
-	else		
-		$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
+		if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) )
+			$wpsc_gc_view_mode = $_REQUEST['view_type'];
+		elseif ( ! empty( $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH] ) )
+			$wpsc_gc_view_mode = $_COOKIE['wpsc_gc_view_mode_' . COOKIEHASH];
+		elseif ( ! empty( $_SESSION['wpsc_display_type'] ) )
+			$wpsc_gc_view_mode = $_SESSION['wpsc_display_type'];
+		else		
+			$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
 
-	$wpsc_gc_view_mode_cookie_lifetime = apply_filters( 'wpsc_gc_view_mode_cookie_lifetime', 30000000 );
-	setcookie('wpsc_gc_view_mode_' . COOKIEHASH, $wpsc_gc_view_mode, time() + $wpsc_gc_view_mode_cookie_lifetime, COOKIEPATH, COOKIE_DOMAIN);
-
+		$wpsc_gc_view_mode_cookie_lifetime = apply_filters( 'wpsc_gc_view_mode_cookie_lifetime', 30000000 );
+		setcookie('wpsc_gc_view_mode_' . COOKIEHASH, $wpsc_gc_view_mode, time() + $wpsc_gc_view_mode_cookie_lifetime, COOKIEPATH, COOKIE_DOMAIN);
+		$_SESSION['wpsc_display_type'] = $wpsc_gc_view_mode;
+	}
+	
 	function wpsc_grid_custom_styles() {
 		$items_per_row = get_option( 'grid_number_per_row' );
 		
