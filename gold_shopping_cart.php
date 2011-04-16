@@ -75,6 +75,10 @@ if($gold_shpcrt_active === 'true') {
 		$wpsc_gc_view_mode_cookie_lifetime = apply_filters( 'wpsc_gc_view_mode_cookie_lifetime', 30000000 );
 		setcookie('wpsc_gc_view_mode_' . COOKIEHASH, $wpsc_gc_view_mode, time() + $wpsc_gc_view_mode_cookie_lifetime, COOKIEPATH, COOKIE_DOMAIN);
 		$_SESSION['wpsc_display_type'] = $wpsc_gc_view_mode;
+		
+		if ( $wpsc_gc_view_mode == 'grid' ) {
+			add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
+		}
 	}
 	
 	function wpsc_grid_custom_styles() {
@@ -99,10 +103,6 @@ if($gold_shpcrt_active === 'true') {
 			<!-- / Gold Cart Plugin custom styles -->
 			<?php
 		}
-	}
-
-	if ( $wpsc_gc_view_mode == 'grid' ) {
-		add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
 	}
 
 	function wpsc_gold_cart_styles() {
