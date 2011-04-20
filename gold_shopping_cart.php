@@ -100,7 +100,7 @@ if($gold_shpcrt_active === 'true') {
 				.product_grid_display .product_grid_item {
 					width:<?php echo $percentage; ?>%;
 				}
-				.item_image a {
+				.product_grid_display .item_image a {
 					display: block;
 					height: <?php echo get_option('product_image_height'); ?>px;
 					width: <?php echo get_option('product_image_width'); ?>px;
