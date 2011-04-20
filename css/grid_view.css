@@ -226,7 +226,6 @@
 }
 
 .product_grid_display .wpsc_buy_button, #content .product_grid_display .wpsc_buy_button {
-	background-color:#006699;
 	background:-webkit-gradient(
     linear,
     left bottom,
@@ -239,6 +238,7 @@
     rgb(73,166,192) 76%,
     rgb(125,195,215) 100%
 	);
+	background-color:#006699;
 	color:#ffffff;
 	font-size:12px;
 	border-radius:3px;
