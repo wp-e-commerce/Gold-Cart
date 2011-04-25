@@ -64,3 +64,13 @@ Gold Cart Installation: http://getshopped.org/resources/docs/installation/gold-f
 Support Forum: http://www.getshopped.org/forums/
 
 Premium Support Forum: http://getshopped.org/resources/premium-support/
+
+== Changelog == 
+2.9.1
+* Change: Featured thumbnail is always displayed first in a product image gallery
+* Fix: Session view mode is not preserved
+* Fix: Grid view is not displayed when first activated
+* Fix: CSS for grid item thumbnail is not specific enough, causing compat issue with themes
+* Fix: Add to Cart button is messed up in IE
+* Fix: Product gallery always use 'product-thumbnails' size even when displayed in Single product view
+* Fix: There is no way to switch back to the featured thumbnail after you clicked on another thumbnail in product gallery
