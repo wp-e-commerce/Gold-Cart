@@ -332,11 +332,10 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 			$featured_img = get_post_meta($product_id, '_thumbnail_id');
 			if ($attachments) {
 				foreach ($attachments as $post) {
-					if (in_array($post->ID, $featured_img))
-						continue; 
 					setup_postdata($post);
 					$link = wp_get_attachment_link( $post->ID, 'gold-thumbnails' );
-					$preview_link = wp_get_attachment_image_src( $post->ID, 'product-thumbnails');
+					$size = is_single() ? 'medium-single-product' : 'product-thumbnails';
+					$preview_link = wp_get_attachment_image_src( $post->ID, $size);
 					$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
 					$output .= $link;
 				}
