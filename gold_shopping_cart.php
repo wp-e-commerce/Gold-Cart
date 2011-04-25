@@ -330,6 +330,7 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 			); 
 			$attachments = get_posts($args);
 			$featured_img = get_post_meta($product_id, '_thumbnail_id');
+			$thumbnails = array();
 			if ($attachments) {
 				foreach ($attachments as $post) {
 					setup_postdata($post);
@@ -337,9 +338,15 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 					$size = is_single() ? 'medium-single-product' : 'product-thumbnails';
 					$preview_link = wp_get_attachment_image_src( $post->ID, $size);
 					$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
-					$output .= $link;
+					
+					// always display the featured thumbnail first
+					if ( in_array( $post->ID, $featured_img ) )
+						array_unshift( $thumbnails, $link );
+					else
+						$thumbnails[] = $link;
 				}
 			}
+			$output .= implode( "\n", $thumbnails );
 			$output .= "</div>";
 			wp_reset_query();
 		}	//closes if > 3.8 condition
