@@ -331,7 +331,7 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 			$attachments = get_posts($args);
 			$featured_img = get_post_meta($product_id, '_thumbnail_id');
 			$thumbnails = array();
-			if ($attachments) {
+			if (count($attachments) > 1) {
 				foreach ($attachments as $post) {
 					setup_postdata($post);
 					$link = wp_get_attachment_link( $post->ID, 'gold-thumbnails' );
