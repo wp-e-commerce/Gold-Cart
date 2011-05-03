@@ -51,7 +51,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 		`".WPSC_TABLE_SUBMITED_FORM_DATA."` ON 
 		`".WPSC_TABLE_CHECKOUT_FORMS."`.id = 
 		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`form_id` WHERE  
-		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`log_id`=".$purchase_log['id']." ORDER BY `".WPSC_TABLE_CHECKOUT_FORMS."`.`order`";
+		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`log_id`=".$purchase_log['id']." ORDER BY `".WPSC_TABLE_CHECKOUT_FORMS."`.`checkout_order`";
 		
 	$userinfo = $wpdb->get_results($usersql, ARRAY_A);
 	
