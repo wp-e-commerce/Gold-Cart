@@ -284,6 +284,7 @@ class wpsc_merchant_paymentexpress extends wpsc_merchant {
 				//declined
 				$this->set_transaction_details( $transaction_details['transactionId'], 1 );
 				$this->set_error_message(__('Your transaction was declined. Please check your credit card details and try again.', 'wpsc'));
+				do_action('wpsc_payment_failed');
 				$this->return_to_checkout();
 				break;
 			case 2:
