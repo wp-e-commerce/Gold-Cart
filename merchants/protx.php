@@ -19,11 +19,6 @@ if ( !function_exists('gateway_sagepay') ) {
 		// Get Cart Contents		
 		$cart_sql = "SELECT * FROM `" . WPSC_TABLE_CART_CONTENTS . "` WHERE `purchaseid`='" . $purchase_log[0]['id'] . "'";
 		$cart = $wpdb->get_results($cart_sql, ARRAY_A) ;
-		// exit('<pre>' . print_r($cart, true) . '</pre>');
-		foreach ( (array)$cart as $item ) {
-			$product_data = $wpdb->get_results("SELECT * FROM `" . WPSC_TABLE_PRODUCT_LIST . "` WHERE `id`='" . $item['prodid'] . "' LIMIT 1", ARRAY_A);
-			$product_data = $product_data[0];
-		}
 		
 		//Set Post Data
 		$data['VendorTxCode'] = $sessionid;
@@ -35,81 +30,69 @@ if ( !function_exists('gateway_sagepay') ) {
 		$data['SuccessURL'] = $transact_url . $seperator . "protx=success";
 		$data['FailureURL'] = $site_url;
 		
+		$uniquenames = get_option( 'wpsc_checkout_unique_names' );
+		$field_mapping = array(
+			'Surname' => 'lastname',
+			'Firstnames' => 'firstname',
+			'PostCode' => 'postcode',
+			'Address1' => 'address',
+			'City' => 'city',
+			'Country' => 'country',
+			'State' => 'state',
+		);
 		
-		// $data['FailureURL'] = urlencode($transact_url);
+		$field_types = array(
+			'Billing' => 'billing',
+			'Delivery' => 'shipping',
+		);
 		
-		if ( $_POST['collected_data'][get_option('protx_form_last_name')] != '' ) {
-			$data['BillingSurname'] = urlencode($_POST['collected_data'][get_option('protx_form_last_name')]);
+		$fields_data = $wpdb->get_results( "SELECT * FROM `" . WPSC_TABLE_CHECKOUT_FORMS . "` WHERE `active` = '1'" );
+		$fields = array();
+		
+		foreach ( $fields_data as $field ) {
+			$fields[$field->unique_name] = $field->id;
 		}
 		
-		if ( $_POST['collected_data'][get_option('protx_form_post_code')] != '' ) {
-			$data['BillingPostCode'] = $_POST['collected_data'][get_option('protx_form_post_code')];
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_address')] != '' ) {
-			$data['BillingAddress1'] = $_POST['collected_data'][get_option('protx_form_address')];
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_city')] != '' ) {
-			$data['BillingCity'] = $_POST['collected_data'][get_option('protx_form_city')]; 
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_first_name')] != '' ) {
-			$data['BillingFirstnames'] = urlencode($_POST['collected_data'][get_option('protx_form_first_name')]);
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_country')] != '' ) {
-			$result = $wpdb->get_results("SELECT * FROM `" . WPSC_TABLE_CURRENCY_LIST . "` WHERE isocode='" . $_POST['collected_data'][get_option('protx_form_country')][0] . "'", ARRAY_A);
-			if ( $result[0]['isocode'] == 'UK' ) {
-				$data['BillingCountry'] = 'GB';
-			} else {
-				$data['BillingCountry'] = $result[0]['isocode'];
+		foreach ( array_keys( $field_types ) as $sp_type ) {
+			foreach ( $field_mapping as $sp_field => $mapped_field) {
+				$field_type = $field_types[$sp_type];
+				$field_name = $field_type . $mapped_field;
+				if ( ! isset( $fields[$field_name] ) )
+					continue;
+				$field_id = $fields[$field_name];
+				$field_value = isset( $_POST['collected_data'][$field_id] ) ? $_POST['collected_data'][$field_id] : '';
+				
+				switch ( $field_name ) {
+					case 'billingcountry':
+						$field_value = $field_value[0];
+						break;
+						
+					case 'shippingcountry':
+						$field_value = $_SESSION['wpsc_delivery_country'];
+						break;
+						
+					case 'billingstate':
+						$country = $_POST['collected_data'][$fields['billingcountry']][0];
+						if ( $country != 'US' )
+							$field_value = '';
+						elseif ( empty( $field_value ) )
+							$field_value = $_POST['collected_data'][$fields['billingcountry']][1];
+						break;
+						
+					case 'shippingstate':
+						if ( empty( $field_Value ) )
+							$field_value = $_SESSION['wpsc_delivery_region'];
+						break;
+				}
+				
+				if ( $mapped_field == 'country' && $field_value == 'UK' )
+					$field_value = 'GB';
+				elseif ( $mapped_field == 'state' && is_numeric( $field_value ) )
+					$field_value = wpsc_get_state_by_id( $field_value,'code');
+
+				$data["{$sp_type}{$sp_field}"] = urlencode( $field_value );
 			}
 		}
-		//billingstate
-		if(is_numeric($_POST['collected_data'][get_option('protx_form_country')][1])){
-			$data['BillingState'] = wpsc_get_state_by_id($_POST['collected_data'][get_option('protx_form_country')][1],'code');
-		 
-		}
-		if ( $_POST['collected_data'][get_option('protx_form_last_name')] != '' ) {
-			$data['DeliverySurname'] = urlencode($_POST['collected_data'][get_option('protx_form_last_name')]);
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_post_code')] != '' ) {
-			$data['DeliveryPostCode'] = $_POST['collected_data'][get_option('protx_form_post_code')];
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_address')] != '' ) {
-			$data['DeliveryAddress1'] = $_POST['collected_data'][get_option('protx_form_address')];
-		}
-	
-		if ( $_POST['collected_data'][get_option('protx_form_city')] != '' ) {
-			$data['DeliveryCity'] = $_POST['collected_data'][get_option('protx_form_city')]; 
-		}
-		
-		if ( $_POST['collected_data'][get_option('protx_form_first_name')] != '' ) {
-			$data['DeliveryFirstnames'] = urlencode($_POST['collected_data'][get_option('protx_form_first_name')]);
-		}
-		
-		if ( preg_match("/^[a-zA-Z]{2}$/", $_SESSION['wpsc_delivery_country']) ) {
-			$result = $wpdb->get_results("SELECT * FROM `" . WPSC_TABLE_CURRENCY_LIST . "` WHERE isocode='" . $_SESSION['wpsc_delivery_country'] . "'", ARRAY_A);
-			if ( $result[0]['isocode'] == 'UK' ) {
-				$data['DeliveryCountry'] = 'GB';
-			} else {
-				$data['DeliveryCountry'] = $result[0]['isocode'];
-			}
-		}
-		if ( $data['DeliveryCountry'] == '' ) {
-			$data['DeliveryCountry'] = 'GB';
-		}
-		
-		//billingstate
-		if(is_numeric( $_SESSION['wpsc_delivery_region'])){
-			$data['DeliveryState'] = wpsc_get_state_by_id( $_SESSION['wpsc_delivery_region'],'code');
-		 
-		}
-		
-		// Start Create Basket Data
 		
 		$basket_productprice_total = 0;
 		$basket_rows = (count($cart) + 1);
@@ -120,10 +103,9 @@ if ( !function_exists('gateway_sagepay') ) {
 		$data['Basket'] = $basket_rows . ':';
 		
 		foreach ( (array)$cart as $item ) {
-			$product_data = $wpdb->get_results("SELECT * FROM `" . WPSC_TABLE_PRODUCT_LIST . "` WHERE `id`='" . $item['prodid'] . "' LIMIT 1", ARRAY_A);
-			$product_data = $product_data[0];
+			$product_data = get_post( $item['prodid'] );
 			$basket_productprice_total += ($item['price'] * $item['quantity']);
-			$data['Basket'] .= preg_replace('/[^a-z0-9]/i', '_', $product_data['name']) . ":" . $item['quantity'] . ":" . $item['price'] . ":---:" . ($item['price'] * $item['quantity']) . ":" . ($item['price'] * $item['quantity']) . ":";
+			$data['Basket'] .= preg_replace('/[^a-z0-9]/i', '_', $product_data->post_title) . ":" . $item['quantity'] . ":" . $item['price'] . ":---:" . ($item['price'] * $item['quantity']) . ":" . ($item['price'] * $item['quantity']) . ":";
 		}
 		
 		$basket_delivery = $data['Amount'] - $basket_productprice_total;
@@ -137,9 +119,6 @@ if ( !function_exists('gateway_sagepay') ) {
 		}
 		
 		// End Create Basket Data
-		
-		
-		
 		$postdata = "";
 		$i = 0;
 		// exit("<pre>" . print_r($data, true) . "</pre>");
@@ -226,7 +205,7 @@ if ( !function_exists('gateway_sagepay') ) {
 		}
 		$query = "SELECT DISTINCT code FROM `" . WPSC_TABLE_CURRENCY_LIST . "` ORDER BY code";
 		$result = $wpdb->get_results($query, ARRAY_A);
-		$output = "<table>
+		$output = "
 			<tr>
 				<td>
 					Protx Vendor name:
@@ -282,78 +261,7 @@ if ( !function_exists('gateway_sagepay') ) {
 						$output .= "</select>
 				</td>
 			</tr>";
-		
-		$output .= "<tr><td colspan='2'><h2>Forms Sent to Gateway</h2></td></tr>
-			<tr>
-				<td>
-					First Name Field
-				</td>
-				<td>
-					<select name='protx_form[first_name]'>
-					" . nzshpcrt_form_field_list(get_option('protx_form_first_name')) . "
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Last Name Field
-				</td>
-				<td>
-					<select name='protx_form[last_name]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_last_name'))."
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Address Field
-				</td>
-				<td>
-					<select name='protx_form[address]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_address'))."
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					City Field
-				</td>
-				<td>
-					<select name='protx_form[city]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_city'))."
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					State Field
-				</td>
-				<td>
-					<select name='protx_form[state]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_state'))."
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Postal code/Zip code Field
-				</td>
-				<td>
-					<select name='protx_form[post_code]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_post_code'))."
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Country Field
-				</td>
-				<td>
-					<select name='protx_form[country]'>
-					".nzshpcrt_form_field_list(get_option('protx_form_country'))."
-					</select>
-				</td>
-			</tr>";
+
 		return $output;
 	}
 	
