@@ -41,7 +41,7 @@ function paymentexpress_form(){
 	$output .= "		<input type='text' name='wpsc_options[paymentexpress_password]' value='" . stripslashes(get_option('paymentexpress_password')) . "' />";
 	$output .= "	</td>\n\r";
 	$output .= "</tr>\n\r";
-	$output .= "<tr><td colspan='2'>" . __('You can login to Payment Manganer (<a href="https://www.paymentexpress.com/pxmi/logon">https://www.paymentexpress.com/pxmi/logon</a>) to see your transactions.') . "</td></tr>";
+	$output .= "<tr><td colspan='2'>" . __('You can login to Payment Manager (<a href="https://www.paymentexpress.com/pxmi/logon">https://www.paymentexpress.com/pxmi/logon</a>) to see your transactions.') . "</td></tr>";
 	
 	return $output;
 }
