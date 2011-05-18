@@ -513,7 +513,7 @@ function response_handler($nvpArray, $fraud,$sessionid,$data=null,$recurring=nul
    } else if ($result_code== '0') {
 
       //$_SESSION['nzshpcrt_cart']=null;
-      $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '2' WHERE `sessionid` = ".$sessionid." LIMIT 1");
+      $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '3' WHERE `sessionid` = ".$sessionid." LIMIT 1");
       $log_id=$wpdb->get_var("SELECT id FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = '".$sessionid."' LIMIT 1");
       if (isset($nvpArray['CVV2MATCH'])) {
          if ($nvpArray['CVV2MATCH'] != "Y") {

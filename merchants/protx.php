@@ -331,7 +331,7 @@ global $wpdb;
 	
 	switch ( $success ) {
 		case 'Completed':
-			$wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '2', `transactid` = '" . $unencrypted_values['VPSTxId'] . "', `notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "' WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
+			$wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '3', `transactid` = '" . $unencrypted_values['VPSTxId'] . "', `notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "' WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
 			break;
 		case 'Failed': // if it fails...
 			switch ( $unencrypted_values['Status'] ) {
