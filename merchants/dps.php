@@ -86,8 +86,8 @@ function decrypt_dps_response(){
     if(($rsp->ResponseText == 'APPROVED')){
       $sessionid = $rsp->MerchantReference;
 			$processing_stage = $wpdb->get_var("SELECT `processed` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = ".$sessionid." LIMIT 1");
-			if($processing_stage < 2) {
-				$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '2' WHERE `sessionid` = ".$sessionid." LIMIT 1");
+			if($processing_stage < 3) {
+				$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '3' WHERE `sessionid` = ".$sessionid." LIMIT 1");
 			}
 		}
 	}
