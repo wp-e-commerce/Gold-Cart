@@ -201,7 +201,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 		$_SESSION['wpsc_checkout_misc_error_messages'][] = $message;
 		//header("Location:".get_option('transact_url').$seperator."eway=1&result=".$sessionid."&message=1");
 	}else{
-		$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='2' WHERE `sessionid`='".$sessionid."' LIMIT 1");
+		$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
 		header("Location: ".$transact_url.$seperator."sessionid=".$sessionid);
 		//transaction_results($sessionid, true);
 	}
