@@ -76,9 +76,17 @@ function gateway_bluepay($seperator, $sessionid)
   $ExpDate = urlencode(($_POST['expiry']['month'] . $_POST['expiry']['year'])); 
   $x_Exp_Date= $ExpDate; 
   $x_Address= urlencode($_POST['collected_data'][get_option('bluepay_form_address')]); 
-  $x_City= urlencode($_POST['collected_data'][get_option('bluepay_form_city')]); 
-  $State= urlencode($_POST['collected_data'][get_option('bluepay_form_state')]); 
-  $x_State = wpsc_get_state_by_id($State, 'name');
+  $x_City= urlencode($_POST['collected_data'][get_option('bluepay_form_city')]);
+   
+  $State= urlencode($_POST['collected_data'][get_option('bluepay_form_state')]); //gets the state from the input box not the usa ddl
+  
+  if (empty($State)){ // check if the state is there from the input box if not get it from the ddl
+  	$State_id= $_POST['collected_data'][get_option('bluepay_form_country')][1];
+   	$x_State = urlencode(wpsc_get_state_by_id($State_id, 'name'));
+  }else{
+  	$x_State = $State;
+  }
+  
   $x_Zip= urlencode($_POST['collected_data'][get_option('bluepay_form_post_code')]); 
   $x_Email= urlencode($_POST['collected_data'][get_option('bluepay_form_email')]); 
   $x_Email_Customer= urlencode("TRUE"); 
@@ -145,12 +153,13 @@ function gateway_bluepay($seperator, $sessionid)
 	//exit("<pre>".print_r($return,true)."</pre>");
   switch ($details) 
     { 
-    case 1: // Credit Card Successfully Charged 
-    //$_SESSION['cart_paid'] = true;
+    case 1: // Credit Card Successfully Charged
+    global $wpdb;
+    $wpdb->update( WPSC_TABLE_PURCHASE_LOGS, array('processed' => 3),array('sessionid'=>$sessionid), array('%f') );
+   	//$_SESSION['cart_paid'] = true;
     header("Location: ".get_option('transact_url').$seperator."sessionid=".$sessionid);
     exit();
     break; 
-        
     default: // Credit Card Not Successfully Charged 
     $_SESSION['wpsc_checkout_misc_error_messages'][] = "Credit Card Processing Error: ".$return[3];
     header("Location: ".get_option('checkout_url').$seperator."total=".nzshpcrt_overall_total_price($_POST['collected_data'][get_option('country_form_field')]));
@@ -185,7 +194,7 @@ function form_bluepay()
   $output = "
   <tr>
       <td>
-      Bluepay Login
+      Account ID:
       </td>
       <td colspan='2'>
       <input type='text' size='40' value='".get_option('bluepay_login')."' name='bluepay_login' />
@@ -193,7 +202,7 @@ function form_bluepay()
   </tr>
   <tr>
       <td>
-      Bluepay Password
+      Secrete Key:
       </td>
       <td colspan='2'>
       <input type='text' size='40' value='".get_option('bluepay_password')."' name='bluepay_password' />
@@ -220,6 +229,14 @@ $output .= "      </td>
     </td>
   </tr>
   <tr>
+  	<td colspan='8'>
+  		<p>
+        Select the form fields below to send your customers details to BluePay These are the values that corospond with your WP-e-Commerce checkout form, If you leave these options blank then only the purchase amount will be sent to your BluePay account.
+     	</p>
+     </td>
+  </tr>
+
+  <tr>
       <td>
       First Name Field
       </td>
@@ -228,18 +245,7 @@ $output .= "      </td>
       ".nzshpcrt_form_field_list(get_option('bluepay_form_first_name'))."
       </select>
       </td>
-      <td rowspan='8' class='bluepay_info_box'>
-      <div class='bluepay_info_box'>
-        <table>
-          <tr>
-            <td>
-            For bluepay.net you must create these form fields in the <a href='admin.php?page=".WPSC_DIR_NAME."/form_fields.php'>Checkout Form Fields</a> page.
-            </td>
-          </tr>
-        </table>
-      </div>
-      </td>
-  </tr>
+        </tr>
   <tr>
       <td>
       Last Name Field
@@ -282,7 +288,18 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      Postal code/Zip code Field
+      Country:
+      </td>
+      <td>
+      <select name='bluepay_form[country]'>
+      ".nzshpcrt_form_field_list(get_option('bluepay_form_country'))."
+      </select>
+      </td>
+  </tr>
+
+  <tr>
+      <td>
+      Postal / Zip code Field
       </td>
       <td>
       <select name='bluepay_form[post_code]'>
@@ -290,6 +307,7 @@ $output .= "      </td>
       </select>
       </td>
   </tr>
+  
   <tr>
       <td>
       Email Field
