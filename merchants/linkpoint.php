@@ -150,10 +150,11 @@ function gateway_linkpoint($seperator, $sessionid) {
 	$myorder["keyfile"] = WPSC_GOLD_FILE_PATH."/merchants/linkpointpem/".$store.".pem";
 	$myorder["configfile"] = $store;
 	
-//	# CREDIT CARD INFO
-	if (get_option('linkpoint_test')=='0') {
+	//	# CREDIT CARD INFO
+	//if (get_option('linkpoint_test')=='0') {
 		$myorder["ordertype"] = "SALE";
 		$myorder["cardnumber"] = $_POST['card_number1']."-".$_POST['card_number2']."-".$_POST['card_number3']."-".$_POST['card_number4'];
+/* see note below ( submit_linkpoint() )on using the linkpoint test account this way
 	} else {
 		$myorder["result"] = "GOOD";
 		$myorder["cardnumber"] = "4111-1111-1111-1111";
@@ -161,6 +162,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 		$myorder["cardexpyear"] = "11";
 		$myorder["cvmvalue"] = "111";
 	}
+*/
 	$myorder["cardexpmonth"] = $_POST['expiry']['month'];
 	$myorder["cardexpyear"] = $_POST['expiry']['year'];
 	$myorder["cvmvalue"] = $_POST['cvmvalue'];	
@@ -210,9 +212,12 @@ function gateway_linkpoint($seperator, $sessionid) {
 }
 
 function submit_linkpoint() {
+
+/* Doing a test account with link point this way is silly because we send linkpoint the test card number that is always used for accepted payment, and there is no way to test a faild payment. Link point have two card numbers which you can use with your live account to test transactions one card number will generate a faild response and one an accepted one. Also some people were having issues where this option was not re updated to change the option to use test account back to no. The foreach is redundent but this is getting rewritten to use new api so for now it will stay like this */
+	
 	$options = array(
 		'store_number',
-		'test',
+		//'test',
 	);
 	foreach ( $options as $option ) {
 		$field = "linkpoint_{$option}";
@@ -223,12 +228,7 @@ function submit_linkpoint() {
 }
 
 function form_linkpoint() {
-	$linkpoint_test1 = $linkpoint_test2 = '';
-	if (get_option('linkpoint_test')==1){
-		$linkpoint_test1 = "checked='checked'";
-	} else {
-		$linkpoint_test2 = "checked='checked'";
-	}
+	
 	return "
 		<tr>
 			<td>
