@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class AuthorizeNetRequest</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class AuthorizeNetRequest</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sends requests to the Authorize.Net gateways.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_lib---shared---AuthorizeNetRequest.php.html">/lib/shared/AuthorizeNetRequest.php</a> (line <span class="field">8</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM.html">AuthorizeNetAIM</a></td>
+					<td>
+											Builds and sends an AuthorizeNet AIM Request.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB.html">AuthorizeNetARB</a></td>
+					<td>
+											A class to send a request to the ARB XML API.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM.html">AuthorizeNetCIM</a></td>
+					<td>
+											A class to send a request to the CIM XML API.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../AuthorizeNet/AuthorizeNetTD/AuthorizeNetTD.html">AuthorizeNetTD</a></td>
+					<td>
+											A class to send a request to the Transaction Details XML API.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$VERIFY_PEER" title="details" class="var-name">$VERIFY_PEER</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$_api_login" title="details" class="var-name">$_api_login</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$_log_file" title="details" class="var-name">$_log_file</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$_post_string" title="details" class="var-name">$_post_string</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$_sandbox" title="details" class="var-name">$_sandbox</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$_transaction_key" title="details" class="var-name">$_transaction_key</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																				
+												<div class="method-definition">
+											<span class="method-result">AuthorizeNetRequest</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$api_login_id</span> = <span class="var-default">false</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$transaction_key</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getPostString" title="details" class="method-name">getPostString</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setLogFile" title="details" class="method-name">setLogFile</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setSandbox" title="details" class="method-name">setSandbox</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$bool</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#_getPostUrl" title="details" class="method-name">_getPostUrl</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#_handleResponse" title="details" class="method-name">_handleResponse</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB_Response.html">AuthorizeNetARB_Response</a></span>
+										<a href="#_sendRequest" title="details" class="method-name">_sendRequest</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#_setPostString" title="details" class="method-name">_setPostString</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$VERIFY_PEER" id="$VERIFY_PEER"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$VERIFY_PEER</span>
+			 = <span class="var-default"> true</span>			(line <span class="line-number">14</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_api_login" id="$_api_login"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$_api_login</span>
+						(line <span class="line-number">11</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_log_file" id="$_log_file"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$_log_file</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">16</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_post_string" id="$_post_string"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$_post_string</span>
+						(line <span class="line-number">13</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_sandbox" id="$_sandbox"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$_sandbox</span>
+			 = <span class="var-default"> true</span>			(line <span class="line-number">15</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_transaction_key" id="$_transaction_key"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$_transaction_key</span>
+						(line <span class="line-number">12</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">40</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructor.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">AuthorizeNetRequest</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$api_login_id</span> = <span class="var-default">false</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$transaction_key</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$api_login_id</span><span class="var-description">: The Merchant's API Login ID.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$transaction_key</span><span class="var-description">: The Merchant's Transaction Key.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetPostString" id="getPostString"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPostString</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the post string.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getPostString
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetLogFile" id="setLogFile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setLogFile</span> (line <span class="line-number">63</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set a log file.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setLogFile
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filepath</span><span class="var-description">: Path to log file.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetSandbox" id="setSandbox"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setSandbox</span> (line <span class="line-number">53</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Alter the gateway url.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setSandbox
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$bool</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$bool</span><span class="var-description">: Use the Sandbox.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_getPostUrl" id="_getPostUrl"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_getPostUrl</span> (line <span class="line-number">32</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the post url. We need this because until 5.3 you  you could not access child constants in a parent class.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			_getPostUrl
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM.html#method_getPostUrl">AuthorizeNetAIM::_getPostUrl()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB.html#method_getPostUrl">AuthorizeNetARB::_getPostUrl()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM.html#method_getPostUrl">AuthorizeNetCIM::_getPostUrl()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetTD/AuthorizeNetTD.html#method_getPostUrl">AuthorizeNetTD::_getPostUrl()</a>
+							</li>
+				</ul>
+	</div>
+<a name="method_handleResponse" id="_handleResponse"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_handleResponse</span> (line <span class="line-number">26</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handle the response string</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			_handleResponse
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$string</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM.html#method_handleResponse">AuthorizeNetAIM::_handleResponse()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB.html#method_handleResponse">AuthorizeNetARB::_handleResponse()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM.html#method_handleResponse">AuthorizeNetCIM::_handleResponse()</a>
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetTD/AuthorizeNetTD.html#method_handleResponse">AuthorizeNetTD::_handleResponse()</a>
+							</li>
+				</ul>
+	</div>
+<a name="method_sendRequest" id="_sendRequest"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_sendRequest</span> (line <span class="line-number">83</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Posts the request to AuthorizeNet &amp; returns response.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The response.</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB_Response.html">AuthorizeNetARB_Response</a></span>
+		<span class="method-name">
+			_sendRequest
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method_setPostString" id="_setPostString"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_setPostString</span> (line <span class="line-number">21</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set the _post_string</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			_setPostString
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM.html#method_setPostString">AuthorizeNetAIM::_setPostString()</a>
+								: Converts the x_post_fields array into a string suitable for posting.
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetARB/AuthorizeNetARB.html#method_setPostString">AuthorizeNetARB::_setPostString()</a>
+								: Prepare the XML document for posting.
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM.html#method_setPostString">AuthorizeNetCIM::_setPostString()</a>
+								: Prepare the XML post string.
+							</li>
+					<li>
+				<a href="../../AuthorizeNet/AuthorizeNetTD/AuthorizeNetTD.html#method_setPostString">AuthorizeNetTD::_setPostString()</a>
+								: Prepare the XML post string.
+							</li>
+				</ul>
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Thu, 21 Oct 2010 17:30:59 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

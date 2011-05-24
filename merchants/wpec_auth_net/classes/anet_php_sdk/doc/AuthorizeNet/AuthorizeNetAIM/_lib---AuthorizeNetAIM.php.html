@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page AuthorizeNetAIM.php</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name">/lib/AuthorizeNetAIM.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+														</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Easily interact with the Authorize.Net AIM API.</p>
+<p class="description"><p>Example Authorize and Capture Transaction against the Sandbox:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php&nbsp;</span><span class="src-inc">require_once&nbsp;</span><span class="src-str">'AuthorizeNet.php'</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$sale&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id">AuthorizeNetAIM</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$sale</span><span class="src-sym">-&gt;</span><span class="src-id">setFields</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'amount'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'4.99'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'card_num'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'411111111111111'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'exp_date'&nbsp;</span>=&gt;&nbsp;<span class="src-str">'0515'</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$response&nbsp;</span>=&nbsp;<span class="src-var">$sale</span><span class="src-sym">-&gt;</span><span class="src-id">authorizeAndCapture</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">if&nbsp;</span><span class="src-sym">(</span><span class="src-var">$response</span><span class="src-sym">-&gt;</span><span class="src-id">approved</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">&quot;Sale&nbsp;successful!&quot;</span><span class="src-sym">;&nbsp;</span><span class="src-sym">}&nbsp;</span><span class="src-key">else&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$response</span><span class="src-sym">-&gt;</span><span class="src-id">error_message</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div></p><p>Note: To send requests to the live gateway, either define this:  define(&quot;AUTHORIZENET_SANDBOX&quot;, false);    -- OR --  $sale = new AuthorizeNetAIM;  $sale-&gt;setSandbox(false);</p></p>
+	<ul class="tags">
+				<li><span class="field">link:</span> <a href="http://www.authorize.net/support/AIM_guide.pdf">AIM Guide</a></li>
+			</ul>
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+																	</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top">
+						<a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM.html">AuthorizeNetAIM</a>
+					</td>
+					<td>
+											Builds and sends an AuthorizeNet AIM Request.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top">
+						<a href="../../AuthorizeNet/AuthorizeNetAIM/AuthorizeNetAIM_Response.html">AuthorizeNetAIM_Response</a>
+					</td>
+					<td>
+											Parses an AuthorizeNet AIM Response.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	
+	
+	
+	
+	<p class="notes" id="credit">
+		Documentation generated on Thu, 21 Oct 2010 17:30:58 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

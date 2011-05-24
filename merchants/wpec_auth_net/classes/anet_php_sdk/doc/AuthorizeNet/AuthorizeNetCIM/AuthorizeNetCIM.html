@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class AuthorizeNetCIM</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class AuthorizeNetCIM</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A class to send a request to the CIM XML API.</p>
+		<p class="notes">
+			Located in <a class="field" href="_lib---AuthorizeNetCIM.php.html">/lib/AuthorizeNetCIM.php</a> (line <span class="field">18</span>)
+		</p>
+		
+				
+		<pre><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html">AuthorizeNetRequest</a>
+   |
+   --AuthorizeNetCIM</pre>
+	
+			</div>
+</div>
+
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-vars">Vars</a>
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<img src="../../media/images/Constant.png" alt=" " />
+					<a href="#LIVE_URL" title="details" class="const-name">LIVE_URL</a> = 					<span class="var-type"> &quot;https://api.authorize.net/xml/v1/request.api&quot;</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../../media/images/Constant.png" alt=" " />
+					<a href="#SANDBOX_URL" title="details" class="const-name">SANDBOX_URL</a> = 					<span class="var-type"> &quot;https://apitest.authorize.net/xml/v1/request.api&quot;</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																																				
+												<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#createCustomerPaymentProfile" title="details" class="method-name">createCustomerPaymentProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>&nbsp;<span class="var-name">$paymentProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#createCustomerProfile" title="details" class="method-name">createCustomerProfile</a>
+											(<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>&nbsp;<span class="var-name">$customerProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#createCustomerProfileTransaction" title="details" class="method-name">createCustomerProfileTransaction</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$transactionType</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetTransaction.html">AuthorizeNetTransaction</a></span>&nbsp;<span class="var-name">$transaction</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$extraOptionsString</span> = <span class="var-default">&quot;&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#createCustomerShippingAddress" title="details" class="method-name">createCustomerShippingAddress</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>&nbsp;<span class="var-name">$shippingAddress</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#deleteCustomerPaymentProfile" title="details" class="method-name">deleteCustomerPaymentProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#deleteCustomerProfile" title="details" class="method-name">deleteCustomerProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#deleteCustomerShippingAddress" title="details" class="method-name">deleteCustomerShippingAddress</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerAddressId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#getCustomerPaymentProfile" title="details" class="method-name">getCustomerPaymentProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#getCustomerProfile" title="details" class="method-name">getCustomerProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#getCustomerProfileIds" title="details" class="method-name">getCustomerProfileIds</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#getCustomerShippingAddress" title="details" class="method-name">getCustomerShippingAddress</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerAddressId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRefId" title="details" class="method-name">setRefId</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$refId</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#updateCustomerPaymentProfile" title="details" class="method-name">updateCustomerPaymentProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>&nbsp;<span class="var-name">$paymentProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;testMode&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#updateCustomerProfile" title="details" class="method-name">updateCustomerProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>&nbsp;<span class="var-name">$customerProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#updateCustomerShippingAddress" title="details" class="method-name">updateCustomerShippingAddress</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerShippingAddressId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>&nbsp;<span class="var-name">$shippingAddress</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#updateSplitTenderGroup" title="details" class="method-name">updateSplitTenderGroup</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#validateCustomerPaymentProfile" title="details" class="method-name">validateCustomerPaymentProfile</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerShippingAddressId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$cardCode</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;testMode&quot;</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_getPostUrl" title="details" class="method-name">_getPostUrl</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+										<a href="#_handleResponse" title="details" class="method-name">_handleResponse</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$response</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#_setPostString" title="details" class="method-name">_setPostString</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html">AuthorizeNetRequest</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$VERIFY_PEER">AuthorizeNetRequest::$VERIFY_PEER</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$_api_login">AuthorizeNetRequest::$_api_login</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$_log_file">AuthorizeNetRequest::$_log_file</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$_post_string">AuthorizeNetRequest::$_post_string</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$_sandbox">AuthorizeNetRequest::$_sandbox</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#var$_transaction_key">AuthorizeNetRequest::$_transaction_key</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodcreateCustomerPaymentProfile" id="createCustomerPaymentProfile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createCustomerPaymentProfile</span> (line <span class="line-number">74</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a customer payment profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			createCustomerPaymentProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>&nbsp;<span class="var-name">$paymentProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>
+				<span class="var-name">$paymentProfile</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$validationMode</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateCustomerProfile" id="createCustomerProfile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createCustomerProfile</span> (line <span class="line-number">56</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a customer profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			createCustomerProfile
+		</span>
+					(<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>&nbsp;<span class="var-name">$customerProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>
+				<span class="var-name">$customerProfile</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$validationMode</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateCustomerProfileTransaction" id="createCustomerProfileTransaction"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createCustomerProfileTransaction</span> (line <span class="line-number">110</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a transaction.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			createCustomerProfileTransaction
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$transactionType</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetTransaction.html">AuthorizeNetTransaction</a></span>&nbsp;<span class="var-name">$transaction</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$extraOptionsString</span> = <span class="var-default">&quot;&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$transactionType</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetTransaction.html">AuthorizeNetTransaction</a></span>
+				<span class="var-name">$transaction</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$extraOptionsString</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateCustomerShippingAddress" id="createCustomerShippingAddress"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createCustomerShippingAddress</span> (line <span class="line-number">92</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a shipping address.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			createCustomerShippingAddress
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>&nbsp;<span class="var-name">$shippingAddress</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>
+				<span class="var-name">$shippingAddress</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeleteCustomerPaymentProfile" id="deleteCustomerPaymentProfile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">deleteCustomerPaymentProfile</span> (line <span class="line-number">142</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete a payment profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			deleteCustomerPaymentProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerPaymentProfileId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeleteCustomerProfile" id="deleteCustomerProfile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">deleteCustomerProfile</span> (line <span class="line-number">127</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete a customer profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			deleteCustomerProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeleteCustomerShippingAddress" id="deleteCustomerShippingAddress"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">deleteCustomerShippingAddress</span> (line <span class="line-number">158</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete a shipping address.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			deleteCustomerShippingAddress
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerAddressId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerAddressId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetCustomerPaymentProfile" id="getCustomerPaymentProfile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCustomerPaymentProfile</span> (line <span class="line-number">199</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get a payment profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			getCustomerPaymentProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerPaymentProfileId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetCustomerProfile" id="getCustomerProfile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCustomerProfile</span> (line <span class="line-number">184</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get a customer profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			getCustomerProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetCustomerProfileIds" id="getCustomerProfileIds"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCustomerProfileIds</span> (line <span class="line-number">171</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get all customer profile ids.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			getCustomerProfileIds
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetCustomerShippingAddress" id="getCustomerShippingAddress"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCustomerShippingAddress</span> (line <span class="line-number">215</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get a shipping address.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			getCustomerShippingAddress
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerAddressId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerAddressId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRefId" id="setRefId"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRefId</span> (line <span class="line-number">43</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Optional. Used if the merchant wants to set a reference ID.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRefId
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$refId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$refId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodupdateCustomerPaymentProfile" id="updateCustomerPaymentProfile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">updateCustomerPaymentProfile</span> (line <span class="line-number">252</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Update a payment profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			updateCustomerPaymentProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>&nbsp;<span class="var-name">$paymentProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;testMode&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerPaymentProfileId</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetPaymentProfile.html">AuthorizeNetPaymentProfile</a></span>
+				<span class="var-name">$paymentProfile</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$validationMode</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodupdateCustomerProfile" id="updateCustomerProfile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">updateCustomerProfile</span> (line <span class="line-number">232</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Update a profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			updateCustomerProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>&nbsp;<span class="var-name">$customerProfile</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;none&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCustomer.html">AuthorizeNetCustomer</a></span>
+				<span class="var-name">$customerProfile</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$validationMode</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodupdateCustomerShippingAddress" id="updateCustomerShippingAddress"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">updateCustomerShippingAddress</span> (line <span class="line-number">272</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Update a shipping address.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			updateCustomerShippingAddress
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerShippingAddressId</span>, <span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>&nbsp;<span class="var-name">$shippingAddress</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerShippingAddressId</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetAddress.html">AuthorizeNetAddress</a></span>
+				<span class="var-name">$shippingAddress</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodupdateSplitTenderGroup" id="updateSplitTenderGroup"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">updateSplitTenderGroup</span> (line <span class="line-number">286</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Not yet implemented.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			updateSplitTenderGroup
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodvalidateCustomerPaymentProfile" id="validateCustomerPaymentProfile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">validateCustomerPaymentProfile</span> (line <span class="line-number">302</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Validate a customer payment profile.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			validateCustomerPaymentProfile
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$customerProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerPaymentProfileId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$customerShippingAddressId</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$cardCode</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$validationMode</span> = <span class="var-default">&quot;testMode&quot;</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerPaymentProfileId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$customerShippingAddressId</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$cardCode</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$validationMode</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_getPostUrl" id="_getPostUrl"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_getPostUrl</span> (line <span class="line-number">316</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_getPostUrl
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_getPostUrl">AuthorizeNetRequest::_getPostUrl()</a></dt>
+						<dd>Get the post url. We need this because until 5.3 you  you could not access child constants in a parent class.</dd>
+					</dl>
+			
+	</div>
+<a name="method_handleResponse" id="_handleResponse"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_handleResponse</span> (line <span class="line-number">328</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../../AuthorizeNet/AuthorizeNetCIM/AuthorizeNetCIM_Response.html">AuthorizeNetCIM_Response</a></span>
+		<span class="method-name">
+			_handleResponse
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$response</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$response</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_handleResponse">AuthorizeNetRequest::_handleResponse()</a></dt>
+						<dd>Handle the response string</dd>
+					</dl>
+			
+	</div>
+<a name="method_setPostString" id="_setPostString"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_setPostString</span> (line <span class="line-number">336</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Prepare the XML post string.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			_setPostString
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_setPostString">AuthorizeNetRequest::_setPostString()</a></dt>
+						<dd>Set the _post_string</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html">AuthorizeNetRequest</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method__construct">AuthorizeNetRequest::__construct()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#methodgetPostString">AuthorizeNetRequest::getPostString()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#methodsetLogFile">AuthorizeNetRequest::setLogFile()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#methodsetSandbox">AuthorizeNetRequest::setSandbox()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_getPostUrl">AuthorizeNetRequest::_getPostUrl()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_handleResponse">AuthorizeNetRequest::_handleResponse()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_sendRequest">AuthorizeNetRequest::_sendRequest()</a></span><br>
+													<span class="method-name"><a href="../../AuthorizeNet/AuthorizeNetRequest/AuthorizeNetRequest.html#method_setPostString">AuthorizeNetRequest::_setPostString()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-vars">Vars</a>
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constLIVE_URL" id="LIVE_URL"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">LIVE_URL</span>
+			 = <span class="const-default"> &quot;https://api.authorize.net/xml/v1/request.api&quot;</span>
+			(line <span class="line-number">21</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constSANDBOX_URL" id="SANDBOX_URL"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">SANDBOX_URL</span>
+			 = <span class="const-default"> &quot;https://apitest.authorize.net/xml/v1/request.api&quot;</span>
+			(line <span class="line-number">22</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Thu, 21 Oct 2010 17:30:59 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

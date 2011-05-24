@@ -346,6 +346,7 @@ function submit_authorize()
 function form_authorize()
   {
   $output = "
+  <strong> There is a new Authorize.net Gateway!</strong><P> This one will not be supported with Gold Cart for much longer. Please configure the new Authorize.net AIM/CIM gateway. </p>
   <tr>
       <td>
       Authorize API Login ID
