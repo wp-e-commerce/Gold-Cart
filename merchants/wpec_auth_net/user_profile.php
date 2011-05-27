@@ -63,6 +63,7 @@ if ( is_user_logged_in() ) {
 
 	function wpec_auth_net_user_profile_display(){
 		$myGateway = new wpec_auth_net();
+
 		$creditcards = $myGateway->getCreditCardProfiles();
 		$bankaccounts = $myGateway->getBankAccountProfiles();
 		$shipaddress = $myGateway->getShippingProfiles();

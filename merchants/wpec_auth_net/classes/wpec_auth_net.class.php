@@ -557,18 +557,19 @@ EOF;
 	function addPaymentProfile($pp){
 
 		//Perhaps you should check if this card is already on file before you try to save it
-		$newpp = new AuthorizeNetPaymentProfile;
 		if(isset($pp['type']) && $pp['type'] == 'CC' && isset($pp['card_number']) && isset($pp['expire']) ){ //Looks like we are adding a credit card profile
+			$newpp = new AuthorizeNetPaymentProfile;
 			$newpp->customerType = "individual";
 			$newpp->payment->creditCard->cardNumber = $pp['card_number'];
 			$newpp->payment->creditCard->expirationDate = $pp['expire']['year']."-".$pp['expire']['month'];
-			$response = $this->auth_cim->createCustomerPaymentProfile($this->CIM_ID, $newpp,$this->validationMode);
+			$response = $this->auth_cim->createCustomerPaymentProfile($this->CIM_ID, $newpp);
 			if($response->isOk()){
 				return true;
 			}else{
 				return false;
 			}
 		}elseif(isset($pp['type']) && $pp['type'] =='check' && isset($pp['routing_number']) && isset($pp['account_number']) ){ //OK now we want to store bank account info
+			$newpp = new AuthorizeNetPaymentProfile;
 			$newpp->customerType = "individual";
 			$newpp->payment->bankAccount->accountType = $pp['account_type'];
 			$newpp->payment->bankAccount->routingNumber = $pp['routing_number'];
@@ -598,7 +599,7 @@ EOF;
 			$customerProfile->description = "{$user_info->user_firstname} {$user_info->user_lastname} <{$user_info->user_email}>";
 			$customerProfile->merchantCustomerId = $user_ID;
 			$customerProfile->email = $user_info->user_email;
-			$profile_create_response = $this->auth_cim->createCustomerProfile($customerProfile,$this->validationMode);
+			$profile_create_response = $this->auth_cim->createCustomerProfile($customerProfile);
 			if($profile_create_response->isOk()){
 				$this->CIM_ID = $profile_create_response->getCustomerProfileId();
 				update_user_meta($user_ID, 'wpec_auth_net_cim_id', $this->CIM_ID);
