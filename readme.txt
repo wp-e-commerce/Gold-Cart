@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.1
+Version: 2.9.2
 Requires at least: 2.8
 Tested up to: 3.1.1
 Requires: Wp e-Commerce: 3.7.6.7
@@ -39,7 +39,7 @@ To do this go to Store >> Upgrades ensure your Gold Cart is currently active and
 
 ==== Upgrading Gold Cart from WP e-commerce 3.6 series to 3.7+ series ====
 
-1. Remove ALL 'gold_cart_files' files from the Ã”/wp-content/uploads/wpsc/upgrades/Ã• directory, This must be done first as it causes conflicts with the new files.
+1. Remove ALL 'gold_cart_files' files from the ï/wp-content/uploads/wpsc/upgrades/Í directory, This must be done first as it causes conflicts with the new files.
 
 2. Upload the 'gold_cart_files_plugin' to the '/wp-content/plugins/' directory
 
@@ -74,3 +74,14 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 * Fix: Add to Cart button is messed up in IE
 * Fix: Product gallery always use 'product-thumbnails' size even when displayed in Single product view
 * Fix: There is no way to switch back to the featured thumbnail after you clicked on another thumbnail in product gallery
+
+2.9.2
+* Change: Only show to gallery if the single product has more than one image
+* Fix: DPS Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: LinkPoint Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: LinkPoint gateway not sending correct information to the gateway
+* Add: New Authorize.net gateway supporting the CIM managment
+* Fix: EWAY Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: PayPal - proflow Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: BluePay was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: BluePay - send correct customer details
