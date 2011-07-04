@@ -38,7 +38,7 @@ class wpec_auth_net_setup{
 		global $num;
 		//Repare the Payment Gateway Hook
 		$gws[$num] = array(
-			'name'                   => 'Authorize.net AIM/CIM',
+			'name'                   => 'Authorize.net AIM/CIM/ARB',
 			'api_version'            => 2,
 			'class_name'             => WPECAUTHNET_PLUGIN_NAME,
 			'image'			 => WPSC_URL . '/images/cc.gif',
@@ -57,7 +57,8 @@ class wpec_auth_net_setup{
 
 	function wpsc_init(){
 		include_once(WPECAUTHNET_CLASSES.'wpec_auth_net.class.php');
-		$this->wpec_auth_net_load();
+		include_once('user_profile.saved_accouns.php');
+		add_action('wpsc_before_shipping_of_shopping_cart', array($this, 'wpec_auth_net_load'));
 		if(is_admin()){
 			//Cleaning this code, the following will be removed soon
 			add_action('wpsc_edit_order_status', array($this,'edit_status'));
@@ -119,7 +120,7 @@ class wpec_auth_net_setup{
 
 	function wpec_auth_net_load(){
 		global $nzshpcrt_gateways, $gateway_checkout_form_fields, $num;
-		include_once('user_profile.php');
+		//Hook into the My Account so the user can manage their saved credit cards and bank accounts
 		if ( is_user_logged_in() ) {
 			if ( in_array( WPECAUTHNET_PLUGIN_NAME, (array)get_option( 'custom_gateway_options' ) ) ) {
 				$this->myGateway = new wpec_auth_net();

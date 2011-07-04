@@ -1,5 +1,4 @@
 <?php
-
 class wpec_auth_net extends wpsc_merchant {
 
 	var $name = 'Authorize.net AIM/CIM';
@@ -30,20 +29,21 @@ class wpec_auth_net extends wpsc_merchant {
 		if(!defined('AUTHORIZENET_API_LOGIN_ID')) define('AUTHORIZENET_API_LOGIN_ID', $this->conf['login']);
 		if(!defined('AUTHORIZENET_TRANSACTION_KEY')) define('AUTHORIZENET_TRANSACTION_KEY', $this->conf['key']);
 		if(isset($this->conf['testmode']) && $this->conf['testmode'] == 'checked'){
-			if(!defined('AUTHORIZENET_SANDBOX')) define('AUTHORIZENET_SANDBOX', true);
 			$this->validationMode = "testMode";
 			if(!defined('AUTH_NET_TRANSID_URL')) 
 			define('AUTH_NET_TRANSID_URL', 'https://sandbox.authorize.net/UI/themes/sandbox/transaction/transactiondetail.aspx?menukey=CustomerProfile&transID=');
 		}else{
 			$this->validationMode = "liveMode";
+			define("AUTHORIZENET_SANDBOX", false);
 		}
 		//We have our env ready, lets get the auth handler ready for action.
 		$this->auth = new AuthorizeNetAIM;
+		if(AUTHORIZENET_SANDBOX === false) $this->auth->setSandbox(false);
 
 		if(isset($_REQUEST['payType'])) $this->payType = $_REQUEST['payType'];
 		//If We Are Using Authorize.net CIM, lets load up the profiles and address.  We'll store them back 
 		//During the submit processes
-		if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked'){
+		if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' ){
 			$this->auth_cim = new AuthorizeNetCIM;
 			$this->get_Auth_net_CIM();
 			$this->profile = $this->auth_cim->getCustomerProfile($this->CIM_ID);
@@ -475,7 +475,8 @@ EOF;
 
 
 		foreach($this->cart_items as $i => $Item) {
-		    $taxable = isset($Item->tax) ? 'Y' : 'N';
+		    if($Item['is_recurring'] == 1) continue;
+		    $taxable = ($Item['tax'] >0) ? 'Y' : 'N';
 		    //For Some Lame Reason the name can only be 30characters long... weak sauce.
 		    $name = substr($Item['name'],0,31);
 		    $description = isset($Item['description']) ? $Item['Description'] : 'Generic Goods';
@@ -511,12 +512,42 @@ EOF;
 		$this->collate_data();
 		$this->collate_cart();
 
-		if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' && $this->payType == 'preset'
-		&& isset($_REQUEST['auth_net']['payment_preset'])){
-			$result = $this->processCIMTransaction();
-		}else{
-			$result = $this->processAIMTransaction();
-		}
+                if(isset($this->cart_data['is_subscription']) && (int)$this->cart_data['is_subscription'] > 0){
+                        //This is subscription based, use the ARB api
+			if($subRes = $this->setSubscription()){
+				$callAim = false;
+				//Check if their is anything else in the cart that needs to be processed.
+				// If so throw it at AIM to finish
+				foreach($this->cart_items as $item){
+					if((int)$item['is_recurring'] != 1){
+						$callAim = true;
+					}
+				}
+				if($callAim) $result = $this->processAIMTransaction();
+				else{
+					if($subRes == true){
+						$this->set_transaction_details($this->response->transaction_id,$this->process_status);
+						$this->set_authcode($this->response->authorization_code);
+						$this->go_to_transaction_results($this->cart_data['session_id']);
+						return true;
+					}else{
+						//error occured, bailing back to checkout stand
+						$this->set_transaction_details($this->response->transaction_id,6);
+						$this->set_error_message("Failed to create subscription");
+						$this->return_to_checkout();
+						return false;
+					}
+				}
+			}else{
+				$result = false;
+			}
+
+                }else if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' && $this->payType == 'preset'
+                && isset($_REQUEST['auth_net']['payment_preset'])){
+                        $result = $this->processCIMTransaction();
+                }else{
+                        $result = $this->processAIMTransaction();
+                }
 		do_action('submit_payment_response',$this);
 		$this->setOrderMeta();
 		if ($result == true) {
@@ -554,6 +585,7 @@ EOF;
 		}
 		exit();
 	}
+
 	function addPaymentProfile($pp){
 
 		//Perhaps you should check if this card is already on file before you try to save it
@@ -616,6 +648,12 @@ EOF;
 	}
 	
 	function CheckOrCC(){
+		global $wpdb, $wpsc_cart, $user_ID;
+		//Find out if their is a subscription in the cart and disable cimon
+		foreach($wpsc_cart->cart_items as $item){
+			if($is_recurring = (bool)get_post_meta( $item->product_id, '_wpsc_is_recurring', true )) $this->conf['cimon'] = false;
+		}
+
 		$output = <<<EOF
 		<div id='checkorcc_select'>
 		<script>
@@ -826,6 +864,162 @@ EOF;
 		if(isGood($this->cart_data['shipping_address']['last_name']))  $this->auth->ship_to_last_name   = $this->cart_data['shipping_address']['last_name'];
 		if(isGood($this->cart_data['shipping_address']['country']))  $this->auth->ship_to_country   = $this->cart_data['shipping_address']['country'];
 	}
+
+	function setSubscription(){
+		global $user_ID;
+		
+		$sub = new WPSC_Subscription($user_ID);
+		foreach($this->cart_items as $itemIndex => $item){
+			if(isset($item['is_recurring']) && (int)$item['is_recurring']>0){
+				//If you already have a subscription then pass
+				$subscription = new AuthorizeNet_Subscription;
+
+				//If there is a predefined interval set it
+				if(isGood($item['recurring_data']['rebill_interval']['unit']) && isGood($item['recurring_data']['rebill_interval']['length'])){
+					$unit = $item['recurring_data']['rebill_interval']['unit'];
+					$length = $item['recurring_data']['rebill_interval']['length'];
+					if( $unit == 'month' ) $unit = 'months';
+					elseif ($unit == 'days') $unit = 'days';
+					elseif ($unit == 'week'){
+						$length = $length * 7;
+						$unit = 'days';
+					}
+					elseif ($unit == 'year'){
+						$length = $length * 12;
+						$unit = 'months';
+					}
+
+
+					$subscription->intervalUnit = $unit;
+					$subscription->intervalLength = $length;
+				}
+
+
+				//Set rebill design
+				if(isset($item['recurring_data']['charge_to_expiry']) && (int)$item['recurring_data']['charge_to_expiry'] > 0){
+					//we bill forever, set the totalOccurences to 9999
+					$subscription->totalOccurrences = 9999;
+				}elseif(isset($item['recurring_data']['times_to_rebill']) && (int)$item['recurring_data']['times_to_rebill'] > 0){
+					//Only a specified ammount of times
+					$subscription->totalOccurrences = (int)$item['recurring_data']['times_to_rebill'];
+				}else{
+					$subscription->totalOccurrences = 1;
+				}
+			
+				//Always set the start date to today
+				$subscription->startDate = date('Y-m-d');
+				$subscription->amount = ($item['price'] * $item['quantity']) + $item['tax'] + $item['shipping'];
+				$amount = $subscription->amount;
+				if(isGood($item['name'])) $subscription->name = $item['name'];
+
+				//Set the billing info
+				if(isGood($this->cart_data['billing_address']['first_name']))
+					$subscription->billToFirstName = $this->cart_data['billing_address']['first_name'];
+
+				if(isGood($this->cart_data['billing_address']['last_name']))
+					$subscription->billToLastName = $this->cart_data['billing_address']['last_name'];
+
+				if(isGood($this->cart_data['billing_address']['address']))
+					$subscription->billToAddress = $this->cart_data['billing_address']['address'];
+
+				if(isGood($this->cart_data['billing_address']['city']))
+					$subscription->billToCity = $this->cart_data['billing_address']['city'];
+
+				if(isGood($this->cart_data['billing_address']['state']))
+					$subscription->billToState = $this->cart_data['billing_address']['state'];
+
+				if(isGood($this->cart_data['billing_address']['post_code']))
+					$subscription->billToZip = $this->cart_data['billing_address']['post_code'];
+
+				if(isGood($this->cart_data['billing_address']['country']))
+					$subscription->billToCountry = $this->cart_data['billing_address']['country'];
+
+				if(isGood($this->cart_data['email_address']))
+					$subscription->customerEmail = $this->cart_data['email_address'];
+
+				$subscription->customerId = $user_ID;
+
+				//Trying to figure out how to set this
+				//$subscription->customerPhoneNumber = $item[''];
+
+
+				if(isGood($_REQUEST['payType']) && $_REQUEST['payType'] = 'creditCardForms'){
+					$ccInfo = $_REQUEST['auth_net']['creditCard'];
+					$subscription->creditCardCardNumber = $ccInfo['card_number'];
+					$subscription->creditCardExpirationDate = $ccInfo['expiry']['year'].'-'.$ccInfo['expiry']['month'];
+					$subscription->creditCardCardCode = $ccInfo['card_code'];
+				}elseif(isGood($_REQUEST['payType']) && $_REQUEST['payType'] = 'checkForms'){
+					$bInfo = $_REQUEST['auth_net']['bankAccount'];
+					$subscription->bankAccountAccountType = $bInfo['account_type'];
+					$subscription->bankAccountRoutingNumber = $bInfo['routing_number'];
+					$subscription->bankAccountAccountNumber = $bInfo['account_number'];
+					$subscription->bankAccountNameOnAccount = $bInfo['name_on_account'];
+					//$subscription->bankAccountEcheckType = "";
+					$subscription->bankAccountBankName = $bInfo['bank_name'];
+				}else{
+					//TODO return if payment data is bad
+				}
+				$request = new AuthorizeNetARB;
+				//Create a unique refid so if there are multiple subscriptions everything works out ok
+				$refid = $this->cart_data['session_id'].'-'.$item['cart_item_id'];
+				$request->setRefId($refid);
+				$this->response = $request->createSubscription($subscription);
+				$this->response->transaction_id = $this->cart_data['session_id'];
+				if($this->response->isOk()){
+					//This created subscription;
+					$this->response->authorization_code = $this->response->getSubscriptionId();
+					$subscriptionId = $this->response->getSubscriptionId();
+					$end  = strtotime($length.' '.$unit);
+					$sub->saveSubscriptionMeta(array(
+						'purchase_id'=>$this->purchase_id, 
+						'producti_d'=>$item['product_id'],
+						'ref_id'=>$refid, 
+						'subscription_id'=>$this->response->getSubscriptionId(),
+						'startTime'=>time(),'endTime'=>$end)
+					);
+					//If we setup the transaction and it worked, remove it from the cart
+					//if their are more subscriptions the foreach will catch the reset of them
+					//If there are other items non-subscription based this loop finishes and returns true
+					//THe submit function will then continue to see if it needs to do anything else.
+					unset($this->cart_items[$itemIndex]);
+					//Remove this ammount from cart_data['total_price'] & tax
+					$this->cart_data['total_price'] = $this->cart_data['total_price'] - $amount;
+					$this->cart_data['cart_tax'] = $this->cart_data['cart_tax'] - $item['tax'];
+				}else{
+					//error occured, bailing back to checkout stand
+					$this->set_transaction_details($this->cart_data['session_id'],6);
+					$this->set_error_message(__('Failed to Authorize the Subscription','wpsc'));
+					$this->return_to_checkout();
+					return false;
+				}
+			}
+		}	
+		return true;
+	}
+
+       /**
+        * cancelSubscription($purchaseLog, $subscription) find the subscription and cancel it
+        * TODO rewrite to be used as API
+        * @param int $purchlogID
+        */
+        function cancelSubscription($purchaseLog = false, $subscription = false){
+                if($purchaseLog != false && $subscription != false){
+                        $ref_id = $subscription['ref_id'];
+                        $subscription_id = $subscription['subscription_id'];
+
+                        $cancellation = new AuthorizeNetARB;
+                        $cancellation->setRefId($ref_id);
+                        $cancel_response = $cancellation->cancelSubscription($subscription_id);
+                        if($cancel_response->isOk()){
+                                return true;
+                        }else{  
+                                return false;
+                        }
+                }else{
+			return false;
+		}
+        }
+
 }
 
 function form_auth_net(){
