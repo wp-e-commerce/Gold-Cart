@@ -162,7 +162,7 @@ function gateway_bluepay($seperator, $sessionid)
     break; 
     default: // Credit Card Not Successfully Charged 
     $_SESSION['wpsc_checkout_misc_error_messages'][] = "Credit Card Processing Error: ".$return[3];
-    header("Location: ".get_option('checkout_url').$seperator."total=".nzshpcrt_overall_total_price($_POST['collected_data'][get_option('country_form_field')]));
+    header("Location: ".get_option('transact_url').$seperator."total=".nzshpcrt_overall_total_price($_POST['collected_data'][get_option('country_form_field')]));
     exit();
     break; 
     }
