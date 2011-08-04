@@ -132,7 +132,19 @@ class wpec_auth_net_setup{
 				</tr>
 				";
 			}
-
+		}else{
+			//Not Logged In, disable CIM and ARB
+			if ( in_array( WPECAUTHNET_PLUGIN_NAME, (array)get_option( 'custom_gateway_options' ) ) ) {
+				$this->myGateway = new wpec_auth_net();
+				$this->myGateway->conf['cimon'] = false;
+				$checkOrCC = $this->myGateway->CheckOrCC();
+				$gateway_checkout_form_fields[WPECAUTHNET_PLUGIN_NAME] = "
+				<tr><td colspan='2'>
+				{$checkOrCC}
+				</td>
+				</tr>
+				";
+			}
 		}
 	}
 
