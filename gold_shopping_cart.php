@@ -3,7 +3,7 @@
 Plugin Name: Gold Cart for WP e-Commerce
 Plugin URI: http://www.getshopped.org
 Description: Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://getshopped.org" target="_blank">GetShopped.org</a> | <a href="http://getshopped.org/resources/premium-support/" target="_blank">Premium Support</a> | <a href="http://getshopped.org/resources/docs/" target="_blank">Documentation</a>
-Version: 2.9.2
+Version: 2.9.3
 Author: GetShopped.org
 Author URI: http://www.getshopped.org
 */
