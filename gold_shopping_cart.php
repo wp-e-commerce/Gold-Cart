@@ -60,20 +60,30 @@ if($gold_shpcrt_active === 'true') {
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	add_action( 'init', 'wpsc_gc_view_mode' );
 	
-	
-	//tell people to configure the new auth net gateway that we are including with version 2.9.2
-/*
-	function update_auth_net_message(){
-		$selected_gateways = get_option( 'custom_gateway_options' );
+//tell people to configure the new auth net gateway that we are including with version 2.9.2
+function update_auth_net_message(){
+	$selected_gateways = get_option( 'custom_gateway_options' );
 
-		if (in_array('wpsc_merchant_authorize', $selected_gateways)){ ?>
-			<div id="message" class="updated fade">
-				<p><?php printf( __( '<strong>New Authorize.net Gateway for Gold Cart!</strong><br /> We have a new Authorize.net gateway supporting the new AIM/CIM API, your current Authorize.net Gateway will not be supported for much longer. We recommend you <a href="%1s">configure the new gateway</a> to take advantage of these new features. <a href="%2s">Click here</a> to ignore and remove this box.', 'wpsc' ), admin_url( 'admin.php?page=wpsc-settings&tab=gateway' ), admin_url( 'admin.php?page=wpsc-settings&tab=presentation&wpsc_notices=theme_ignore' ) ) ?></p>
-			</div> <?php
+	if (in_array('wpsc_merchant_authorize', $selected_gateways)){ ?>
+		<div id="message" class="updated fade">
+			<p><?php printf(  '<strong>New Authorize.net Gateway for Gold Cart!</strong><br /> We have a new Authorize.net gateway supporting the new AIM/CIM API. We recommend you <a href="%1s">configure the new gateway</a> to take advantage of these new features. <a href="%2s">Click here</a> to ignore and remove this box.', admin_url( 'admin.php?page=wpsc-settings&tab=gateway' ), admin_url( 'admin.php?page=wpsc-settings&wpsc_notices=gc_ignore' ) ) ?></p>
+		</div> <?php
+	}
+}
+//we only want to do this if they have not already ignored the message
+if ( !get_option('gc_anet_ignore') )
+	add_action( 'admin_notices', 'update_auth_net_message' );
+	
+	function gc_remove_nag(){
+		if ( isset( $_REQUEST['wpsc_notices'] ) && $_REQUEST['wpsc_notices'] == 'gc_ignore' ) {
+		update_option( 'gc_anet_ignore', true );
+		wp_redirect( remove_query_arg( 'wpsc_notices' ) );
+		exit();
 		}
 	}
-	add_action( 'admin_notices', 'update_auth_net_message' );
-*/
+
+add_action('wp_loaded', 'gc_remove_nag');
+
 	function wpsc_gc_view_mode() {
 		global $wpsc_gc_view_mode;
 		
