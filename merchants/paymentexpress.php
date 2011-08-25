@@ -95,7 +95,7 @@ class wpsc_merchant_paymentexpress extends wpsc_merchant {
 			);
 			
 			$ch = curl_init(); 
-			curl_setopt($ch, CURLOPT_URL, 'https://sec2.paymentexpress.com/pxmi3/pxfusionauth');
+			curl_setopt($ch, CURLOPT_URL, 'https://sec.paymentexpress.com/pxmi3/pxfusionauth');
 			curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 			curl_setopt($ch, CURLOPT_HEADER, 1); 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
@@ -126,7 +126,7 @@ class wpsc_merchant_paymentexpress extends wpsc_merchant {
 						  </SOAP-ENV:Body>
 						</SOAP-ENV:Envelope>';
 			$ch = curl_init(); 
-			curl_setopt($ch, CURLOPT_URL, "https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl"); 
+			curl_setopt($ch, CURLOPT_URL, "https://sec.paymentexpress.com/pxf/pxf.svc?wsdl"); 
 			curl_setopt($ch, CURLOPT_VERBOSE, 0); 
 			curl_setopt($ch, CURLOPT_HEADER, 0); 
 			curl_setopt($ch, CURLOPT_POST, 1);
@@ -188,7 +188,7 @@ class wpsc_merchant_paymentexpress extends wpsc_merchant {
 			);
 			
 			$ch = curl_init(); 
-			curl_setopt($ch, CURLOPT_URL, 'https://sec2.paymentexpress.com/pxmi3/pxfusionauth');
+			curl_setopt($ch, CURLOPT_URL, 'https://sec.paymentexpress.com/pxmi3/pxfusionauth');
 			curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 			curl_setopt($ch, CURLOPT_HEADER, 1); 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
@@ -345,7 +345,7 @@ class PxFusion
 	protected function fusion_password(){
 		return stripslashes(get_option('paymentexpress_password'));
 	}
-	protected $wsdl = 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl';
+	protected $wsdl = 'https://sec.paymentexpress.com/pxf/pxf.svc?wsdl';
 
 	// Variables/Objects that are used to hold data for transactions
 	public $tranDetail;

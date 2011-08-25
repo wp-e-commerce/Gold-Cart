@@ -97,7 +97,8 @@ function decrypt_dps_response(){
 function form_dps() {
   $access_url = get_option('access_url');
   if($access_url == '') {
-		update_option('access_url', "https://www.paymentexpress.com/pxpay/pxpay.aspx");
+		update_option('access_url', "https://sec.paymentexpress.com/pxpay/pxaccess.aspx");
+		//update_option('access_url', "https://www.paymentexpress.com/pxpay/pxpay.aspx"); this was the old value which appears to be pxpay is the px post name above wrong? I think so
   }
   $output = " \n\r";
 	//   $output = "
