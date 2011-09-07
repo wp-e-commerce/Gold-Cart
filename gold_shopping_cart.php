@@ -3,7 +3,7 @@
 Plugin Name: Gold Cart for WP e-Commerce
 Plugin URI: http://www.getshopped.org
 Description: Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://getshopped.org" target="_blank">GetShopped.org</a> | <a href="http://getshopped.org/resources/premium-support/" target="_blank">Premium Support</a> | <a href="http://getshopped.org/resources/docs/" target="_blank">Documentation</a>
-Version: 2.9.4
+Version: 2.9.5
 Author: GetShopped.org
 Author URI: http://www.getshopped.org
 */
@@ -14,9 +14,17 @@ define('WPSC_GOLD_MODULE_PRESENT', true);
 define('WPSC_GOLD_FILE_PATH', dirname(__FILE__));
 define('WPSC_GOLD_DIR_NAME', basename(WPSC_GOLD_FILE_PATH));
 define('WPSC_GOLD_FILE_URL', get_plugin_url());
-define('WPSC_GOLD_VERSION', '2.9.4' );
+define('WPSC_GOLD_VERSION', '2.9.5' );
 require(dirname(__FILE__)."/upgrade_panel.php");
+require(dirname(__FILE__)."/wpec-auto-upgrade.php");
 
+$args = array(
+	'plugin_name'		=>	'Gold Cart',
+	'chk_file_location'	=>	'http://getshopped.org/wp-content/uploads/wpsc/updates/wpsc_goldcart.chk',
+	'current_version'			=>	WPSC_GOLD_VERSION,
+	'plugin_basename'	=>	plugin_basename(__FILE__)
+);
+$gold_upgrade = new wpec_auto_upgrade($args);
 //scribu function to find proper plugin url
 function get_plugin_url() {
 	// WP < 2.6
@@ -25,29 +33,6 @@ function get_plugin_url() {
 	
 	return plugins_url(plugin_basename(dirname(__FILE__)));
 }
-
-//check if newer version is available
-function gold_check_plugin_version( $plugin ) {
-  if( strpos( WPSC_GOLD_DIR_NAME.'/'.__FILE__,$plugin ) !== false ) {
-    $checkfile = "http://getshopped.org/wp-content/uploads/wpsc/updates/wpsc_goldcart.chk";
-    $vcheck = wp_remote_fopen($checkfile);
-    if( $vcheck ) {
-      $version = WPSC_GOLD_VERSION;
-      $status = explode('@', $vcheck);
-      $theVersion = $status[1];
-      $theMessage = $status[3];
-      if( (version_compare(strval($theVersion), strval($version), '>') == 1) ) {
-        echo '
-        <td colspan="5" class="plugin-update" style="line-height:1.2em; font-size:11px; padding:1px;">
-          <div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "gold").' <a href="'.$theMessage.'" target="_blank">View version '.$theVersion.' details</a>.</div	>
-        </td>';
-      } else {
-        return;
-      }
-    }
-  }
-}
-add_action( 'after_plugin_row', 'gold_check_plugin_version' );
 
 //default install gold cart kept to preserve backwards compatibility
 function gold_shpcrt_install() {
