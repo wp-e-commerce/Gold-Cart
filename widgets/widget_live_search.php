@@ -52,14 +52,31 @@ function wpsc_live_search(){
 		$autocomplete = 'onkeyup="autocomplete(event)"';
 	else
 		$autocomplete = '';
+		
+	//get the url to submit the search to
+	$product_page_id = wpec_get_the_post_id_by_shortcode('[productspage]');
+	$pp_url = get_permalink($product_page_id);
+	// the js below listens for the enter keypress and redirects to the product page with a get var of the search term
+
 ?>
 <div class="live_search_form">
-	<form>
-		<input name="wpsc_live_search" id="wpsc_search_autocomplete" <?php echo $autocomplete; ?> class="wpsc_live_search" autocomplete="off" />
-	</form>
+	
+		<input name="product_search" id="wpsc_search_autocomplete" <?php echo $autocomplete; ?> class="wpsc_live_search" autocomplete="off" />
+	
+	
+	<script type='text/javascript' > /* <![CDATA[ */
+	jQuery('#wpsc_search_autocomplete').keypress(function(e){
+		if(e.keyCode == 13){
+			var url = '<?php echo $pp_url ?>'+'?product_search='+jQuery(this).val();
+			url = encodeURI(url);
+			jQuery(window.location).attr('href', url);
+		}
+	})
+
+	/* ]]> */</script>
 	<div class="blind_down" style="display:none;"></div>
 </div>
+
 <?php	
 }
 
-?>
