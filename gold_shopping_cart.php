@@ -20,7 +20,7 @@ require(dirname(__FILE__)."/wpec-auto-upgrade.php");
 
 $args = array(
 	'plugin_name'		=>	'Gold Cart',
-	'chk_file_location'	=>	'http://getshopped.org/wp-content/uploads/wpsc/updates/wpsc_goldcart.chk',
+	'chk_file_location' => 'http://getshopped.org/wp-content/version-checker/gold-cart-plugin.chk',
 	'current_version'			=>	WPSC_GOLD_VERSION,
 	'plugin_basename'	=>	plugin_basename(__FILE__)
 );
