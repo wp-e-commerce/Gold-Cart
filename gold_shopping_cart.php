@@ -16,7 +16,7 @@ define('WPSC_GOLD_DIR_NAME', basename(WPSC_GOLD_FILE_PATH));
 define('WPSC_GOLD_FILE_URL', get_plugin_url());
 define('WPSC_GOLD_VERSION', '2.9.5' );
 require(dirname(__FILE__)."/upgrade_panel.php");
-require(dirname(__FILE__)."/wpec-auto-upgrade.php");
+require(dirname(__FILE__)."/wpec-auto-upgrade/wpec-auto-upgrade.php");
 
 $args = array(
 	'plugin_name'		=>	'Gold Cart',
