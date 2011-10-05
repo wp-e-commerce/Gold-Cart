@@ -38,7 +38,10 @@ class wpec_auth_net extends wpsc_merchant {
 		}
 		//We have our env ready, lets get the auth handler ready for action.
 		$this->auth = new AuthorizeNetAIM;
-		if(AUTHORIZENET_SANDBOX === false) $this->auth->setSandbox(false);
+		if(AUTHORIZENET_SANDBOX === false) 
+			$this->auth->setSandbox(false);
+		else
+        	$this->auth->setSandbox(true);
 
 		if(isset($_REQUEST['payType'])) $this->payType = $_REQUEST['payType'];
 		//If We Are Using Authorize.net CIM, lets load up the profiles and address.  We'll store them back 

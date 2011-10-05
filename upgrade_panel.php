@@ -27,7 +27,7 @@ function wpsc_activate_gold_module() {
 			fclose( $fs );
 			$response = explode( "\r\n\r\n",$response,2 );
 			$returned_value = (int)trim( $response[1] );
-			$returned_value = 1;    
+			//$returned_value = 1;    
 			if( $returned_value == 1 ) {
 				if( get_option( 'activation_state' ) != 'true' ) {
 					update_option( 'activation_state','true' );

@@ -275,7 +275,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 			}
 			$status = 1;
 			if($parsed_response['response_code'] ==  1) {
-				$status = 2;
+				$status = 3;
 			}
 			$this->set_transaction_details($parsed_response['transaction_id'], $status);
 			transaction_results($this->cart_data['session_id'],false);
