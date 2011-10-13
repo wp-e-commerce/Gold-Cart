@@ -293,7 +293,7 @@ function submit_eway() {
 		'eway_test',
 	);
 	foreach ( $options as $option ) {
-		if ( ! empty( $_POST[$option] ) )
+		
 			update_option( $option, $_POST[$option] );
 	}
 	if ( ! empty( $_POST['eway_form'] ) ) {
@@ -305,7 +305,10 @@ function submit_eway() {
 }
   
 function form_eway() {
-	$eway_cvn = get_option('eway_cvn');
+	//first create the options
+	add_option('ewayCustomerID_id' ,'');
+	add_option('eway_cvn',0);
+	add_option('eway_test',0);	$eway_cvn = get_option('eway_cvn');
 	$eway_cvn1 = $eway_cvn2 = '';
 	if ($eway_cvn=='1') {
 		$eway_cvn1="checked='checked'";
