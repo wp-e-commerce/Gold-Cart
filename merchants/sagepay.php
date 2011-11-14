@@ -227,12 +227,16 @@ class Sagepay_merchant extends wpsc_merchant {
         $strBillingCountry     = $this->cleanInput( $billInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
         $strBillingState       = $this->cleanInput( $billInfo['state'], CLEAN_INPUT_FILTER_TEXT);
+        // no state required if not in the US 
+        if(!$strBillingState == 'US') $strBillingState = '';
         $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryState      = $this->cleanInput( $shipInfo['state'], CLEAN_INPUT_FILTER_TEXT);
+        // no state required if not in the US
+        if(!$strDeliveryState == 'US') $strDeliveryState = '';
         $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         $strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
@@ -250,11 +254,15 @@ class Sagepay_merchant extends wpsc_merchant {
         $strPost .= '&Currency=' . $this->cart_data['store_currency'] ; 
         // discription HTML 
         //TODO check where this is ouput and if it looks ok
-        $discription = '';
+        $description = '';
         foreach($this->cart_items as $cartItem){
-            $discription .= '<p>' .$cartItem['name'] . '</p>';
+            $description .= '<p>' .$cartItem['name'] . '</p>';
         }
-        $strPost .= '&Description=' . $discription;
+        if( strlen($description) >= 100){
+            $description = substr($description , 0 , 94) . '...';
+        
+        }
+        $strPost .= '&Description=' . $description;
         $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator . 'sagepay=success';
         $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'];
         $strPost .= '&CustomerName=' . $strBillingFirstnames . ' ' . $strBillingSurname;
@@ -315,7 +323,7 @@ class Sagepay_merchant extends wpsc_merchant {
             // another row for the discount row
             $basket_rows += 1;
         }
-        //The first value ÒThe number of lines of detail in the basketÓ is 
+        //The first value “The number of lines of detail in the basket” is 
         //NOT the total number of items ordered, but the total number of rows 
         //of basket information
         $cartString = $basket_rows ;
