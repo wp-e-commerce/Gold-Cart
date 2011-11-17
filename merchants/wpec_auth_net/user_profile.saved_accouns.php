@@ -67,7 +67,8 @@ if ( is_user_logged_in() ) {
 		$creditcards = $myGateway->getCreditCardProfiles();
 		$bankaccounts = $myGateway->getBankAccountProfiles();
 		$shipaddress = $myGateway->getShippingProfiles();
-		$subs = new WPSC_Subscription();
+		if ( class_exists('WPSC_Subscription') )
+			$subs = new WPSC_Subscription();
 		?>
 		<div id='wpec_auth_net_user_profile_manager'>
 		<h2><?php _e('Saved Credit Card, Bank and Shipping Information','wpsc');?></h2>
