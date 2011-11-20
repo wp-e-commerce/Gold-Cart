@@ -377,27 +377,33 @@ function wpec_pxfusion_return(){
             break;
     }
       
-    switch ( $success ) {
+        switch ( $success ) {
         case 'Completed':
             $wpdb->query( 	"UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
                 				SET `processed` = '3',  
                 				`notes` = 'PX Fusion Status: " . $transaction_details['responseText']. "' 
                 				WHERE `sessionid` = '" . $sessionid . "' LIMIT 1" );
-    
+    		transaction_results($sessionid,true);
             break;
         case 'Failed': // if it fails...
-            
-            $wpdb->query(   "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '1',
+             
+            $wpdb->query(   "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '6',
                 				`notes` = 'PX Fusion Status: " . $transaction_details['responseText']. "'  
                 				WHERE `sessionid` = '" . $sessionid . "' LIMIT 1" );
+            // redirect to checkout page with an error
+            $checkout_page_url = get_option('shopping_cart_url');
+            if($checkout_page_url){
+            	$_SESSION['wpsc_checkout_misc_error_messages'][] = '<strong>' . $transaction_details['responseText'] . '</strong>';
+            	header('Location: '.$checkout_page_url);
+            	exit();
+            }
             break;
             
         
     }
     
-    transaction_results($sessionid,true);
+    
 }
-
 class PxFusion
 {
     // DPS Px Fusion Details
