@@ -207,8 +207,6 @@ function gateway_linkpoint($seperator, $sessionid) {
 		header("Location: ".$transact_url.$seperator."sessionid=".$sessionid);
 		//transaction_results($sessionid, true);
 	}
-	
-	exit();
 }
 
 function submit_linkpoint() {
