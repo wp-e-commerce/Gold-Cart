@@ -228,17 +228,19 @@ class Sagepay_merchant extends wpsc_merchant {
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
         $strBillingState       = $this->cleanInput( $billInfo['state'], CLEAN_INPUT_FILTER_TEXT);
         // no state required if not in the US 
-        if(!$strBillingState == 'US') $strBillingState = '';
+        if($strBillingCountry != 'US') $strBillingState = '';
         $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], CLEAN_INPUT_FILTER_TEXT);
         $strDeliveryState      = $this->cleanInput( $shipInfo['state'], CLEAN_INPUT_FILTER_TEXT);
-        // no state required if not in the US
-        if(!$strDeliveryState == 'US') $strDeliveryState = '';
         $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
+        // no state required if not in the US
+        error_log('$strDeliveryState:' . var_export($strDeliveryState, TRUE));
+        if($strDeliveryCountry != 'US') $strDeliveryState = '';
+        error_log('$strDeliveryState:' . var_export($strDeliveryState, TRUE));
         $strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
         
      
@@ -264,7 +266,7 @@ class Sagepay_merchant extends wpsc_merchant {
         }
         $strPost .= '&Description=' . $description;
         $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator . 'sagepay=success';
-        $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'];
+        $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'] . $this->seperator . 'sagepay=success';;
         $strPost .= '&CustomerName=' . $strBillingFirstnames . ' ' . $strBillingSurname;
         $strPost .= '&CustomerEMail=' . $strCustomerEMail;
         
@@ -298,7 +300,7 @@ class Sagepay_merchant extends wpsc_merchant {
        if (strlen($strDeliveryState) > 0 || strlen($strBillingState) > 0){
            if(strlen($strDeliveryState) > 0){
                $strPost .=  "&DeliveryState=" . $strDeliveryState;
-           } else if(strlen($strBillingState) > 0){
+           } else if(strlen($strBillingState) > 0 && $strDeliveryCountry == 'US'){
                $strPost .=  "&DeliveryState=" .$strBillingState;
            }
        }
@@ -568,6 +570,10 @@ function sagepay_process_gateway_info(){
             				`notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "' 
             				WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
             
+            // set this global, wonder if this is ok
+            $sessionid = $unencrypted_values['VendorTxCode'];
+            transaction_results($sessionid,true);
+            
             break;
         case 'Failed': // if it fails...
             switch ( $unencrypted_values['Status'] ) {
@@ -588,9 +594,17 @@ function sagepay_process_gateway_info(){
             				 `notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "'  
             				 WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
             break;
+            
     }
-    // set this global, wonder if this is ok
-    $sessionid = $unencrypted_values['VendorTxCode'];
-    transaction_results($sessionid,true);
+    // if it fails redirect to the shopping cart page with the error
+    // redirect to checkout page with an error
+    $checkout_page_url = get_option('shopping_cart_url');
+    if($checkout_page_url){
+        error_log('$unencrypted_values:' . var_export($unencrypted_values, TRUE));
+        //$_SESSION['wpsc_checkout_misc_error_messages'][] = '<strong>' . $unencrypted_values['StatusDetail'] . '</strong>';
+        //header('Location: '.$checkout_page_url);
+       
+    }
+  
            
 }
