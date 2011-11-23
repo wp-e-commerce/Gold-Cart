@@ -71,10 +71,18 @@ function gateway_eway($seperator, $sessionid) {
 			$data['address2'] = '';
 		}
 	}
-	//exit('<pre>'.print_r($wpsc_cart, true).'</pre>');
+	
+	
 	foreach($wpsc_cart->cart_items as $item){
 		$itemsName .= $item->product_name.', ';
-		//exit('<pre>'.print_r($item,true).'</pre>');
+		
+	}
+
+	$itemsName = eway_filter_titles($itemsName);
+	
+	if( strlen($itemsName) >= 100){
+	    $itemsName = substr($itemsName , 0 , 94) . '...';
+	
 	}
 
 
@@ -285,6 +293,37 @@ function gateway_eway($seperator, $sessionid) {
 	//echo $_SESSION['eway_message'];
 	exit();
 }
+function eway_filter_titles($strRawText ){
+    $strAllowableChars = '0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.';
+    $blnAllowAccentedChars = true;
+    $iCharPos = 0;
+    $chrThisChar = "";
+    $strCleanedText = "";
+
+    //Compare each character based on list of acceptable characters
+    while ($iCharPos < strlen($strRawText))
+    {
+        // Only include valid characters **
+        $chrThisChar = substr($strRawText, $iCharPos, 1);
+        if (strpos($strAllowableChars, $chrThisChar) !== FALSE)
+        {
+            $strCleanedText = $strCleanedText . $chrThisChar;
+        }
+        elseIf ($blnAllowAccentedChars == TRUE)
+        {
+            // Allow accented characters and most high order bit chars which are harmless **
+            if (ord($chrThisChar) >= 191)
+            {
+                $strCleanedText = $strCleanedText . $chrThisChar;
+            }
+        }
+
+        $iCharPos = $iCharPos + 1;
+    }
+
+    return $strCleanedText;
+}
+
 
 function submit_eway() {
 	$options = array(
