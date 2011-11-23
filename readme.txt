@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.2
+Version: 2.9.6
 Requires at least: 2.8
 Tested up to: 3.1.1
 Requires: Wp e-Commerce: 3.7.6.7
@@ -77,11 +77,11 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 
 2.9.2
 * Change: Only show to gallery if the single product has more than one image
-* Fix: DPS Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
-* Fix: LinkPoint Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
+* Fix: DPS Gateway was using the wrong purchase status id to update the logs after successful payment
+* Fix: LinkPoint Gateway was using the wrong purchase status id to update the logs after successful payment
 * Fix: LinkPoint gateway not sending correct information to the gateway
-* Add: New Authorize.net gateway supporting the CIM managment
-* Fix: EWAY Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
-* Fix: PayPal - proflow Gateway was using the wrong purcahse status id to update the logs after sucsessful payment
-* Fix: BluePay was using the wrong purcahse status id to update the logs after sucsessful payment
+* Add: New Authorize.net gateway supporting the CIM management
+* Fix: EWAY Gateway was using the wrong purchase status id to update the logs after successful payment
+* Fix: PayPal - proflow Gateway was using the wrong purchase status id to update the logs after successful payment
+* Fix: BluePay was using the wrong purchase status id to update the logs after successful payment
 * Fix: BluePay - send correct customer details
