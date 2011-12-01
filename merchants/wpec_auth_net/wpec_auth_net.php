@@ -25,8 +25,7 @@ class wpec_auth_net_setup{
                 register_deactivation_hook(__FILE__,array($this, 'deactivate_plugin'));
 
                 add_action('wpsc_init',array($this,'wpsc_init'));
-		add_filter('wpsc_merchants_modules',array($this,'registerGateway'));
-        }
+		        }
 
 	//Standard practice, always have a place to do work during activation and deactivation of the plugin.
 	function register_activation_hook(){
@@ -34,27 +33,7 @@ class wpec_auth_net_setup{
 	function deactivate_plugin(){
 	}
 
-	function registerGateway($gws){
-		global $num;
-		//Repare the Payment Gateway Hook
-		$gws[$num] = array(
-			'name'                   => 'Authorize.net AIM/CIM/ARB',
-			'api_version'            => 2,
-			'class_name'             => WPECAUTHNET_PLUGIN_NAME,
-			'image'			 => WPSC_URL . '/images/cc.gif',
-			'requirements'		 => array(),
-			'has_recurring_billing'  => true,
-			'wp_admin_cannot_cancel' => true,
-			'display_name'           => 'Authorize.Net',
-			'form'                   => 'form_auth_net',
-			'submit_function'        => 'submit_auth_net',
-			'payment_type'		 => 'credit_card',
-			'internalname'           => WPECAUTHNET_PLUGIN_NAME
-		);
-		sort($gws);
-		return($gws);
-	}
-
+	
 	function wpsc_init(){
 		include_once(WPECAUTHNET_CLASSES.'wpec_auth_net.class.php');
 		include_once('user_profile.saved_accouns.php');
