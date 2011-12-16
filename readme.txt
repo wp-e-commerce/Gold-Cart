@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.6
+Version: 2.9.7
 Requires at least: 2.8
 Tested up to: 3.1.1
 Requires: Wp e-Commerce: 3.7.6.7
@@ -11,7 +11,7 @@ Requires: Wp e-Commerce: 3.7.6.7
 
 This Plugin upgrades your WP-e-Commerce shop, allowing you access to extra features and options such as product searching, multiple product image upload, extra payment gateways and Grid view.
 
-See http://getshopped.org/extend/premium-upgrades/premium-upgrades/gold-cart-plugin/
+See http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/
 
 == Installation ==
 
