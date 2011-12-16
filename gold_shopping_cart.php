@@ -357,7 +357,7 @@ function gold_shpcrt_display_gallery($product_id, $invisible = false) {
 			}
 			$output .= implode( "\n", $thumbnails );
 			$output .= "</div>";
-			wp_reset_query();
+			wp_reset_postdata();
 		}	//closes if > 3.8 condition
 	} //closes if gallery setting condition
 	return $output;
