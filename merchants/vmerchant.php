@@ -116,6 +116,19 @@ function form_vmerchant() {
 		</td>
     </tr>
     ';
+   $struc = get_option('permalink_structure');
+   if($struc == ''){
+       $output .= '
+           <tr>
+        <td colspan="2">
+        	<strong style="color:red;">' . __('This Gateway will only work if you change your permalink structure do anything except the default setting. In Settings->Permalinks','wpsc') .'</strong>
+        </td>
+      
+    </tr>
+       ';
+   }
+   error_log('$struc:' . var_export($struc, TRUE));
+    
 	return $output;
 }
 function submit_vmerchant() {
@@ -161,6 +174,11 @@ class Virtual_Merchant extends wpsc_merchant {
         error_log('$this->cart_data:' . var_export($this->cart_data, TRUE));
         $options  = get_option('wpsc_vmerchnat');
         // temp vars to make things easier
+        if(get_option('permalink_structure') != '')
+            $separator ="?";
+        else
+            $separator ="&";
+        
         if($options['mode'] == 'test'){
             // test url goes here
             $url                  = 'https://demo.myvirtualmerchant.com/VirtualMerchantDemo/process.do';
@@ -205,7 +223,7 @@ class Virtual_Merchant extends wpsc_merchant {
         <input type="hidden" name="ssl_cvv2cvc2_indicator"    value="1">
         <input type="hidden" name="ssl_cvv2cvc2"              value="'. $Cvc2 . '"> 
         <input type="hidden" name="ssl_receipt_decl_get_url"  value="'. $transaction_results_page . '">  
-        <input type="hidden" name="ssl_receipt_apprvl_get_url"value="'. $transaction_results_page . '"> 
+		<input type="hidden" name="ssl_receipt_apprvl_get_url"value="'. $transaction_results_page . '' .$separator .'"> 
         <input type="hidden" name="ssl_result_format"         value="HTML">
         <input type="hidden" name="ssl_receipt_decl_method"   value="REDG">
       	<input type="hidden" name="ssl_receipt_apprvl_method" value="REDG">
@@ -297,8 +315,6 @@ if( isset($_GET['ssl_card_number']) &&
     isset($_GET['ssl_txn_id']) && 
     isset($_GET['ssl_approval_code']) && 
     isset($_GET['ssl_cvv2_response']) && 
-    isset($_GET['ssl_avs_response']) && 
-    isset($_GET['ssl_account_balance']) && 
     isset($_GET['ssl_txn_time']) ){
     // just to make sure that this is a vmerchnat responce
     add_action('init', 'wpec_vmerchant_return');
