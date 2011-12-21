@@ -8,9 +8,9 @@ Author: Analogrithems
 Author URI: http://www.analogrithems.com
 */
 
-define('WPECAUTHNET_PLUGIN_NAME','wpec_auth_net');
+
 define('WPECAUTHNET_ADMIN',plugin_dir_path( __FILE__ ) . 'admin/');
-define('WPECAUTHNET_CLASSES', plugin_dir_path( __FILE__ ) . 'classes/');
+
 
 
 class wpec_auth_net_setup{
