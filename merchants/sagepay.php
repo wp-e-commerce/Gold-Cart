@@ -321,7 +321,7 @@ class Sagepay_merchant extends wpsc_merchant {
         
         $basket_rows = (count($this->cart_items) + 1);
         // TODO test discount row as this is not metioned in the pdf
-        if($this->cart_items['has_discounts']){
+        if($this->cart_data['has_discounts']){
             // another row for the discount row
             $basket_rows += 1;
         }
