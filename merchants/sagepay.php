@@ -257,8 +257,14 @@ class Sagepay_merchant extends wpsc_merchant {
         // discription HTML 
         //TODO check where this is ouput and if it looks ok
         $description = '';
+        $comma_count = 0;
         foreach($this->cart_items as $cartItem){
-            $description .= '<p>' .$cartItem['name'] . '</p>';
+        	if($comma_count > 0)
+            	$description .= ' ,';
+            	
+            $description .= $cartItem['name'] ;
+            
+            $comma_count++;
         }
         if( strlen($description) >= 100){
             $description = substr($description , 0 , 94) . '...';
