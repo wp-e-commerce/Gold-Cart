@@ -4,8 +4,8 @@ $nzshpcrt_gateways[$num]['name'] 			        = 'Sagepay';
 $nzshpcrt_gateways[$num]['class_name']              = 'Sagepay_merchant';
 $nzshpcrt_gateways[$num]['internalname']	        = 'sagepay';
 $nzshpcrt_gateways[$num]['api_version']             = 2.0;
-$nzshpcrt_gateways[$num]['form']                    = 'wpec_segapey_admin_form';
-$nzshpcrt_gateways[$num]['submit_function']         = 'wpec_segapey_submit_form';
+$nzshpcrt_gateways[$num]['form']                    = 'wpec_sagepay_admin_form';
+$nzshpcrt_gateways[$num]['submit_function']         = 'wpec_sagepay_submit_form';
 $nzshpcrt_gateways[$num]['has_recurring_billing']   = false;
 $nzshpcrt_gateways[$num]['wp_admin_cannot_cancel']  = false;
 $nzshpcrt_gateways[$num]['payment_type']            = 'credit card';
@@ -16,7 +16,7 @@ $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0
 
 
 
-function wpec_segapey_admin_form(){
+function wpec_sagepay_admin_form(){
     // construct the default email message, this message is 
     //included toward the top of the customer confirmation e-mails.
     $emailmsg = 'Thanks for purchasing at ' .get_bloginfo( 'name' );
@@ -143,7 +143,7 @@ function wpec_segapey_admin_form(){
 
     return $adminFormHTML;
 }
-function wpec_segapey_submit_form(){
+function wpec_sagepay_submit_form(){
     // a flag to run the update_option function 
     $flag = false;
     $sagepay_options = get_option('wpec_sagepay');
@@ -523,14 +523,10 @@ class Sagepay_merchant extends wpsc_merchant {
     
 }
 
-// this acward bit checks the url for this get var and runs the  process_gateway_notification. The get var is only present
-// when returning from Sagepay
 
-if ( isset($_GET['sagepay']) && $_GET['sagepay'] == 'success' && ($_GET['crypt'] != '') ) {
-    add_action('init', 'sagepay_process_gateway_info');
-}
+add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_info', 10, 1);
 
-function sagepay_process_gateway_info(){
+function sagepay_process_gateway_info($sessionid){
     // first set up all the vars that we are going to need later
     global $wpdb;
 
@@ -599,8 +595,7 @@ function sagepay_process_gateway_info(){
             				`transactid` = '" . $unencrypted_values['VPSTxId'] . "', `date` = '" . time() . "',
             				 `notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "'  
             				 WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
-            break;
-            
+            break;    
     }
     // if it fails redirect to the shopping cart page with the error
     // redirect to checkout page with an error
@@ -611,6 +606,5 @@ function sagepay_process_gateway_info(){
         //header('Location: '.$checkout_page_url);
        
     }
-  
-           
+    return $unencrypted_values['VendorTxCode'];          
 }
