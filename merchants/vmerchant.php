@@ -127,7 +127,6 @@ function form_vmerchant() {
     </tr>
        ';
    }
-   error_log('$struc:' . var_export($struc, TRUE));
     
 	return $output;
 }
@@ -171,7 +170,7 @@ class Virtual_Merchant extends wpsc_merchant {
         //
         $options = get_option('wpsc_vmerchnat');
         
-        error_log('$this->cart_data:' . var_export($this->cart_data, TRUE));
+        
         $options  = get_option('wpsc_vmerchnat');
         // temp vars to make things easier
         if(get_option('permalink_structure') != '')
