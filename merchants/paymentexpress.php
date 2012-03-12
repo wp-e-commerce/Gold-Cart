@@ -216,7 +216,7 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
     
     
     public function submit(){
-        error_log('$this:' . var_export($this, TRUE));
+        
         
         $pxf = new PxFusion($this->options['username'],$this->options['password']);
         
@@ -273,8 +273,7 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
        else
            $errorMsg .= "Credit Card Name    Required    <br/>";
        
-       error_log('$errorMsg:' . var_export($errorMsg, TRUE));
-        
+               
         if(strlen($errorMsg) > 0){
             $this->set_error_message($errorMsg);
             header('Location: '.$this->cart_data['shopping_cart_url']);
@@ -344,7 +343,7 @@ function wpec_pxfusion_return(){
     $response = $pxf->get_transaction($pxTransactionid);
     $transaction_details = get_object_vars($response->GetTransactionResult);
     //debug info
-    //error_log('$transaction_details:' . var_export($transaction_details, TRUE));
+   
     
     switch($transaction_details['status']){
         case 0:

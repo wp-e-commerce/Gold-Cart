@@ -267,8 +267,7 @@ class Virtual_Merchant extends wpsc_merchant {
         $form .= '   
         </form>
         <script type="text/javascript">document.getElementById("vmerchant_form").submit();</script></body></html>';
-        //error_log('SENT FORM:' . $form);
-        echo $form;
+         echo $form;
         
     }
     
@@ -319,7 +318,6 @@ if( isset($_GET['ssl_card_number']) &&
     add_action('init', 'wpec_vmerchant_return');
 }
 function wpec_vmerchant_return(){
-    // error_log('responce:' . var_export($_GET, TRUE));
     global $sessionid, $wpdb;
     
     $sessionid = $_GET['ssl_invoice_number'];

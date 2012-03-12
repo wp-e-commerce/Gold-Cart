@@ -210,8 +210,7 @@ class Sagepay_merchant extends wpsc_merchant {
         $this->strPost = $this->addContrustinfo($this->strPost);
         $this->strPost = $this->addBasketInfo($this->strPost);
         $this->strPost = base64_encode(Sagepay_merchant::simpleXor($this->strPost, $this->sagepay_options['encrypt_key']));
-        // debug function
-        //error_log('strpost' . var_export(explode('&', $this->strPost),1));
+        
     }
     private function addContrustinfo($strPost){
         
@@ -238,10 +237,8 @@ class Sagepay_merchant extends wpsc_merchant {
         $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         // no state required if not in the US
-        //error_log('$strDeliveryState:' . var_export($strDeliveryState, TRUE));
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
-        //error_log('$strDeliveryState:' . var_export($strDeliveryState, TRUE));
-        $strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
+			$strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
         
      
        
@@ -601,8 +598,7 @@ function sagepay_process_gateway_info($sessionid){
     // redirect to checkout page with an error
     $checkout_page_url = get_option('shopping_cart_url');
     if($checkout_page_url){
-        //error_log('$unencrypted_values:' . var_export($unencrypted_values, TRUE));
-        $_SESSION['wpsc_checkout_misc_error_messages'][] = '<strong>' . $unencrypted_values['StatusDetail'] . '</strong>';
+       $_SESSION['wpsc_checkout_misc_error_messages'][] = '<strong>' . $unencrypted_values['StatusDetail'] . '</strong>';
         header('Location: '.$checkout_page_url);
        
     }
