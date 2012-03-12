@@ -79,7 +79,7 @@ function wpsc_gold_activation_form() { ?>
 	</p>
 <?php
 	if( get_option( 'activation_state' ) == "true" ) {
-		echo '<p><strong>'.__( 'Click <a href="http://docs.getshopped.org/wiki/documentation/extending-your-store/premium-plugins/gold-cart" target="_blank">here</a> to learn how to use each Gold Cart feature.','wpsc' ).'</strong></p>';
+		echo '<p><strong>'.__( 'Click <a href="http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/" target="_blank">here</a> to learn how to use each Gold Cart feature.','wpsc' ).'</strong></p>';
 	} ?>
 </div>
 <?php
