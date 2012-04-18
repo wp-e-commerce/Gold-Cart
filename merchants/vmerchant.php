@@ -185,7 +185,7 @@ class Virtual_Merchant extends wpsc_merchant {
             //live url goes here
             $url                  = 'https://www.myvirtualmerchant.com/VirtualMerchant/process.do';
         }
-        $amount                   =  number_format($this->cart_data['total_price'],2) ;
+        $amount                   = $this->cart_data['total_price'];
         $sales_tax                = $this->cart_data['cart_tax'];
         $invoice_number           = $this->cart_data['session_id'];
         $email                    = $this->cart_data['email_address'];
