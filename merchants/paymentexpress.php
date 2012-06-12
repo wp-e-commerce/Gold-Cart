@@ -1,7 +1,7 @@
 <?php
 
 //Gateway Details
-$nzshpcrt_gateways[$num]['name'] 			        = 'Payment Express - PX Fusion';
+$nzshpcrt_gateways[$num]['name'] 			        = __( 'Payment Express - PX Fusion', 'wpsc' );
 $nzshpcrt_gateways[$num]['class_name']              = 'Paymentexpress_PXFusion_Merchant';
 $nzshpcrt_gateways[$num]['internalname']	        = 'wpsc_merchant_paymentexpress';
 $nzshpcrt_gateways[$num]['api_version']             = 2.0;
@@ -10,7 +10,7 @@ $nzshpcrt_gateways[$num]['submit_function']         = 'wpec_paymentexpress_admin
 $nzshpcrt_gateways[$num]['has_recurring_billing']   = false;
 $nzshpcrt_gateways[$num]['wp_admin_cannot_cancel']  = false;
 $nzshpcrt_gateways[$num]['payment_type']            = 'credit card';
-$nzshpcrt_gateways[$num]['display_name']            = 'Pay with Payment Express - PX Fusion';
+$nzshpcrt_gateways[$num]['display_name']            = __( 'Pay with Payment Express - PX Fusion', 'wpsc' );
 
 $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0,
 		 												'extra_modules' => array());
@@ -30,13 +30,13 @@ if(in_array('wpsc_merchant_paymentexpress',(array)get_option('custom_gateway_opt
     $gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
 		<td colspan='2'>
-			<h4>".__('Credit cards Details','wpsc')."</h4>
+			<h4>".__( 'Credit cards Details', 'wpsc' )."</h4>
 			<img src='".WPSC_GOLD_FILE_URL."/merchants/paymentexpress/cc.gif' alt='Visa, MasterCard, AmericanExpress, AMEX' />
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<label for='CardHolderName'>".__('Card holder name','wpsc')." *</label> 
+			<label for='CardHolderName'>".__( 'Card holder name', 'wpsc' )." *</label> 
 		</td>
 		<td>
 			<input type='text' id='CardHolderName' name='CardHolderName' size='42' />
@@ -44,20 +44,20 @@ if(in_array('wpsc_merchant_paymentexpress',(array)get_option('custom_gateway_opt
 	</tr>
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='CardNumber'>".__('Card Number','wpsc')." * </label></td>
+			<label for='CardNumber'>".__( 'Card Number', 'wpsc' )." * </label></td>
 		<td>
 			<input type='text' value='' name='CardNumber' id='CardNumber' maxlength='16' />
 		</td>
 	</tr>
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='Cvc2'>".__('Cvc2','wpsc')." * </label></td>
+			<label for='Cvc2'>".__( 'Cvc2', 'wpsc' )." * </label></td>
 		<td><input type='text' size='4' value='' maxlength='4' name='Cvc2' id='Cvc2' />
 		</td>
 	</tr>
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='ExpiryMonth'>".__('Expiry','wpsc')." * </label></td>
+			<label for='ExpiryMonth'>".__( 'Expiry', 'wpsc' )." * </label></td>
 		<td>
 			<select class='wpsc_ccBox' name='ExpiryMonth' id='ExpiryMonth'>
 			<option value='01'>01</option>
@@ -108,7 +108,7 @@ function paymentexpress_admin_form(){
     $output = '
     <tr>
     	<td>
-    		Username : 
+    		'.__( 'Username :', 'wpsc' ).' 
     	</td>
     	<td>
     		<input type="text" value="'.$options['username'].'" name="wpec_pxfusion_username"  />
@@ -116,14 +116,14 @@ function paymentexpress_admin_form(){
     </tr>
     <tr>
     	<td>
-    		Password : 
+    		'.__( 'Password :', 'wpsc' ).' 
     	</td>
     	<td>
     		<input type="text" value="'.$options['password'].'"  name="wpec_pxfusion_password"  />
     	</td>
     </tr>
    	<tr>
-   		<td colspan="2"> You can login to Payment Manager <a href="https://www.paymentexpress.com/pxmi/logon">https://www.paymentexpress.com/pxmi/logon</a> to see your transactions. </td>
+   		<td colspan="2"> '.sprintf( __( 'You can login to Payment Manager %s to see your transactions.', 'wpsc'), '<a href="https://www.paymentexpress.com/pxmi/logon">https://www.paymentexpress.com/pxmi/logon</a>' ).'</td>
    	</tr>';
     if(!$curr_supported)
     {    
@@ -143,9 +143,9 @@ function paymentexpress_admin_form(){
         $output .='
            <tr>
             	<td>
-            		<strong style="color:red;"> Your Selected Currency is not supported by Sageapy, 
+            		<strong style="color:red;"> '.__( 'Your Selected Currency is not supported by Sagepay, 
             		to use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one 
-            		of the currencies listed on the right. </strong>
+            		of the currencies listed on the right.', 'wpsc' ).'</strong>
              	</td>
             	<td>
            			<ul>';
@@ -161,7 +161,7 @@ function paymentexpress_admin_form(){
         $output .='
             <tr>
             	<td colspan="2">
-            	<strong style="color:green;"> Your Selected Currency will work with PX Fusion </strong>
+            	<strong style="color:green;"> '.__( 'Your Selected Currency will work with PX Fusion', 'wpsc' ).' </strong>
             	</td>
             </tr>
             ';
@@ -170,7 +170,7 @@ function paymentexpress_admin_form(){
         $output .='
         <tr>
         	<td colspan="2">
-        	<strong style="color:red;"> THIS GATEWAY WILL NOT WORK ON THIS SERVER, ASK YOUR HOST TO INSTALL THE PHP SOAP EXTENSION </strong>
+        	<strong style="color:red;"> '.__( 'THIS GATEWAY WILL NOT WORK ON THIS SERVER, ASK YOUR HOST TO INSTALL THE PHP SOAP EXTENSION', 'wpsc' ).' </strong>
         	</td>
         </tr>
         ';
@@ -240,7 +240,7 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
         
         if ( ! $response->GetTransactionIdResult->success)
         {
-            wp_die('Error! There was a problem getting a transaction id from DPS, please contact the server administrator.');
+            wp_die( __( 'Error! There was a problem getting a transaction id from DPS, please contact the server administrator.', 'wpsc' ) );
         }
         
         // You should store these values in a database
@@ -255,23 +255,23 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
         if(isset($_POST['CardNumber']) && strlen($_POST['CardNumber']) > 0)
             $CardNumber = $_POST['CardNumber'];
         else 
-            $errorMsg .= "Credit Card Number Required  <br/>";
+            $errorMsg .= __( 'Credit Card Number Required', 'wpsc' ).'<br/>';
         if(isset($_POST['ExpiryMonth']) && strlen($_POST['ExpiryMonth']) > 0)
             $ExpiryMonth = $_POST['ExpiryMonth'];
         else 
-            $errorMsg .= "Credit Card Expiry Month Required  <br/>";
+            $errorMsg .= __( 'Credit Card Expiry Month Required', 'wpsc' ).'<br/>';
         if(isset($_POST['ExpiryYear']) && strlen($_POST['ExpiryYear']) > 0)
             $ExpiryYear = $_POST['ExpiryYear'];
         else
-            $errorMsg .= "Credit Card Expiry Year Required  <br/>";    
+            $errorMsg .= __( 'Credit Card Expiry Year Required', 'wpsc' ).'<br/>';    
         if(isset($_POST['Cvc2']) && strlen($_POST['Cvc2']) > 0)
             $Cvc2 = $_POST['Cvc2'];
         else
-            $errorMsg .= "Credit Card Cvc2 code  Required    <br/>";
+            $errorMsg .= __( 'Credit Card Cvc2 code Required', 'wpsc' ) .'<br/>';
         if(isset($_POST['CardHolderName']) && strlen($_POST['CardHolderName']) > 0)
             $CardHolderName = $_POST['CardHolderName'];
        else
-           $errorMsg .= "Credit Card Name    Required    <br/>";
+           $errorMsg .= __( 'Credit Card Name Required', 'wpsc' ) .'<br/>';
        
                
         if(strlen($errorMsg) > 0){

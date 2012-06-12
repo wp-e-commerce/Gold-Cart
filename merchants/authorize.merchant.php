@@ -16,7 +16,7 @@ global $gateway_checkout_form_fields;
 	* @subpackage wpsc-merchants
 */
 $nzshpcrt_gateways[$num] = array(
-	'name' => 'Authorize.net 2.0',
+	'name' => __( 'Authorize.net 2.0', 'wpsc' ),
 	'api_version' => 2.0,
 	'class_name' => 'wpsc_merchant_authorize',
 	'has_recurring_billing' => true,
@@ -36,7 +36,7 @@ $nzshpcrt_gateways[$num] = array(
 	'submit_function' => "submit_authorize",
 	'payment_type' => "credit_card",
 	'supported_currencies' => array(
-		'currency_list' => array('USD')
+	'currency_list' => array('USD')
 		//,'option_name' => 'paypal_curcode'
 	)
 );
@@ -45,19 +45,19 @@ $nzshpcrt_gateways[$num] = array(
 if(in_array('wpsc_merchant_authorize',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
-		<td>Credit Card Number *</td>
+		<td>".__( 'Credit Card Number *', 'wpsc' )."</td>
 		<td>
 			<input type='text' value='' name='card_number' />
 		</td>
 	</tr>
 	<tr>
-		<td>Credit Card Expiry *</td>
+		<td>".__( 'Credit Card Expiry *', 'wpsc' )."</td>
 		<td>
 			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 		</td>
 	</tr>
 	<tr>
-		<td>CVV </td>
+		<td>".__( 'CVV', 'wpsc' )."</td>
 		<td><input type='text' size='4' value='' maxlength='4' name='card_code' /></td>
 	</tr>
 ";

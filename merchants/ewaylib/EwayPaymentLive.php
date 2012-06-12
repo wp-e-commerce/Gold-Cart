@@ -50,7 +50,7 @@ class EwayPaymentLive {
 			$responseFields = $this->parseResponse($xmlResponse);
 			return $responseFields;
 		}
-                else die("Error in XML response from eWAY: " + $xmlResponse);
+                else die(__('Error in XML response from eWAY: ', 'wpsc') + $xmlResponse);
 	}
 
 	//Send XML Transaction Data and receive XML response

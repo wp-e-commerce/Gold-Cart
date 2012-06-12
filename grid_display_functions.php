@@ -4,7 +4,7 @@
 function product_display_grid($product_list, $group_type, $group_sql = '', $search_sql = '') {
   global $wpdb;
   /*
-  All this does is sit here so that it can be detected by the gold files to turn grid view on.
-  */  
+   * All this does is sit here so that it can be detected by the gold files to turn grid view on.
+   */  
   }  
 ?>

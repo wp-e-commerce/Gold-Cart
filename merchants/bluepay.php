@@ -6,7 +6,7 @@ if(!is_callable('get_option')) {
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
 
-$nzshpcrt_gateways[$num]['name'] = 'Bluepay';
+$nzshpcrt_gateways[$num]['name'] = __( 'Bluepay', 'wpsc' );
 $nzshpcrt_gateways[$num]['internalname'] = 'bluepay';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_bluepay';
 $nzshpcrt_gateways[$num]['form'] = "form_bluepay";
@@ -19,7 +19,7 @@ if(in_array('bluepay',(array)get_option('custom_gateway_options'))) {
   $gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
     <tr>
       <td>
-      Credit Card Number *
+      ".__( 'Credit Card Number *', 'wpsc' )."
       </td>
       <td>
       <input type='text' value='' name='card_number' />
@@ -27,7 +27,7 @@ if(in_array('bluepay',(array)get_option('custom_gateway_options'))) {
     </tr>
     <tr>
       <td>
-      Credit Card Expiry *
+      ".__( 'Credit Card Expiry *', 'wpsc' )."
       </td>
       <td>
       <input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
@@ -35,7 +35,7 @@ if(in_array('bluepay',(array)get_option('custom_gateway_options'))) {
     </tr>
     <tr>
       <td>
-      Credit Card Code *
+      ".__( 'Credit Card Code *', 'wpsc' )."
       </td>
       <td>
       <input type='text' value='' name='card_code' />
@@ -194,7 +194,7 @@ function form_bluepay()
   $output = "
   <tr>
       <td>
-      Account ID:
+      ".__( 'Account ID:', 'wpsc' )."
       </td>
       <td colspan='2'>
       <input type='text' size='40' value='".get_option('bluepay_login')."' name='bluepay_login' />
@@ -202,7 +202,7 @@ function form_bluepay()
   </tr>
   <tr>
       <td>
-      Secrete Key:
+      ".__( 'Secrete Key:', 'wpsc' )."
       </td>
       <td colspan='2'>
       <input type='text' size='40' value='".get_option('bluepay_password')."' name='bluepay_password' />
@@ -210,7 +210,7 @@ function form_bluepay()
   </tr>
   <tr>
       <td>
-      Test Mode
+      ".__( 'Test Mode', 'wpsc' )."
       </td>
       <td colspan='2'>\n";
 if(get_option('bluepay_testmode') == 1)
@@ -231,14 +231,14 @@ $output .= "      </td>
   <tr>
   	<td colspan='8'>
   		<p>
-        Select the form fields below to send your customers details to BluePay These are the values that corospond with your WP-e-Commerce checkout form, If you leave these options blank then only the purchase amount will be sent to your BluePay account.
+        ".__( 'Select the form fields below to send your customers details to BluePay These are the values that corospond with your WP-e-Commerce checkout form, If you leave these options blank then only the purchase amount will be sent to your BluePay account.', 'wpsc' )."
      	</p>
      </td>
   </tr>
 
   <tr>
       <td>
-      First Name Field
+      ".__( 'First Name Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[first_name]'>
@@ -248,7 +248,7 @@ $output .= "      </td>
         </tr>
   <tr>
       <td>
-      Last Name Field
+      ".__( 'Last Name Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[last_name]'>
@@ -258,7 +258,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      Address Field
+      ".__( 'Address Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[address]'>
@@ -268,7 +268,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      City Field
+      ".__( 'City Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[city]'>
@@ -278,7 +278,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      State Field
+      ".__( 'State Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[state]'>
@@ -288,7 +288,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      Country:
+      ".__( 'Country:', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[country]'>
@@ -299,7 +299,7 @@ $output .= "      </td>
 
   <tr>
       <td>
-      Postal / Zip code Field
+      ".__( 'Postal / Zip code Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[post_code]'>
@@ -310,7 +310,7 @@ $output .= "      </td>
   
   <tr>
       <td>
-      Email Field
+      ".__( 'Email Field', 'wpsc' )."
       </td>
       <td>
       <select name='bluepay_form[email]'>

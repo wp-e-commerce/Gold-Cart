@@ -11,13 +11,17 @@ class wpec_auth_net extends wpsc_merchant {
 	var $CIM_ID;
 	var $paymentProfiles;
 	var $shipAddress;
-	var $accountTypes = array('businessChecking'=>'Business Checking', 'savings'=>'Savings Account', 'checking'=>'Checking');
+	var $accountTypes;
 	var $payType;
 	var $process_status;
 	var $order;
 	var $validationMode;
 
 	function __construct($purchase_id = null, $is_receiving = false){
+
+		// Account Types
+		$accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc' ), 'savings' => __( 'Savings Account', 'wpsc' ), 'checking' => __( 'Checking', 'wpsc' ) );
+		
 		//Get our config, or bail
 		if(get_option('wpec_auth_net') != false){
 			$this->conf = get_option('wpec_auth_net');
@@ -31,7 +35,7 @@ class wpec_auth_net extends wpsc_merchant {
 		if(isset($this->conf['testmode']) && $this->conf['testmode'] == 'checked'){
 			$this->validationMode = "testMode";
 			if(!defined('AUTH_NET_TRANSID_URL')) 
-			define('AUTH_NET_TRANSID_URL', 'https://sandbox.authorize.net/UI/themes/sandbox/transaction/transactiondetail.aspx?menukey=CustomerProfile&transID=');
+				define('AUTH_NET_TRANSID_URL', 'https://sandbox.authorize.net/UI/themes/sandbox/transaction/transactiondetail.aspx?menukey=CustomerProfile&transID=');
 		}else{
 			$this->validationMode = "liveMode";
 			define("AUTHORIZENET_SANDBOX", false);
@@ -81,11 +85,11 @@ class wpec_auth_net extends wpsc_merchant {
 
 			if(!$this->beenCaptured($purchlogitem->purchlogid)){
 				//Give Link to capture payment
-				echo "<a href='".add_query_arg($capture_payment_params)."'>".__('Accept payment').'</a> | ';
+				echo "<a href='".add_query_arg($capture_payment_params)."'>".__('Accept payment', 'wpsc').'</a> | ';
 			}
 			if( !isset($purchlogitem->extrainfo->transactid) ){
 				//Give Link to capture payment
-				echo __('Missing Transaction ID in Order',WPECAUTHNET_PLUGIN_NAME)." |";
+				echo __('Missing Transaction ID in Order', 'wpsc')." |";
 			}
 			if($purchlogitem->extrainfo->gateway == 'wpec_auth_net' ){
 				//Give Link to capture payment
@@ -122,24 +126,37 @@ class wpec_auth_net extends wpsc_merchant {
 		$meta = $this->getOrderMeta($purchaselog_id);
 		if(!isset($meta['response'])) return false;
 		$dump = "<!-- meta dump:".print_r($meta,1)."-->\n";
+
+		$purchaseDetailsText 	= __( 'Purchase Details', 'wpsc' );
+		$approvedText 				= __( 'Approved:', 'wpsc' );
+		$declinedText 				= __( 'Declined:', 'wpsc' );
+		$authoCodeText 				= __( 'Auth Code:', 'wpsc' );
+		$transactionIdText 		= __( 'Transaction ID:', 'wpsc' );
+		$typeText 						= __( 'Type:', 'wpsc' );
+		$amountText 					= __( 'Ammount:', 'wpsc' );
+		$responseText 				= __( 'Response:', 'wpsc' );
+		$md5HashText 					= __( 'MD5 Hash:', 'wpsc' );
+
 		if(isset($meta['capturePreAuth'])){
 			$header = __('Capture Details',WPECAUTHNET_PLUGIN_NAME);
 			$cap = $meta['capturePreAuth'];
+
 			$post = <<<EOF
 			<hr />
 			<table>
 			  <tr><th colspan='4'>{$header}</th></tr>
-			  <tr><th>Approved:</th><td>{$cap['approved']}</td><th>Declined:</th><td>{$cap['declined']}</td></tr>
-			  <tr><th>Auth Code:</th><td>{$cap['authorization_code']}</td><th>Transaction ID:</th><td>{$cap['transaction_id']}</td></tr>
-			  <tr><th>Type:</th><td>{$cap['method']} {$cap['transaction_type']}</td><th>Ammount:</th><td>{$cap['amount']}</td></tr>
-			  <tr><th>Response:</th><td colspan='3'>{$cap['response_reason_text']}</td></tr>
-			  <tr><th>MD5 Hash:</th><td colspan='3'>{$cap['md5_hash']}</td></tr>
+			  <tr><th>{$approvedText}</th><td>{$cap['approved']}</td><th>{$declinedText}</th><td>{$cap['declined']}</td></tr>
+			  <tr><th>{$authoCodeText}</th><td>{$cap['authorization_code']}</td><th>{$transactionIdText}</th><td>{$cap['transaction_id']}</td></tr>
+			  <tr><th>{$typeText}</th><td>{$cap['method']} {$cap['transaction_type']}</td><th>{$amountText}</th><td>{$cap['amount']}</td></tr>
+			  <tr><th>{$responseText}</th><td colspan='3'>{$cap['response_reason_text']}</td></tr>
+			  <tr><th>{$md5HashText}</th><td colspan='3'>{$cap['md5_hash']}</td></tr>
 			</table>
 EOF;
 		}else{ $post = ''; }
 		$meta = (array)$meta['response'];
-		$title = __('Purchase Log Details From Authorize.Net',WPECAUTHNET_PLUGIN_NAME);
-		
+		//$title = __( 'Purchase Log Details From Authorize.Net', WPECAUTHNET_PLUGIN_NAME);
+		$title = __( 'Purchase Log Details From Authorize.Net', 'wpsc' );
+
 		$popupDisplay = <<<EOF
 		  <script>
 		  function showAuthNetDetails(){
@@ -157,14 +174,14 @@ EOF;
 			}
 		</style>
 		{$dump}
-		<a href="javascript:showAuthNetDetails();">Purchase Details</a>
+		<a href="javascript:showAuthNetDetails();">{$purchaseDetailsText}</a>
 		<div id='purchaseDetails' title='{$title}' style='display: none; text-align: left;'>
 		<table>
-		   <tr><th>Approved:</th><td>{$meta['approved']}</td><th>Declined:</th><td>{$meta['declined']}</td></tr>
-		   <tr><th>Auth Code:</th><td>{$meta['authorization_code']}</td><th>Transaction ID:</th><td>{$meta['transaction_id']}</td></tr>
-		   <tr><th>Type:</th><td>{$meta['method']} {$meta['transaction_type']}</td><th>Ammount:</th><td>{$meta['amount']}</td></tr>
-		   <tr><th>Response:</th><td colspan='3'>{$meta['response_reason_text']}</td></tr>
-		   <tr><th>MD5 Hash:</th><td colspan='3'>{$meta['md5_hash']}</td></tr>
+		   <tr><th>{$approvedText}</th><td>{$meta['approved']}</td><th>{$declinedText}</th><td>{$meta['declined']}</td></tr>
+		   <tr><th>{$authoCodeText}</th><td>{$meta['authorization_code']}</td><th>{$transactionIdText}</th><td>{$meta['transaction_id']}</td></tr>
+		   <tr><th>{$typeTex}</th><td>{$meta['method']} {$meta['transaction_type']}</td><th>{$amountText}</th><td>{$meta['amount']}</td></tr>
+		   <tr><th>{$responseText}</th><td colspan='3'>{$meta['response_reason_text']}</td></tr>
+		   <tr><th>{$md5HashText}</th><td colspan='3'>{$meta['md5_hash']}</td></tr>
 		</table>
 		{$post}
 		</div>
@@ -657,6 +674,12 @@ EOF;
 			if($is_recurring = (bool)get_post_meta( $item->product_id, '_wpsc_is_recurring', true )) $this->conf['cimon'] = false;
 		}
 
+		$paymentTypesText = array(
+			'select-payment-type-text' 	=> __( 'Select Payment Type', 'wpsc' ),
+			'credit-card-text' 					=> __( 'Credit Card', 'wpsc' ),
+			'e-check-text' 							=> __( 'E-Check', 'wpsc' )
+		);
+
 		$output = <<<EOF
 		<div id='checkorcc_select'>
 		<script>
@@ -682,9 +705,9 @@ EOF;
 		</script>
 		<input type='hidden' name='payType' id='payType'>
 		<select name='paymentTypes' class="paymentTypes">
-			<option value='NONE'>Select Payment Type</option>
-			<option value='creditCardForms'>Credit Card</option>
-			<option value='checkForms'>E-Check</option>
+			<option value='NONE'>{$paymentTypesText['select-payment-type-text']}</option>
+			<option value='creditCardForms'>{$paymentTypesText['credit-card-text']}</option>
+			<option value='checkForms'>{$paymentTypesText['e-check-text']}</option>
 		</select>
 EOF;
 		$output .= $this->showCheckForm();
@@ -743,38 +766,50 @@ EOF;
 		}else{
 			$selected = "<option value='none'>Select Account Type</option>\n";
 		}
+
+		$bankAccountText = array(
+			'bank-name-text'					=> __( 'Bank Name', 'wpsc' ),
+			'account-type-text' 			=> __( 'Account Type', 'wpsc' ),
+			'business-checking-text' 	=> __( 'Business Checking', 'wpsc' ),
+			'checking-text' 					=> __( 'Checking', 'wpsc' ),
+			'savings-text' 						=> __( 'Savings', 'wpsc' ),
+			'name-on-account-text' 		=> __( 'Name on Account', 'wpsc' ),
+			'routing-number-text' 		=> __( 'Routing Number', 'wpsc' ),
+			'account-number-text' 		=> __( 'Account Number', 'wpsc' )
+		);
+
 		return <<<EOF
 		<div id='BankAccountNew'>
 		<table border='0'>
 		<tr>
-			<td class='wpsc_BankAccount_details'>Bank Name</td>
+			<td class='wpsc_BankAccount_details'>{$bankAccountText['bank-name-text']}</td>
 			<td>
 				<input type='text' class='authNetPaymentInput' value='{$auth_net['bank_name']}' name='auth_net[bankAccount][bank_name]' />
 			</td> 
 		</tr>
 		<tr>
-			<td class='wpsc_BankAccount_details'>Account Type</td>
+			<td class='wpsc_BankAccount_details'>{$bankAccountText['account-type-text']}</td>
 			<td>
 			<select name='auth_net[bankAccount][account_type]' class='authNetPaymentInput'>
 				{$selected}
-				<option value='businessChecking'>Business Checking</option>
-				<option value='checking'>Checking</option>
-				<option value='savings'>Savings</option>
+				<option value='businessChecking'>{$bankAccountText['business-checking-text']}</option>
+				<option value='checking'>{$bankAccountText['checking-text']}</option>
+				<option value='savings'>{$bankAccountText['savings-text']}</option>
 			</select>
 			</td>
 		</tr>
 		<tr>
-			<td class='wpsc_BankAccount_details'>Name on Account</td>
+		<td class='wpsc_BankAccount_details'>{$bankAccountText['name-on-account-text']}</td>
 			<td><input type='text'  name='auth_net[bankAccount][name_on_account]' class='authNetPaymentInput' value='{$auth_net['name_on_account']}' />
 			</td>
 		</tr>
 		<tr>
-			<td class='wpsc_BankAccount_details'>Routing Number</td>
+			<td class='wpsc_BankAccount_details'>{$bankAccountText['routing-number-text']}</td>
 			<td><input type='text' name='auth_net[bankAccount][routing_number]' class='authNetPaymentInput' value='{$auth_net['routing_number']}' />
 			</td>
 		</tr>
 		<tr>
-			<td class='wpsc_BankAccount_details'>Account Number</td>
+			<td class='wpsc_BankAccount_details'>{$bankAccountText['account-number-text']}</td>
 			<td><input type='text' name='auth_net[bankAccount][account_number]' class='authNetPaymentInput' value='{$auth_net['account_number']}' />
 			</td>
 		</tr>
@@ -798,39 +833,59 @@ EOF;
 			$selected_month = "<option value='{$auth_net['expiry']['month']}' selected>{$auth_net['expiry']['month']}</option>\n";
 			$selected_year  = "<option value='{$auth_net['expiry']['year']}' selected>{$auth_net['expiry']['year']}</option>\n";
 		}
+
+		$creditCardFormText = array(
+			'appears-on-card-text' 			=> __( 'Name as It Appears on Card *', 'wpsc' ),
+			'credit-card-number-text' 	=> __( 'Credit Card Number *', 'wpsc' ),
+			'credit-card-expires-text' 	=> __( 'Credit Card Expiry *', 'wpsc' ),
+			'cvv-text' 									=> __( 'CVV *', 'wpsc' ),
+			'01' 												=> '01',
+			'02' 												=> '02',
+			'03' 												=> '03',
+			'04' 												=> '04',
+			'05' 												=> '05',
+			'06' 												=> '06',
+			'07' 												=> '07',
+			'08' 												=> '08',
+			'09' 												=> '09',
+			'10' 												=> '10',
+			'11' 												=> '11',
+			'12' 												=> '12'
+		);
+
 	return <<<EOF
 	<div id='creditCardNew'>
 		<table border='0'>
 		<tr>
-			<td class='wpsc_CC_details'>Name as It Appears on Card *</td>
+			<td class='wpsc_CC_details'>{$creditCardFormText['appears-on-card-text']}</td>
 			<td>
 				<input type='text' value='{$auth_net['name_on_card']}' name='auth_net[creditCard][name_on_card]' class='authNetPaymentInput' />
 			</td> 
 		</tr>
 		<tr>
-			<td class='wpsc_CC_details'>Credit Card Number *</td>
+			<td class='wpsc_CC_details'>{$creditCardFormText['credit-card-number-text']}</td>
 			<td>
 				<input type='text' value='{$auth_net['card_number']}' name='auth_net[creditCard][card_number]' class='authNetPaymentInput' />
 			</td> 
 		</tr>
 		<tr>
-			<td class='wpsc_CC_details'>Credit Card Expiry *</td>
+			<td class='wpsc_CC_details'>{$creditCardFormText['credit-card-expires-text']}</td>
 			<td>
 				<select class='wpsc_ccBox authNetPaymentInput' name=auth_net[creditCard][expiry][month]' >
 				" . $months . "
 				{$selected_month}
-				<option value='01'>01</option>
-				<option value='02'>02</option>
-				<option value='03'>03</option>
-				<option value='04'>04</option>
-				<option value='05'>05</option>
-				<option value='06'>06</option>  
-				<option value='07'>07</option>
-				<option value='08'>08</option>  
-				<option value='09'>09</option>
-				<option value='10'>10</option>
-				<option value='11'>11</option>
-				<option value='12'>12</option>
+				<option value='01'>{$creditCardFormText['01']}</option>
+				<option value='02'>{$creditCardFormText['02']}</option>
+				<option value='03'>{$creditCardFormText['03']}</option>
+				<option value='04'>{$creditCardFormText['04']}</option>
+				<option value='05'>{$creditCardFormText['05']}</option>
+				<option value='06'>{$creditCardFormText['06']}</option>  
+				<option value='07'>{$creditCardFormText['07']}</option>
+				<option value='08'>{$creditCardFormText['08']}</option>  
+				<option value='09'>{$creditCardFormText['09']}</option>
+				<option value='10'>{$creditCardFormText['10']}</option>
+				<option value='11'>{$creditCardFormText['11']}</option>
+				<option value='12'>{$creditCardFormText['12']}</option>
 				</select>
 				<select class='wpsc_ccBox authNetPaymentInput' name='auth_net[creditCard][expiry][year]' >
 				{$selected_year}
@@ -839,7 +894,7 @@ EOF;
 			</td>
 		</tr>
 		<tr>
-			<td class='wpsc_CC_details'>CVV *</td>
+			<td class='wpsc_CC_details'>{$creditCardFormText['cvv-text']}</td>
 			<td><input type='text' size='4' value='' maxlength='4' name='auth_net[creditCard][card_code]' class='authNetPaymentInput'/>
 			</td>
 		</tr>
@@ -1029,12 +1084,20 @@ function form_auth_net(){
 	if(get_option('wpec_auth_net') != false){
 		$auth_net = get_option('wpec_auth_net');
 	}else{
-		$auth_net = array('login'=>'', 'key'=>'', 'testmode'=>'checked', 'cimon'=>'checked');
+		$auth_net = array('login'=>'', 'key'=>'', 'testmode'=>'checked', 'cimon'=>'checked', 'verifyFirst' => '');
 	}
+
+	$authFormText = array(
+		'api-login-id-text' 							=> __( 'API Login ID', 'wpsc' ),
+		'transaction-key-text' 						=> __( 'Transaction Key', 'wpsc' ),
+		'test-mode-text' 									=> __( 'Test Mode', 'wpsc' ),
+		'enable-cim-text' 								=> sprintf( __( 'Enable %1$sCIM%2$s', 'wpsc' ), '<a href="http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/">', '</a>' ),
+		'verify-first-capture-later-text' => __( 'Verify First, Capture Later', 'wpsc' )
+	);
 	$output =<<<EOF
 	<tr>
 	  <td>
-		API Login ID
+		{$authFormText['api-login-id-text']}
 	  </td>
 	  <td>
 		<input type='text' name='wpec_auth_net[login]' value='{$auth_net['login']}'>
@@ -1042,7 +1105,7 @@ function form_auth_net(){
 		</tr>
 		<tr>
 		  <td>
-			Transaction Key
+			{$authFormText['transaction-key-text']}
 		  </td>
 		  <td>
 			<input type='text' name='wpec_auth_net[key]' value='{$auth_net['key']}'>
@@ -1050,7 +1113,7 @@ function form_auth_net(){
 		</tr>
 		<tr>
 		  <td>
-			Test Mode
+			{$authFormText['test-mode-text']}
 		  </td>
 		  <td>
 			<input type='checkbox' name='wpec_auth_net[testmode]' value='true' {$auth_net['testmode']}>
@@ -1058,7 +1121,7 @@ function form_auth_net(){
 		</tr>
 		<tr>
 		  <td>
-			Enable <a href="http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/">CIM</a>
+			{$authFormText['enable-cim-text']}
 		  </td>
 		  <td>
 			<input type='checkbox' name='wpec_auth_net[cimon]' value='true' {$auth_net['cimon']}>
@@ -1066,7 +1129,7 @@ function form_auth_net(){
 		</tr>
 		<tr>
 		  <td>
-			Verify First, Capture Later
+			{$authFormText['verify-first-capture-later-text']}
 		  </td>
 		  <td>
 			<input type='checkbox' name='wpec_auth_net[verifyFirst]' value='true' {$auth_net['verifyFirst']}>

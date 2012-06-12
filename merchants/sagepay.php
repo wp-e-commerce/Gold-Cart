@@ -1,6 +1,6 @@
 <?php
 //Gateway Details
-$nzshpcrt_gateways[$num]['name'] 			        = 'Sagepay';
+$nzshpcrt_gateways[$num]['name'] 			        = __( 'Sagepay', 'wpsc' );
 $nzshpcrt_gateways[$num]['class_name']              = 'Sagepay_merchant';
 $nzshpcrt_gateways[$num]['internalname']	        = 'sagepay';
 $nzshpcrt_gateways[$num]['api_version']             = 2.0;
@@ -8,22 +8,20 @@ $nzshpcrt_gateways[$num]['form']                    = 'wpec_sagepay_admin_form';
 $nzshpcrt_gateways[$num]['submit_function']         = 'wpec_sagepay_submit_form';
 $nzshpcrt_gateways[$num]['has_recurring_billing']   = false;
 $nzshpcrt_gateways[$num]['wp_admin_cannot_cancel']  = false;
-$nzshpcrt_gateways[$num]['payment_type']            = 'credit card';
-$nzshpcrt_gateways[$num]['display_name']            = 'pay with Sagepay';
-$nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0,
-		 													'extra_modules' => array());
-
-
-
+$nzshpcrt_gateways[$num]['payment_type']            = __( 'credit card', 'wpsc' );
+$nzshpcrt_gateways[$num]['display_name']            = __( 'pay with Sagepay', 'wpsc' );
+$nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0, 'extra_modules' => array() );
 
 function wpec_sagepay_admin_form(){
     // construct the default email message, this message is 
     //included toward the top of the customer confirmation e-mails.
-    $emailmsg = 'Thanks for purchasing at ' .get_bloginfo( 'name' );
-    if(get_bloginfo('admin_email'))
+    $emailmsg = sprintf ( __( 'Thanks for purchasing at %s', 'wspc' ), get_bloginfo( 'name' ) );
+    if ( get_bloginfo('admin_email') ) {
         $shopEmail = get_bloginfo('admin_email');
-    else 
+    } else {
         $shopEmail ='';
+    }
+
     // Add the options, this will be igonerod if this option already exists
     $args = array(		'name'         => 'name',
                         'encrypt_key'  => 'key',
@@ -34,8 +32,10 @@ function wpec_sagepay_admin_form(){
                         'transact_url' => '',
                         'seperator'    => ''); // the last two will be set in the mercahnt class
    add_option('wpec_sagepay',$args); 
+
    // get the sapay options for display in the form
    (array) $option = get_option('wpec_sagepay');
+
    // make sure the stores currency is supported by sagepay
    $curr_supported = false;
    global $wpdb;
@@ -72,8 +72,7 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-				Shop Email, an e-mail will be sent to this address when each transaction completes (successfully or otherwise).
-				If this field is blank then no email address will be provided
+            ' . __(' Shop Email, an e-mail will be sent to this address when each transaction completes (successfully or otherwise). If this field is blank then no email address will be provided', 'wpsc' ) .'
 			</td>
 			<td>
 				<input type="text" size="20" value="'. $option['shop_email'] .'" name="wpec_sagepay_shop_email" />
@@ -81,7 +80,7 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-				Email Message. If set then this message is included toward the top of the customer confirmation e-mails.
+				' . __( 'Email Message. If set then this message is included toward the top of the customer confirmation e-mails.', 'wpsc' ) . '
 			</td>
 			<td>
 				<textarea name="wpec_sagepay_email_msg" rows="10" >'. $option['email_msg'] .'</textarea>
@@ -89,25 +88,25 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-				Sagepay Email options
+				'.__( 'Sagepay Email options', 'wpsc' ) . '
 			</td>
 			<td>
 				<select class="widefat" name="wpec_sagepay_email">
-					<option value="0" '.selected($option['email'] , 0,false) .'>Do not send either customer or vendor e- mails</option>
-					<option value="1" '.selected($option['email'] , 1,false) .' >Send customer and vendor e-mails</option>
-					<option value="2" '.selected($option['email'] , 2,false) .' >Send vendor e-mail but NOT the customer e-mail</option>
+					<option value="0" '.selected($option['email'] , 0,false) .'>'  . __( 'Do not send either customer or vendor e- mails', 'wpsc' ) .'</option>
+					<option value="1" '.selected($option['email'] , 1,false) .' >' . __( 'Send customer and vendor e-mails', 'wpsc' ) . '</option>
+					<option value="2" '.selected($option['email'] , 2,false) .' >' . __( 'Send vendor e-mail but NOT the customer e-mail', 'wpsc' ). '</option>
     			</select>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				Server Type:
+				' . __( 'Server Type:', 'wpsc' ) . '
 			</td>
 			<td>
 				<select lass="widefat" name="wpec_sagepay_server_type">
-					<option  value="test"'.selected($option['server_type'] , 'test',false) .' >Test Server</option>
-					<option  value="sim" '.selected($option['server_type'] , 'sim',false) .' >Simulator Server</option>
-					<option  value="live"'.selected($option['server_type'] , 'live',false) .' >Live Server</option>
+					<option  value="test"'.selected($option['server_type'] , 'test',false) .' >' . __( 'Test Server', 'wpsc' ) . '</option>
+					<option  value="sim" '.selected($option['server_type'] , 'sim',false) .' >'  . __( 'Simulator Server', 'wpsc' ) . '</option>
+					<option  value="live"'.selected($option['server_type'] , 'live',false) .' >' . __( 'Live Server', 'wpsc' ) . '</option>
 				</select>
 			</td>
 		</tr>';
@@ -116,9 +115,9 @@ function wpec_sagepay_admin_form(){
        $adminFormHTML .=' 
        <tr>
         	<td>
-        		<strong style="color:red;"> Your Selected Currency is not supported by Sageapy, 
+        		<strong style="color:red;">'. __( 'Your Selected Currency is not supported by Sageapy, 
         		to use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one 
-        		of the currencies listed on the right. </strong>
+        		of the currencies listed on the right.', 'wpsc' ) .' </strong>
          	</td>
         	<td>
        			<ul>';
@@ -134,7 +133,7 @@ function wpec_sagepay_admin_form(){
         $adminFormHTML .='
         <tr>
         	<td colspan="2">
-        	<strong style="color:green;"> Your Selected Currency will work with Sagepay </strong>
+        	<strong style="color:green;"> '.__( 'Your Selected Currency will work with Sagepay', 'wpsc' ). ' </strong>
         	</td>
         </tr>
         ';

@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = 'iDeal';
+$nzshpcrt_gateways[$num]['name'] = __( 'iDeal', 'wpsc' );
 $nzshpcrt_gateways[$num]['internalname'] = 'ideal';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_ideal';
 $nzshpcrt_gateways[$num]['form'] = "form_ideal";
@@ -102,9 +102,9 @@ function submit_ideal() {
 
 function form_ideal() {
 	$languages = array(
-		'en_US' => 'English',
-		'nl_NL' => 'Dutch',
-		'fr_FR' => 'Français',
+		'en_US' => __( 'English', 'wpsc' ),
+		'nl_NL' => __( 'Dutch', 'wpsc' ),
+		'fr_FR' => __( 'Français', 'wpsc' ),
 	);
 
 	$currencies = array(
@@ -120,7 +120,7 @@ function form_ideal() {
 ?>
 <tr>
 	<td>
-		iDeal PSPID
+		<?php _e( 'iDeal PSPID', 'wpsc' ); ?>
 	</td>
 	<td>
 		<input type='text' size='20' value='<?php echo esc_attr( get_option('ideal_id') ); ?>' name='ideal_id' />
@@ -128,7 +128,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-		iDeal Currency
+		<?php _e( 'iDeal Currency', 'wpsc' ); ?>
 	</td>
 	<td>
 		<select name='ideal_currency'>
@@ -143,7 +143,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-		iDeal Language
+		<?php _e( 'iDeal Language', 'wpsc' ); ?>
 	</td>
 	<td>
 		<select name='ideal_language'>
@@ -157,11 +157,11 @@ function form_ideal() {
 	</td>
 </tr>
 <tr>
-	<td colspan="2"><h2>Forms Sent to Gateway</h2></td>
+	<td colspan="2"><h2><?php _e( 'Forms Sent to Gateway', 'wpsc' ); ?></h2></td>
 </tr>
 <tr>
 	<td>
-	First Name Field
+	<?php _e( 'First Name Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[first_name]'>
@@ -171,7 +171,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	Last Name Field
+	<?php _e( 'Last Name Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[last_name]'>
@@ -181,7 +181,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	Email Field
+	<?php _e( 'Email Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[email]'>
@@ -191,7 +191,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	Address Field
+	<?php _e( 'Address Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[address]'>
@@ -201,7 +201,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	City Field
+	<?php _e( 'City Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[city]'>
@@ -211,7 +211,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	State Field
+	<?php _e( 'State Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[state]'>
@@ -221,7 +221,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	Postal code/Zip code Field
+	<?php _e( 'Postal code/Zip code Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[post_code]'>
@@ -231,7 +231,7 @@ function form_ideal() {
 </tr>
 <tr>
 	<td>
-	Country Field
+	<?php _e( 'Country Field', 'wpsc' ); ?>
 	</td>
 	<td>
 	<select name='ideal_form[country]'>

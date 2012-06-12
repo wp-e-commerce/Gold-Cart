@@ -6,7 +6,7 @@ if(!is_callable('get_option')) {
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
 global $gateway_checkout_form_fields;
-$nzshpcrt_gateways[$num]['name'] = 'LinkPoint';
+$nzshpcrt_gateways[$num]['name'] = __( 'LinkPoint', 'wpsc' );
 $nzshpcrt_gateways[$num]['internalname'] = 'linkpoint';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_linkpoint';
 $nzshpcrt_gateways[$num]['form'] = "form_linkpoint";
@@ -17,18 +17,18 @@ if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
 
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 <tr>
-<td> Credit Card Number * </td>
+<td> ".__( 'Credit Card Number *', 'wpsc' )." </td>
 <td>
 <input type='text' size='4' value='' maxlength='4' name='card_number1' /> - <input type='text' size='4' value='' maxlength='4' name='card_number2' /> - <input type='text' size='4' value='' maxlength='4' name='card_number3' /> - <input type='text' size='4' value='' maxlength='4' name='card_number4' />
 </td>
 </tr>
 <tr>
-<td> Credit Card Expiration * </td>
+<td> ".__( 'Credit Card Expiration *', 'wpsc' )." </td>
 <td>
 <input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 </td>
 </tr> 
-<td> CVV Code * </td>
+<td> ".__( 'CVV Code *', 'wpsc' )." </td>
 <td>
 <input type='text' size='4' value='' maxlength='4' name='cvmvalue' /></td>
 </tr> 
@@ -197,8 +197,8 @@ function gateway_linkpoint($seperator, $sessionid) {
 	$responce = $linkpoint->curl_process($myorder);
 //	exit('<pre>'.print_r($responce,true).'</pre>');
 	if($responce["r_approved"]!="APPROVED"){
-		$message .= "<h3>Please Check the Payment Results</h3>";
-		$message .= "Your transaction was not successful."."<br /><br />";
+		$message .= "<h3>".__( 'Please Check the Payment Results', 'wpsc' )."</h3>";
+		$message .= __( 'Your transaction was not successful.', 'wpsc' )."<br /><br />";
 		//$message .= "<a href=".get_option('shopping_cart_url').">Click here to go back to checkout page.</a>";
 		$_SESSION['wpsc_checkout_misc_error_messages'][] = $message;
 		//header("Location:".get_option('transact_url').$seperator."eway=1&result=".$sessionid."&message=1");
@@ -226,11 +226,14 @@ function submit_linkpoint() {
 }
 
 function form_linkpoint() {
+
+	$linkpoint_test1 = ( isset( $linkpoint_test1 ) ) ? $linkpoint_test1 : '';
+	$linkpoint_test2 = ( isset( $linkpoint_test2 ) ) ? $linkpoint_test2 : '';
 	
 	return "
 		<tr>
 			<td>
-				Store Number
+				".__( 'Store Number', 'wpsc' )."
 			</td>
 			<td>
 				<input type='text' size='40' value='". get_option('linkpoint_store_number')."' name='linkpoint_store_number' />
@@ -238,11 +241,11 @@ function form_linkpoint() {
 		</tr>
 		<tr>
 			<td>
-				Test Environment
+				".__( 'Test Environment', 'wpsc' ) ."
 			</td>
 			<td>
-				<input type='radio' $linkpoint_test1 value='1' name='linkpoint_test' /> Yes
-				<input type='radio' $linkpoint_test2 value='0' name='linkpoint_test' /> No
+				<input type='radio' $linkpoint_test1 value='1' name='linkpoint_test' /> " . __( 'Yes', 'wpsc' ) . "
+				<input type='radio' $linkpoint_test2 value='0' name='linkpoint_test' /> " . __( 'No', 'wpsc' ) . "
 			</td>
 		</tr>";
 }

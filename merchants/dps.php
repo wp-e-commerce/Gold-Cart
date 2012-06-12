@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = 'DPS / Payment Express - PX Post';
+$nzshpcrt_gateways[$num]['name'] = __( 'DPS / Payment Express - PX Post', 'wpsc' );
 $nzshpcrt_gateways[$num]['internalname'] = 'dps';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_dps';
 $nzshpcrt_gateways[$num]['form'] = "form_dps";
@@ -104,7 +104,7 @@ function form_dps() {
 	//   $output = "
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= "Access URL\n\r";
+	$output .= __( 'Access URL', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_url')."' name='access_url' />\n\r";
@@ -112,7 +112,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= "Access User Id\n\r";
+	$output .= __( 'Access User Id', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_userid')."' name='access_userid' />\n\r";
@@ -120,7 +120,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= "Access Key\n\r";
+	$output .= __( 'Access Key', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_key')."' name='access_key' />\n\r";
@@ -128,7 +128,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= "Mac Key\n\r";
+	$output .= __( 'Mac Key', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('mac_key')."' name='mac_key' />\n\r";
@@ -137,7 +137,7 @@ function form_dps() {
 		
 	$output .= "  <tr>\n\r";
 	$output .= "      <td colspan='2'>\n\r";
-	$output .= "Note: DPS will give you a 64 character key / password. The first 48 characters of this go into the \"Access Key\" field and the last 16 characters go into the \"Mac Key\" field.\n\r";
+	$output .= __( 'Note: DPS will give you a 64 character key / password. The first 48 characters of this go into the "Access Key" field and the last 16 characters go into the "Mac Key" field.', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "  </tr>\n\r";
 
@@ -168,7 +168,7 @@ function form_dps() {
 	
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= "Currency sent to DPS\n\r";
+	$output .= __( 'Currency sent to DPS', 'wpsc' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "        <select name='dps_curcode'>\n\r";
@@ -182,7 +182,7 @@ function form_dps() {
 		
 	$output .= "  <tr>\n\r";
 	$output .= "			<td colspan='2'>\n\r";
-	$output .= "Note: Because DPS does not support questionmarks in the URL you must use permalinks - currently only date and name based permalinks have been fully tested with DPS.\n\r";
+	$output .= __( 'Note: Because DPS does not support questionmarks in the URL you must use permalinks - currently only date and name based permalinks have been fully tested with DPS.', 'wpsc' )."\n\r";
 	$output .= "			</td>\n\r";
 	$output .= "  </tr>\n\r";
   return $output;

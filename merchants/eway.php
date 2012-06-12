@@ -6,7 +6,7 @@ if (!version_compare(phpversion(), "5.0.0", ">=") || !is_callable('get_option'))
   return;
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
-$nzshpcrt_gateways[$num]['name'] = 'eWay';
+$nzshpcrt_gateways[$num]['name'] = __( 'eWay', 'wpsc' );
 $nzshpcrt_gateways[$num]['internalname'] = 'eway';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_eway';
 $nzshpcrt_gateways[$num]['form'] = "form_eway";
@@ -16,13 +16,13 @@ $nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
 if(in_array('eway',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
-		<td> Credit Card Number * </td>
+		<td> ".__( 'Credit Card Number *', 'wpsc' )." </td>
 		<td>
 			<input type='text' value='' name='card_number' />
 		</td>
 	</tr>
 	<tr>
-		<td> Credit Card Expiry * </td>
+		<td> ".__( 'Credit Card Expiry *', 'wpsc' )." </td>
 		<td>
 		<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 		</td>
@@ -30,7 +30,7 @@ if(in_array('eway',(array)get_option('custom_gateway_options'))) {
 	if (get_option('eway_cvn')) {
 		$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] .= "
 		<tr>
-			<td> CVN </td>
+			<td> ".__( 'CVN', 'wpsc' )." </td>
 			<td>
 				<input type='text' size='4'  maxlength='4' value='' name='cvn' />
 			</td>
@@ -220,10 +220,10 @@ function gateway_eway($seperator, $sessionid) {
 				$lblErrorSeverity = $objResponse->ErrorSeverity();
 				
 				// This is woefully inadequate!!!
-				exit('An Error has occured >'.$lblResult ." ". $lblErrorDescription ." ". $lblErrorSeverity);
+				exit( __( 'An Error has occured >', 'wpsc' ) . $lblResult ." ". $lblErrorDescription ." ". $lblErrorSeverity);
 			}
 		} else {
-			exit("Rebill Gateway failed: " . $objConnector->Response() );
+			exit( __( 'Rebill Gateway failed: ', 'wpsc' ) . $objConnector->Response() );
 		}
 		
 	} else {
@@ -271,17 +271,17 @@ function gateway_eway($seperator, $sessionid) {
 		//exit(print_r($ewayResponseFields,1));
 		//print_r($ewayResponseFields);
 		if($ewayResponseFields["EWAYTRXNSTATUS"]=="False"){
-			$message .= "<h3>Please Check the Payment Results</h3>";
-			$message .= "Your transaction was not successful."."<br><br>";
+			$message .= "<h3>".__( 'Please Check the Payment Results', 'wpsc' )."</h3>";
+			$message .= __( 'Your transaction was not successful.', 'wpsc' )."<br><br>";
 			$message .= $ewayResponseFields['EWAYTRXNERROR']."<br><br>";
-			$message .= "<a href=".get_option('shopping_cart_url').">Click here to go back to checkout page.</a>";
+			$message .= "<a href=".get_option('shopping_cart_url').">".__( 'Click here to go back to checkout page.', 'wpsc' )."</a>";
 			$_SESSION['eway_message'] = $message;
 			header("Location:".get_option('transact_url').$seperator."eway=0&result=".$sessionid."&message=1");
 			//exit();		
 		}else if($ewayResponseFields["EWAYTRXNSTATUS"]=="True"){
 			$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
 			transaction_results($sessionid, false);
-			$message .= "Your transaction was successful."."<br><br>";
+			$message .= __( 'Your transaction was successful.', 'wpsc' )."<br><br>";
 			$message .= $ewayResponseFields['EWAYTRXNERROR']."<br><br>";
 			$_SESSION['eway_message'] = $message;
 			header("Location:".get_option('transact_url').$seperator."eway=1&result=".$sessionid."&message=1");
@@ -364,7 +364,7 @@ function form_eway() {
 	$output = "
 	<tr>
 		<td>
-			eWay Customer id
+			".__( 'eWay Customer id', 'wpsc' )."
 		</td>
 		<td>
 			<input type='text' size='10' value='".get_option('ewayCustomerID_id')."' name='ewayCustomerID_id' />
@@ -372,7 +372,7 @@ function form_eway() {
 	</tr>
 	<tr>
 		<td>
-			Use Testing enviroment
+			".__( 'Use Testing enviroment', 'wpsc' )."
 		</td>
 		<td>
 			<input type='radio' value='1' name='eway_test' id='eway_test1' ".$eway_test1." /> <label for='eway_test1'>".TXT_WPSC_YES."</label> &nbsp;
@@ -381,7 +381,7 @@ function form_eway() {
 	</tr>
 	<tr>
 		<td>
-			Use CVN Security
+			".__( 'Use CVN Security', 'wpsc' )."
 		</td>
 		<td>
 			<input type='radio' value='1' name='eway_cvn' id='eway_cvn1' ".$eway_cvn1." /> <label for='eway_cvn1'>".TXT_WPSC_YES."</label> &nbsp;
@@ -390,7 +390,7 @@ function form_eway() {
 	</tr>";
 	$output .= "
 		<tr>
-			<td>First Name Field</td>
+			<td>".__( 'First Name Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[first_name]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_first_name'))."
@@ -398,7 +398,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> Last Name Field </td>
+			<td>".__( 'Last Name Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[last_name]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_last_name'))."
@@ -406,7 +406,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> Address Field </td>
+			<td>".__( 'Address Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[address]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_address'))."
@@ -414,7 +414,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> City Field </td>
+			<td>".__( 'City Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[city]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_city'))."
@@ -422,7 +422,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> State Field </td>
+			<td>".__( 'State Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[state]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_state'))."
@@ -430,7 +430,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> Postal code/Zip code Field </td>
+			<td>".__( 'Postal code/Zip code Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[post_code]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_post_code'))."
@@ -438,7 +438,7 @@ function form_eway() {
 			</td>
 		</tr>
 		<tr>
-			<td> Country Field </td>
+			<td>".__( 'Country Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[country]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_country'))."
@@ -446,7 +446,7 @@ function form_eway() {
 			</td>
 		</tr>
 				<tr>
-			<td> Email Field </td>
+			<td>".__( 'Email Field', 'wpsc' )."</td>
 			<td>
 				<select name='eway_form[email]'>
 					".nzshpcrt_form_field_list(get_option('eway_form_email'))."
