@@ -45,14 +45,14 @@ function wpsc_activate_gold_module() {
 				?>
 					<div class="updated" style="min-width:45%; max-width:463px;">
 						<p>
-							<?php _e( 'Thanks! The Gold Cart upgrade has been activated.', 'wpsc' ); ?><br />
-							<?php printf( __( 'New options have been added to %s, and your payment gateway list has been extended.', 'wpsc' ), sprintf( '<a href="options-general.php?page=wpsc-settings&tab=presentation">%s</a>', __( 'Settings -> Presentation', 'wpsc' ) ) ); ?>
+							<?php _e( 'Thanks! The Gold Cart upgrade has been activated.', 'wpsc_gold_cart' ); ?><br />
+							<?php printf( __( 'New options have been added to %s, and your payment gateway list has been extended.', 'wpsc_gold_cart' ), sprintf( '<a href="options-general.php?page=wpsc-settings&tab=presentation">%s</a>', __( 'Settings -> Presentation', 'wpsc_gold_cart' ) ) ); ?>
 						</p>
 					</div>
 				<?php
 			} else {
 				update_option( 'activation_state',"false" );
-				echo '<div class="error"><p>'.__( 'Sorry, the API key was incorrect.' ,'wpsc' ).'</p></div>';
+				echo '<div class="error"><p>'.__( 'Sorry, the API key was incorrect.' ,'wpsc_gold_cart' ).'</p></div>';
 			}
 		}
 	}
@@ -65,34 +65,34 @@ add_action( 'wpsc_gold_module_activation','wpsc_activate_gold_module' );
 function wpsc_gold_activation_form() { 
 	?>
 	<div class="postbox">
-		<h3 class="hndle"><?php _e( 'Gold Cart Activation', 'wpsc' );?></h3>
+		<h3 class="hndle"><?php _e( 'Gold Cart Activation', 'wpsc_gold_cart' );?></h3>
 		<?php if ( get_option( 'activation_state' ) == 'true' ) { ?>
 		<p>
 			<img align="middle" src="<?php echo WPSC_CORE_IMAGES_URL; ?>/tick.png" alt="" />
-			<?php _e( 'The gold cart is currently activated.', 'wpsc' ); ?>
+			<?php _e( 'The gold cart is currently activated.', 'wpsc_gold_cart' ); ?>
 		</p>
 		<?php	} else { ?>
 		<p>
 			<img align="middle" src="<?php echo WPSC_CORE_IMAGES_URL; ?>/cross.png" alt="" />
-			<?php _e( 'The gold cart is currently deactivated.', 'wpsc' ); ?>
+			<?php _e( 'The gold cart is currently deactivated.', 'wpsc_gold_cart' ); ?>
 		</p>
 		<?php } // End activation state ?>
 		<p>
-			<label for="activation_name"><?php _e( 'Name ', 'wpsc' ); ?>:</label>
+			<label for="activation_name"><?php _e( 'Name ', 'wpsc_gold_cart' ); ?>:</label>
 			<input type="text" id="activation_name" name="activation_name" size="48" value="<?php echo get_option( 'activation_name' ); ?>" class="text" />
 		</p>
 		<p>
-			<label for="activation_key"><?php _e( 'API Key ', 'wpsc' ); ?>:</label>
+			<label for="activation_key"><?php _e( 'API Key ', 'wpsc_gold_cart' ); ?>:</label>
 			<input type="text" id="activation_key" name="activation_key" size="48" value="<?php echo get_option( 'activation_key' ); ?>" class="text" />
 		</p>
 		<p>
 			<input type="hidden" value="true" name="activate_gold_module" />
-			<input type="submit" class="button-primary" value="<?php _e( 'Submit', 'wpsc' ); ?>" name="submit_values" />
-			<input type="submit" class="button" value="<?php _e( 'Reset API Key', 'wpsc' ); ?>" name="reset_values" onclick="document.getElementById('activation_key').value=''" />
+			<input type="submit" class="button-primary" value="<?php _e( 'Submit', 'wpsc_gold_cart' ); ?>" name="submit_values" />
+			<input type="submit" class="button" value="<?php _e( 'Reset API Key', 'wpsc_gold_cart' ); ?>" name="reset_values" onclick="document.getElementById('activation_key').value=''" />
 		</p>
 		<?php
 		if ( get_option( 'activation_state' ) == "true" ) {
-			echo '<p><strong>'.__( 'Click <a href="http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/" target="_blank">here</a> to learn how to use each Gold Cart feature.', 'wpsc' ).'</strong></p>';
+			echo '<p><strong>'.__( 'Click <a href="http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/" target="_blank">here</a> to learn how to use each Gold Cart feature.', 'wpsc_gold_cart' ).'</strong></p>';
 		} ?>
 	</div>
 	<?php

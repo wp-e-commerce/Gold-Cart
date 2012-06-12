@@ -1,6 +1,6 @@
 <?php
 //Gateway Details
-$nzshpcrt_gateways[$num]['name'] 			        = __( 'Sagepay', 'wpsc' );
+$nzshpcrt_gateways[$num]['name'] 			        = __( 'Sagepay', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['class_name']              = 'Sagepay_merchant';
 $nzshpcrt_gateways[$num]['internalname']	        = 'sagepay';
 $nzshpcrt_gateways[$num]['api_version']             = 2.0;
@@ -8,8 +8,8 @@ $nzshpcrt_gateways[$num]['form']                    = 'wpec_sagepay_admin_form';
 $nzshpcrt_gateways[$num]['submit_function']         = 'wpec_sagepay_submit_form';
 $nzshpcrt_gateways[$num]['has_recurring_billing']   = false;
 $nzshpcrt_gateways[$num]['wp_admin_cannot_cancel']  = false;
-$nzshpcrt_gateways[$num]['payment_type']            = __( 'credit card', 'wpsc' );
-$nzshpcrt_gateways[$num]['display_name']            = __( 'pay with Sagepay', 'wpsc' );
+$nzshpcrt_gateways[$num]['payment_type']            = __( 'credit card', 'wpsc_gold_cart' );
+$nzshpcrt_gateways[$num]['display_name']            = __( 'pay with Sagepay', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0, 'extra_modules' => array() );
 
 function wpec_sagepay_admin_form(){
@@ -72,7 +72,7 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-            ' . __(' Shop Email, an e-mail will be sent to this address when each transaction completes (successfully or otherwise). If this field is blank then no email address will be provided', 'wpsc' ) .'
+            ' . __(' Shop Email, an e-mail will be sent to this address when each transaction completes (successfully or otherwise). If this field is blank then no email address will be provided', 'wpsc_gold_cart' ) .'
 			</td>
 			<td>
 				<input type="text" size="20" value="'. $option['shop_email'] .'" name="wpec_sagepay_shop_email" />
@@ -80,7 +80,7 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-				' . __( 'Email Message. If set then this message is included toward the top of the customer confirmation e-mails.', 'wpsc' ) . '
+				' . __( 'Email Message. If set then this message is included toward the top of the customer confirmation e-mails.', 'wpsc_gold_cart' ) . '
 			</td>
 			<td>
 				<textarea name="wpec_sagepay_email_msg" rows="10" >'. $option['email_msg'] .'</textarea>
@@ -88,25 +88,25 @@ function wpec_sagepay_admin_form(){
 		</tr>
 		<tr>
 			<td>
-				'.__( 'Sagepay Email options', 'wpsc' ) . '
+				'.__( 'Sagepay Email options', 'wpsc_gold_cart' ) . '
 			</td>
 			<td>
 				<select class="widefat" name="wpec_sagepay_email">
-					<option value="0" '.selected($option['email'] , 0,false) .'>'  . __( 'Do not send either customer or vendor e- mails', 'wpsc' ) .'</option>
-					<option value="1" '.selected($option['email'] , 1,false) .' >' . __( 'Send customer and vendor e-mails', 'wpsc' ) . '</option>
-					<option value="2" '.selected($option['email'] , 2,false) .' >' . __( 'Send vendor e-mail but NOT the customer e-mail', 'wpsc' ). '</option>
+					<option value="0" '.selected($option['email'] , 0,false) .'>'  . __( 'Do not send either customer or vendor e- mails', 'wpsc_gold_cart' ) .'</option>
+					<option value="1" '.selected($option['email'] , 1,false) .' >' . __( 'Send customer and vendor e-mails', 'wpsc_gold_cart' ) . '</option>
+					<option value="2" '.selected($option['email'] , 2,false) .' >' . __( 'Send vendor e-mail but NOT the customer e-mail', 'wpsc_gold_cart' ). '</option>
     			</select>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				' . __( 'Server Type:', 'wpsc' ) . '
+				' . __( 'Server Type:', 'wpsc_gold_cart' ) . '
 			</td>
 			<td>
 				<select lass="widefat" name="wpec_sagepay_server_type">
-					<option  value="test"'.selected($option['server_type'] , 'test',false) .' >' . __( 'Test Server', 'wpsc' ) . '</option>
-					<option  value="sim" '.selected($option['server_type'] , 'sim',false) .' >'  . __( 'Simulator Server', 'wpsc' ) . '</option>
-					<option  value="live"'.selected($option['server_type'] , 'live',false) .' >' . __( 'Live Server', 'wpsc' ) . '</option>
+					<option  value="test"'.selected($option['server_type'] , 'test',false) .' >' . __( 'Test Server', 'wpsc_gold_cart' ) . '</option>
+					<option  value="sim" '.selected($option['server_type'] , 'sim',false) .' >'  . __( 'Simulator Server', 'wpsc_gold_cart' ) . '</option>
+					<option  value="live"'.selected($option['server_type'] , 'live',false) .' >' . __( 'Live Server', 'wpsc_gold_cart' ) . '</option>
 				</select>
 			</td>
 		</tr>';
@@ -117,7 +117,7 @@ function wpec_sagepay_admin_form(){
         	<td>
         		<strong style="color:red;">'. __( 'Your Selected Currency is not supported by Sageapy, 
         		to use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one 
-        		of the currencies listed on the right.', 'wpsc' ) .' </strong>
+        		of the currencies listed on the right.', 'wpsc_gold_cart' ) .' </strong>
          	</td>
         	<td>
        			<ul>';
@@ -133,7 +133,7 @@ function wpec_sagepay_admin_form(){
         $adminFormHTML .='
         <tr>
         	<td colspan="2">
-        	<strong style="color:green;"> '.__( 'Your Selected Currency will work with Sagepay', 'wpsc' ). ' </strong>
+        	<strong style="color:green;"> '.__( 'Your Selected Currency will work with Sagepay', 'wpsc_gold_cart' ). ' </strong>
         	</td>
         </tr>
         ';

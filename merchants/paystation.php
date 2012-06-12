@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = __( 'Paystation', 'wpsc' );
+$nzshpcrt_gateways[$num]['name'] = __( 'Paystation', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['internalname'] = 'paystation';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_paystation';
 $nzshpcrt_gateways[$num]['form'] = "form_paystation";
@@ -25,7 +25,7 @@ function submit_paystation(){
 function form_paystation(){
   return "<tr>
       <td>
-      ".__( 'Paystation ID', 'wpsc' )."
+      ".__( 'Paystation ID', 'wpsc_gold_cart' )."
       </td>
       <td>
       <input type='text' size='40' value='".get_option('paystation_id')."' name='paystation_id' />

@@ -20,21 +20,21 @@ $nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
 if(in_array('authorize',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr %s>
-		<td>".__( 'Credit Card Number *', 'wpsc' )."</td>
+		<td>".__( 'Credit Card Number *', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' value='' name='card_number' />
 			<p class='validation-error'>%s</p>
 		</td>
 	</tr>
 	<tr %s>
-		<td>".__( 'Credit Card Expiry *', 'wpsc' )."</td>
+		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 			<p class='validation-error'>%s</p>
 		</td>
 	</tr>
 	<tr %s>
-		<td>".__( 'CVV', 'wpsc' )."</td>
+		<td>".__( 'CVV', 'wpsc_gold_cart' )."</td>
 		<td><input type='text' size='4' value='' maxlength='4' name='card_code' />
 		<p class='validation-error'>%s</p>
 		</td>
@@ -346,10 +346,10 @@ function submit_authorize()
 function form_authorize()
   {
   $output = "
-  <strong>".__( 'There is a new Authorize.net Gateway!', 'wpsc' )."</strong><P>".__( 'This one will not be supported with Gold Cart for much longer. Please configure the new Authorize.net AIM/CIM gateway.', 'wpsc' )."</p>
+  <strong>".__( 'There is a new Authorize.net Gateway!', 'wpsc_gold_cart' )."</strong><P>".__( 'This one will not be supported with Gold Cart for much longer. Please configure the new Authorize.net AIM/CIM gateway.', 'wpsc_gold_cart' )."</p>
   <tr>
       <td>
-      ".__( 'Authorize API Login ID', 'wpsc' )."
+      ".__( 'Authorize API Login ID', 'wpsc_gold_cart' )."
       </td>
       <td>
       <input type='text' size='40' value='".get_option('authorize_login')."' name='authorize_login' />
@@ -357,7 +357,7 @@ function form_authorize()
   </tr>
   <tr>
       <td>
-      ".__( 'Authorize Transaction Key', 'wpsc' )."
+      ".__( 'Authorize Transaction Key', 'wpsc_gold_cart' )."
       </td>
       <td>
       <input type='text' size='40' value='".get_option('authorize_password')."' name='authorize_password' />
@@ -365,7 +365,7 @@ function form_authorize()
   </tr>
   <tr>
       <td>
-      ".__( 'Test Mode', 'wpsc' )."
+      ".__( 'Test Mode', 'wpsc_gold_cart' )."
       </td>
       <td>\n";
 if(get_option('authorize_testmode') == 1)
@@ -390,18 +390,18 @@ $output .= "      </td>
 	</tr>
 	<tr>
 	<td>
-	".__( 'Please note that country and state fields are generated automatically.', 'wpsc' )."
+	".__( 'Please note that country and state fields are generated automatically.', 'wpsc_gold_cart' )."
 	</td>
 	</tr>
 	<tr class='firstrowth'>
 		<td style='border-bottom: medium none;' colspan='2'>
-			<strong class='form_group'>".__( 'Forms Sent to Gateway', 'wpsc' )."</strong>
+			<strong class='form_group'>".__( 'Forms Sent to Gateway', 'wpsc_gold_cart' )."</strong>
 		</td>
 	</tr>
   
   <tr>
       <td>
-        ".__( 'Description', 'wpsc' )."
+        ".__( 'Description', 'wpsc_gold_cart' )."
       </td>
       <td>
       <input name='authorize_form[description]' value='".get_option('authorize_form_description')."'>
@@ -411,13 +411,13 @@ $output .= "      </td>
   
 	<tr>
   	<td colspan='2'>
-			<u>".__( 'Bill To Info:', 'wpsc' ). "</u>
+			<u>".__( 'Bill To Info:', 'wpsc_gold_cart' ). "</u>
   	</td>
 	</tr>
 	
   <tr>
       <td>
-      ".__( 'First Name Field', 'wpsc' )."
+      ".__( 'First Name Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[first_name]'>
@@ -427,7 +427,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Last Name Field', 'wpsc' )."
+      ".__( 'Last Name Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[last_name]'>
@@ -437,7 +437,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Address Field', 'wpsc' )."
+      ".__( 'Address Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[address]'>
@@ -447,7 +447,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'City Field', 'wpsc' )."
+      ".__( 'City Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[city]'>
@@ -457,7 +457,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Postal code/Zip code Field', 'wpsc' )."
+      ".__( 'Postal code/Zip code Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[post_code]'>
@@ -467,7 +467,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Email Field', 'wpsc' )."
+      ".__( 'Email Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[email]'>
@@ -477,7 +477,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Phone Number Field', 'wpsc' )."
+      ".__( 'Phone Number Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[phone]'>
@@ -487,12 +487,12 @@ $output .= "      </td>
   </tr>
   	<tr>
   	<td colspan='2'>
-			<u>".__( 'Ship To Info:', 'wpsc' )."</u>
+			<u>".__( 'Ship To Info:', 'wpsc_gold_cart' )."</u>
   	</td>
 	</tr>
   <tr>
       <td>
-      ".__( 'First Name Field', 'wpsc' )."
+      ".__( 'First Name Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[ship_first_name]'>
@@ -502,7 +502,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Last Name Field', 'wpsc' )."
+      ".__( 'Last Name Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[ship_last_name]'>
@@ -512,7 +512,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Address Field', 'wpsc' )."
+      ".__( 'Address Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[ship_address]'>
@@ -522,7 +522,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'City Field', 'wpsc' )."
+      ".__( 'City Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[ship_city]'>
@@ -532,7 +532,7 @@ $output .= "      </td>
   </tr>
   <tr>
       <td>
-      ".__( 'Postal code/Zip code Field', 'wpsc' )."
+      ".__( 'Postal code/Zip code Field', 'wpsc_gold_cart' )."
       </td>
       <td>
       <select name='authorize_form[ship_post_code]'>

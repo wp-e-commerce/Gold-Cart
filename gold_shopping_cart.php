@@ -67,8 +67,8 @@ if ( $gold_shpcrt_active === 'true' ) {
 	// Load Languages
 	function wpsc_gold_cart_load_textdomain() {
 		//load text domain
-		if( !load_plugin_textdomain( 'wpsc', false, WP_PLUGIN_DIR . '/wp-e-commerce/wpsc-languages/' ) ) {
-			load_plugin_textdomain( 'wpsc', false, WP_PLUGIN_DIR . '/wp-e-commerce/wpsc-languages/' );
+		if( !load_plugin_textdomain( 'wpsc_gold_cart', WP_PLUGIN_DIR . plugin_basename( dirname( __FILE__ ).'/languages' ) ) {
+			load_plugin_textdomain( 'wpsc_gold_cart', WP_PLUGIN_DIR . plugin_basename( dirname( __FILE__ ).'/languages' );
 		}
 	}
 

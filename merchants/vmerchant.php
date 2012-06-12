@@ -1,6 +1,6 @@
 <?php
 global $gateway_checkout_form_fields;
-$nzshpcrt_gateways[$num]['name']            = __( 'Virtual Merchant', 'wpsc' );
+$nzshpcrt_gateways[$num]['name']            = __( 'Virtual Merchant', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['internalname']    = 'vmerchant';
 $nzshpcrt_gateways[$num]['class_name']      = 'Virtual_Merchant';
 $nzshpcrt_gateways[$num]['api_version']     = 2.0;
@@ -24,20 +24,20 @@ if ( in_array( 'vmerchant', (array)get_option( 'custom_gateway_options' ) ) ) {
   $gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='CardNumber'>".__( 'Card Number', 'wpsc' )." * </label></td>
+			<label for='CardNumber'>".__( 'Card Number', 'wpsc_gold_cart' )." * </label></td>
 		<td>
 			<input type='text' value='' name='CardNumber' id='CardNumber' maxlength='16' />
 		</td>
 	</tr>
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='Cvc2'>".__( 'Cvc2', 'wpsc' )." * </label></td>
+			<label for='Cvc2'>".__( 'Cvc2', 'wpsc_gold_cart' )." * </label></td>
 		<td><input type='text' size='4' value='' maxlength='4' name='Cvc2' id='Cvc2' />
 		</td>
 	</tr>
 	<tr>
 		<td class='wpsc_CC_details'>
-			<label for='ExpiryMonth'>".__( 'Expiry', 'wpsc' )." * </label></td>
+			<label for='ExpiryMonth'>".__( 'Expiry', 'wpsc_gold_cart' )." * </label></td>
 		<td>
 			<select class='wpsc_ccBox' name='ExpiryMonth' id='ExpiryMonth'>
 			<option value='01'>01</option>
@@ -74,7 +74,7 @@ function form_vmerchant() {
   $output = '
   <tr>
     <td>
-      '. __( 'Account ID', 'wpsc' ) .'
+      '. __( 'Account ID', 'wpsc_gold_cart' ) .'
     </td>
     <td>
       <input type="text" value="'.$options['merchant_id'].'" name="wpsc_vmerchnat[merchant_id]"  />
@@ -82,7 +82,7 @@ function form_vmerchant() {
   </tr>
   <tr>
     <td>
-      ' . __( 'User ID', 'wpsc' ) .'
+      ' . __( 'User ID', 'wpsc_gold_cart' ) .'
     </td>
     <td>
       <input type="text" value="'.$options['user_id'].'"  name="wpsc_vmerchnat[user_id]"  />
@@ -90,7 +90,7 @@ function form_vmerchant() {
   </tr>
   <tr>
     <td>
-      ' . __( 'Merchant Pin', 'wpsc' ) .'
+      ' . __( 'Merchant Pin', 'wpsc_gold_cart' ) .'
     </td>
     <td>
       <input type="text" value="'.$options['pin'].'"  name="wpsc_vmerchnat[pin]"  />
@@ -98,7 +98,7 @@ function form_vmerchant() {
   </tr>
   <tr>
     <td>
-      ' . __( 'AVS Security', 'wpsc' ) .'
+      ' . __( 'AVS Security', 'wpsc_gold_cart' ) .'
     </td>
     <td>
 		 <input type="radio" value="yes" name="wpsc_vmerchnat[avs]"  ' . checked( 'yes',$options['avs'],false ) .'  /><label> ' .  TXT_WPSC_YES . ' </label> 
@@ -107,11 +107,11 @@ function form_vmerchant() {
   </tr>
   <tr>
     <td>
-      ' . __( 'Mode', 'wpsc' ) .'
+      ' . __( 'Mode', 'wpsc_gold_cart' ) .'
     </td>
     <td>
-      <input type="radio" value="live" name="wpsc_vmerchnat[mode]"  ' .  checked( 'live', $options['mode'],false ) .'  /><label> ' .  __( 'Live Mode', 'wpsc' ) . ' </label> 
-      <input type="radio" value="test"  name="wpsc_vmerchnat[mode]"  ' . checked( 'test', $options['mode'],false ) .'  /><label> ' . __( 'Test Mode', 'wpsc' ) . '</label>
+      <input type="radio" value="live" name="wpsc_vmerchnat[mode]"  ' .  checked( 'live', $options['mode'],false ) .'  /><label> ' .  __( 'Live Mode', 'wpsc_gold_cart' ) . ' </label> 
+      <input type="radio" value="test"  name="wpsc_vmerchnat[mode]"  ' . checked( 'test', $options['mode'],false ) .'  /><label> ' . __( 'Test Mode', 'wpsc_gold_cart' ) . '</label>
 	  </td>
   </tr>
   ';
@@ -120,7 +120,7 @@ function form_vmerchant() {
     $output .= '
     <tr>
       <td colspan="2">
-        <strong style="color:red;">'.__( 'This Gateway will only work if you change your permalink structure do anything except the default setting. In Settings->Permalinks', 'wpsc' ).'</strong>
+        <strong style="color:red;">'.__( 'This Gateway will only work if you change your permalink structure do anything except the default setting. In Settings->Permalinks', 'wpsc_gold_cart' ).'</strong>
       </td>
     </tr>
     ';
@@ -149,25 +149,25 @@ class Virtual_Merchant extends wpsc_merchant {
     if ( isset( $_POST['CardNumber'] ) && strlen( $_POST['CardNumber'] ) > 0 ) {
       $CardNumber = $_POST['CardNumber'];
     } else {
-      $errorMsg .= __( 'Credit Card Number Required', 'wpsc' ) . '<br/>';
+      $errorMsg .= __( 'Credit Card Number Required', 'wpsc_gold_cart' ) . '<br/>';
     }
     
     if ( isset( $_POST['ExpiryMonth'] ) && strlen( $_POST['ExpiryMonth'] ) > 0 ) {
       $ExpiryMonth = $_POST['ExpiryMonth'];
     } else {
-      $errorMsg .= __( 'Credit Card Expiry Month Required', 'wpsc' ) . '<br/>';
+      $errorMsg .= __( 'Credit Card Expiry Month Required', 'wpsc_gold_cart' ) . '<br/>';
     }
 
     if ( isset( $_POST['ExpiryYear'] ) && strlen( $_POST['ExpiryYear'] ) > 0 ) {
       $ExpiryYear = $_POST['ExpiryYear'];
     } else {
-      $errorMsg .= __( 'Credit Card Expiry Year Required', 'wpsc' ) . '<br/>';
+      $errorMsg .= __( 'Credit Card Expiry Year Required', 'wpsc_gold_cart' ) . '<br/>';
     }
 
     if ( isset( $_POST['Cvc2'] ) && strlen( $_POST['Cvc2'] ) > 0 ) {
       $Cvc2 = $_POST['Cvc2'];
     } else {
-      $errorMsg .= __( 'Credit Card Cvc2 code Required', 'wpsc' ) . '<br/>';
+      $errorMsg .= __( 'Credit Card Cvc2 code Required', 'wpsc_gold_cart' ) . '<br/>';
     }
     
     if ( strlen( $errorMsg ) > 0 ) {

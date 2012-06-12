@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = __( 'DPS / Payment Express - PX Post', 'wpsc' );
+$nzshpcrt_gateways[$num]['name'] = __( 'DPS / Payment Express - PX Post', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['internalname'] = 'dps';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_dps';
 $nzshpcrt_gateways[$num]['form'] = "form_dps";
@@ -104,7 +104,7 @@ function form_dps() {
 	//   $output = "
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= __( 'Access URL', 'wpsc' )."\n\r";
+	$output .= __( 'Access URL', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_url')."' name='access_url' />\n\r";
@@ -112,7 +112,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= __( 'Access User Id', 'wpsc' )."\n\r";
+	$output .= __( 'Access User Id', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_userid')."' name='access_userid' />\n\r";
@@ -120,7 +120,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= __( 'Access Key', 'wpsc' )."\n\r";
+	$output .= __( 'Access Key', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('access_key')."' name='access_key' />\n\r";
@@ -128,7 +128,7 @@ function form_dps() {
 	$output .= "  </tr>\n\r";
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= __( 'Mac Key', 'wpsc' )."\n\r";
+	$output .= __( 'Mac Key', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "      <input type='text' size='40' value='". get_option('mac_key')."' name='mac_key' />\n\r";
@@ -137,38 +137,38 @@ function form_dps() {
 		
 	$output .= "  <tr>\n\r";
 	$output .= "      <td colspan='2'>\n\r";
-	$output .= __( 'Note: DPS will give you a 64 character key / password. The first 48 characters of this go into the "Access Key" field and the last 16 characters go into the "Mac Key" field.', 'wpsc' )."\n\r";
+	$output .= __( 'Note: DPS will give you a 64 character key / password. The first 48 characters of this go into the "Access Key" field and the last 16 characters go into the "Mac Key" field.', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "  </tr>\n\r";
 
 	
 	$currencies = array(
-		'USD' => __( 'United States Dollar', 'wpsc' ),
-		'CAD' => __( 'Canadian Dollar', 'wpsc' ),
-		'CHF' => __( 'Swiss Franc', 'wpsc' ),
-		'EUR' => __( 'Euro', 'wpsc' ),
-		'FRF' => __( 'French Franc', 'wpsc' ),
-		'GBP' => __( 'United Kingdom Pound', 'wpsc' ),
-		'HKD' => __( 'Hong Kong Dollar', 'wpsc' ),
-		'JPY' => __( 'Japanese Yen', 'wpsc' ),
-		'NZD' => __( 'New Zealand Dollar', 'wpsc' ),
-		'SGD' => __( 'Singapore Dollar', 'wpsc' ),
-		'ZAR' => __( 'Rand', 'wpsc' ),
-		'AUD' => __( 'Australian Dollar', 'wpsc' ),
-		'WST' => __( 'Samoan Tala', 'wpsc' ),
-		'VUV' => __( 'Vanuatu Vatu', 'wpsc' ),
-		'TOP' => __( "Tongan Pa'anga", 'wpsc' ),
-		'SBD' => __( 'Solomon Islands Dollar', 'wpsc' ),
-		'PGK' => __( 'Papua New Guinea Kina', 'wpsc' ),
-		'MYR' => __( 'Malaysian Ringgit', 'wpsc' ),
-		'KWD' => __( 'Kuwaiti Dinar', 'wpsc' ),
-		'FJD' => __( 'Fiji Dollar', 'wpsc' ),
+		'USD' => __( 'United States Dollar', 'wpsc_gold_cart' ),
+		'CAD' => __( 'Canadian Dollar', 'wpsc_gold_cart' ),
+		'CHF' => __( 'Swiss Franc', 'wpsc_gold_cart' ),
+		'EUR' => __( 'Euro', 'wpsc_gold_cart' ),
+		'FRF' => __( 'French Franc', 'wpsc_gold_cart' ),
+		'GBP' => __( 'United Kingdom Pound', 'wpsc_gold_cart' ),
+		'HKD' => __( 'Hong Kong Dollar', 'wpsc_gold_cart' ),
+		'JPY' => __( 'Japanese Yen', 'wpsc_gold_cart' ),
+		'NZD' => __( 'New Zealand Dollar', 'wpsc_gold_cart' ),
+		'SGD' => __( 'Singapore Dollar', 'wpsc_gold_cart' ),
+		'ZAR' => __( 'Rand', 'wpsc_gold_cart' ),
+		'AUD' => __( 'Australian Dollar', 'wpsc_gold_cart' ),
+		'WST' => __( 'Samoan Tala', 'wpsc_gold_cart' ),
+		'VUV' => __( 'Vanuatu Vatu', 'wpsc_gold_cart' ),
+		'TOP' => __( "Tongan Pa'anga", 'wpsc_gold_cart' ),
+		'SBD' => __( 'Solomon Islands Dollar', 'wpsc_gold_cart' ),
+		'PGK' => __( 'Papua New Guinea Kina', 'wpsc_gold_cart' ),
+		'MYR' => __( 'Malaysian Ringgit', 'wpsc_gold_cart' ),
+		'KWD' => __( 'Kuwaiti Dinar', 'wpsc_gold_cart' ),
+		'FJD' => __( 'Fiji Dollar', 'wpsc_gold_cart' ),
 	);
 	$chosen_currency = get_option( 'dps_curcode' );
 	
 	$output .= "  <tr>\n\r";
 	$output .= "      <td>\n\r";
-	$output .= __( 'Currency sent to DPS', 'wpsc' )."\n\r";
+	$output .= __( 'Currency sent to DPS', 'wpsc_gold_cart' )."\n\r";
 	$output .= "      </td>\n\r";
 	$output .= "      <td>\n\r";
 	$output .= "        <select name='dps_curcode'>\n\r";
@@ -182,7 +182,7 @@ function form_dps() {
 		
 	$output .= "  <tr>\n\r";
 	$output .= "			<td colspan='2'>\n\r";
-	$output .= __( 'Note: Because DPS does not support questionmarks in the URL you must use permalinks - currently only date and name based permalinks have been fully tested with DPS.', 'wpsc' )."\n\r";
+	$output .= __( 'Note: Because DPS does not support questionmarks in the URL you must use permalinks - currently only date and name based permalinks have been fully tested with DPS.', 'wpsc_gold_cart' )."\n\r";
 	$output .= "			</td>\n\r";
 	$output .= "  </tr>\n\r";
   return $output;

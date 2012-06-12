@@ -91,7 +91,7 @@ class wpec_auth_net_setup{
 					return true;
 				}else{ 
 					//Kill THis processes so this order status can't get updated
-					die(__( 'Failed to capture payment', 'wpsc' ) );
+					die(__( 'Failed to capture payment', 'wpsc_gold_cart' ) );
 				}
 			}
 		}

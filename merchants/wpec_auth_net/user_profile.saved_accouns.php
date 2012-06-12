@@ -5,7 +5,7 @@ if ( is_user_logged_in() ) {
 	$wpec_auth_net_user_profile_url = get_option( 'user_account_url' ) . $separator . "wpec_auth_net_user_profile=true";
 	function wpec_auth_net_user_profile_display_links($div){
 		global $separator, $wpec_auth_net_user_profile_url;
-		echo "{$div} <a href='{$wpec_auth_net_user_profile_url}'>".__( 'Saved Credit Card, Bank or Shipping Information', 'wpsc' )."</a> ";
+		echo "{$div} <a href='{$wpec_auth_net_user_profile_url}'>".__( 'Saved Credit Card, Bank or Shipping Information', 'wpsc_gold_cart' )."</a> ";
 	}
 
 	//We sneak right infront of user profile page filter
@@ -49,14 +49,14 @@ if ( is_user_logged_in() ) {
 			if($result === false){
 				$_SESSION['wpec_message'] = $result;
 			}else{
-				$_SESSION['wpec_message'] = __( 'Saved Payment Details Have Been Deleted.', 'wpsc' );
+				$_SESSION['wpec_message'] = __( 'Saved Payment Details Have Been Deleted.', 'wpsc_gold_cart' );
 			}
 		}else{
 			$result = $myGateway->deleteShip($id);
 			if($result === false){
 				$_SESSION['wpec_message'] = $result;
 			}else{
-                                $_SESSION['wpec_message'] = __( 'Saved Shipping Details Have Been Deleted.', 'wpsc' );
+                                $_SESSION['wpec_message'] = __( 'Saved Shipping Details Have Been Deleted.', 'wpsc_gold_cart' );
                         }
 		}
 	}
@@ -71,7 +71,7 @@ if ( is_user_logged_in() ) {
 			$subs = new WPSC_Subscription();
 		?>
 		<div id='wpec_auth_net_user_profile_manager'>
-		<h2><?php _e( 'Saved Credit Card, Bank and Shipping Information', 'wpsc' );?></h2>
+		<h2><?php _e( 'Saved Credit Card, Bank and Shipping Information', 'wpsc_gold_cart' );?></h2>
 		<?php if(isGood($_SESSION['wpec_message'])){ ?>
 			<div class='notice'><?php echo $_SESSION['wpec_message'];?></div>
 		<?php 
@@ -80,7 +80,7 @@ if ( is_user_logged_in() ) {
 		if($bankaccounts){ ?>
 		<form action="<?php echo $wpec_auth_net_user_profile_url;?>" method="post">
 			<div id='bankaccounts'class='sectionBox'>
-			<span class="sectionHeader"><?php _e( "Bank Accounts You've Saved For Easy Checkout.", 'wpsc'); ?></span>
+			<span class="sectionHeader"><?php _e( "Bank Accounts You've Saved For Easy Checkout.", 'wpsc_gold_cart'); ?></span>
 			<div class="displayList"><?php echo $bankaccounts; ?> </div>
 			<input type='hidden' name='type' value='bankaccounts'>
 			<input type='submit' name='submit' class='btn' value='Delete'>
@@ -90,7 +90,7 @@ if ( is_user_logged_in() ) {
 		<?php if($creditcards){ ?>
 		<form action="<?php echo $wpec_auth_net_user_profile_url;?>" method="post">
 			<div id='creditcards'class='sectionBox'>
-			<span class="sectionHeader"><?php _e( "Credit Cards You've Saved For Easy Checkout.", 'wpsc' ); ?></span>
+			<span class="sectionHeader"><?php _e( "Credit Cards You've Saved For Easy Checkout.", 'wpsc_gold_cart' ); ?></span>
 			<div class="displayList"><?php echo $creditcards; ?> </div>
 			<input type='hidden' name='type' value='creditcards'>
 			<input type='submit' name='submit' class='btn' value='Delete'>
@@ -100,7 +100,7 @@ if ( is_user_logged_in() ) {
 		<?php if($shipaddress){ ?>
 		<form action="<?php echo $wpec_auth_net_user_profile_url;?>" method="post">
 			<div id='shipaddress'class='sectionBox'>
-			<span class="sectionHeader"><?php _e( "Shipping Addresses You've Saved For Easy Checkout.", 'wpsc' ); ?></span>
+			<span class="sectionHeader"><?php _e( "Shipping Addresses You've Saved For Easy Checkout.", 'wpsc_gold_cart' ); ?></span>
 			<div class="displayList"><?php echo $shipaddress; ?> </div>
 			<input type='hidden' name='type' value='shippingaddress'>
 			<input type='submit' class='btn' name='submit' value='Delete'>

@@ -20,7 +20,7 @@ class wpec_auth_net extends wpsc_merchant {
 	function __construct($purchase_id = null, $is_receiving = false){
 
 		// Account Types
-		$accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc' ), 'savings' => __( 'Savings Account', 'wpsc' ), 'checking' => __( 'Checking', 'wpsc' ) );
+		$accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc_gold_cart' ), 'savings' => __( 'Savings Account', 'wpsc_gold_cart' ), 'checking' => __( 'Checking', 'wpsc_gold_cart' ) );
 		
 		//Get our config, or bail
 		if(get_option('wpec_auth_net') != false){
@@ -85,11 +85,11 @@ class wpec_auth_net extends wpsc_merchant {
 
 			if(!$this->beenCaptured($purchlogitem->purchlogid)){
 				//Give Link to capture payment
-				echo "<a href='".add_query_arg($capture_payment_params)."'>".__('Accept payment', 'wpsc').'</a> | ';
+				echo "<a href='".add_query_arg($capture_payment_params)."'>".__('Accept payment', 'wpsc_gold_cart').'</a> | ';
 			}
 			if( !isset($purchlogitem->extrainfo->transactid) ){
 				//Give Link to capture payment
-				echo __('Missing Transaction ID in Order', 'wpsc')." |";
+				echo __('Missing Transaction ID in Order', 'wpsc_gold_cart')." |";
 			}
 			if($purchlogitem->extrainfo->gateway == 'wpec_auth_net' ){
 				//Give Link to capture payment
@@ -127,15 +127,15 @@ class wpec_auth_net extends wpsc_merchant {
 		if(!isset($meta['response'])) return false;
 		$dump = "<!-- meta dump:".print_r($meta,1)."-->\n";
 
-		$purchaseDetailsText 	= __( 'Purchase Details', 'wpsc' );
-		$approvedText 				= __( 'Approved:', 'wpsc' );
-		$declinedText 				= __( 'Declined:', 'wpsc' );
-		$authoCodeText 				= __( 'Auth Code:', 'wpsc' );
-		$transactionIdText 		= __( 'Transaction ID:', 'wpsc' );
-		$typeText 						= __( 'Type:', 'wpsc' );
-		$amountText 					= __( 'Ammount:', 'wpsc' );
-		$responseText 				= __( 'Response:', 'wpsc' );
-		$md5HashText 					= __( 'MD5 Hash:', 'wpsc' );
+		$purchaseDetailsText 	= __( 'Purchase Details', 'wpsc_gold_cart' );
+		$approvedText 				= __( 'Approved:', 'wpsc_gold_cart' );
+		$declinedText 				= __( 'Declined:', 'wpsc_gold_cart' );
+		$authoCodeText 				= __( 'Auth Code:', 'wpsc_gold_cart' );
+		$transactionIdText 		= __( 'Transaction ID:', 'wpsc_gold_cart' );
+		$typeText 						= __( 'Type:', 'wpsc_gold_cart' );
+		$amountText 					= __( 'Ammount:', 'wpsc_gold_cart' );
+		$responseText 				= __( 'Response:', 'wpsc_gold_cart' );
+		$md5HashText 					= __( 'MD5 Hash:', 'wpsc_gold_cart' );
 
 		if(isset($meta['capturePreAuth'])){
 			$header = __('Capture Details',WPECAUTHNET_PLUGIN_NAME);
@@ -155,7 +155,7 @@ EOF;
 		}else{ $post = ''; }
 		$meta = (array)$meta['response'];
 		//$title = __( 'Purchase Log Details From Authorize.Net', WPECAUTHNET_PLUGIN_NAME);
-		$title = __( 'Purchase Log Details From Authorize.Net', 'wpsc' );
+		$title = __( 'Purchase Log Details From Authorize.Net', 'wpsc_gold_cart' );
 
 		$popupDisplay = <<<EOF
 		  <script>
@@ -241,7 +241,7 @@ EOF;
 				if(isset($account->payment->creditCard)){
 					$output .= "<div id='".$account->customerPaymentProfileId."'>\n";
 					$output .= "<span class='authNetPreSelect'><input type='checkbox' class='authNetPreSelect' name='auth_net[payment_preset]' value='".$account->customerPaymentProfileId."'></span>\n";
-					$output .= "<span class='ccInfo'>".__("Card Ending in ",'wpsc').$account->payment->creditCard->cardNumber."<span>\n";
+					$output .= "<span class='ccInfo'>".__("Card Ending in ",'wpsc_gold_cart').$account->payment->creditCard->cardNumber."<span>\n";
 					$output .= "</div>\n";
 				}
 			}
@@ -323,17 +323,17 @@ EOF;
 			//Using Credit Card
 			$creditCard = $_REQUEST['auth_net']['creditCard'];
 			if(!isset($creditCard['card_number'])){
-				$this->set_error_message(__('Valid Credit Card Not Given.','wpsc'));
+				$this->set_error_message(__('Valid Credit Card Not Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$this->auth->card_num = $creditCard['card_number'];
 			if(!isset($creditCard['expiry'])){
-				$this->set_error_message(__('Valid Credit Card Expiration Not Given.','wpsc'));
+				$this->set_error_message(__('Valid Credit Card Expiration Not Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$this->auth->exp_date = $creditCard['expiry']['month'].$creditCard['expiry']['year'];
 			if(!isset($creditCard['card_code'])){
-				$this->set_error_message(__('Please Enter The CVV Off The Back of The Card.','wpsc'));
+				$this->set_error_message(__('Please Enter The CVV Off The Back of The Card.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$this->auth->card_code = $creditCard['card_code'];
@@ -343,27 +343,27 @@ EOF;
 			$check['echeck_type'] = 'WEB';
 			$check['method'] = 'echeck';
 			if(!isset($bankAccount['bank_name'])){
-				$this->set_error_message(__('Please Enter The Bank Name','wpsc'));
+				$this->set_error_message(__('Please Enter The Bank Name','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$check['bank_name'] = $bankAccount['bank_name'];
 			if(!isset($bankAccount['account_type'])){
-				$this->set_error_message(__('Please Specify The Account Type.','wpsc'));
+				$this->set_error_message(__('Please Specify The Account Type.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$check['bank_acct_type'] = $bankAccount['account_type'];
 			if(!isset($bankAccount['name_on_account'])){
-				$this->set_error_message(__('Please Give The Name On The Account.','wpsc'));
+				$this->set_error_message(__('Please Give The Name On The Account.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$check['bank_acct_name'] = $bankAccount['name_on_account'];
 			if(!isset($bankAccount['account_number'])){
-				$this->set_error_message(__('No Account Number Given.','wpsc'));
+				$this->set_error_message(__('No Account Number Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$check['bank_acct_num'] = $bankAccount['account_number'];
 			if(!isset($bankAccount['routing_number'])){
-				$this->set_error_message(__('No Bank Routing Number Given.','wpsc'));
+				$this->set_error_message(__('No Bank Routing Number Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
 			$check['bank_aba_code'] = $bankAccount['routing_number'];
@@ -675,9 +675,9 @@ EOF;
 		}
 
 		$paymentTypesText = array(
-			'select-payment-type-text' 	=> __( 'Select Payment Type', 'wpsc' ),
-			'credit-card-text' 					=> __( 'Credit Card', 'wpsc' ),
-			'e-check-text' 							=> __( 'E-Check', 'wpsc' )
+			'select-payment-type-text' 	=> __( 'Select Payment Type', 'wpsc_gold_cart' ),
+			'credit-card-text' 					=> __( 'Credit Card', 'wpsc_gold_cart' ),
+			'e-check-text' 							=> __( 'E-Check', 'wpsc_gold_cart' )
 		);
 
 		$output = <<<EOF
@@ -721,15 +721,15 @@ EOF;
 	
 	function showCheckForm(){
 		$output = "<div id='checkForms' class='paymentType'>";
-		$output .= "<fieldset><legend>".__('E-Check','wpsc')."</legend>";
+		$output .= "<fieldset><legend>".__('E-Check','wpsc_gold_cart')."</legend>";
 		if(isset($this->conf['cimon']) && $this->conf['cimon'] =='checked'){
 			$bankProfiles = $this->getBankAccountProfiles();
 			if($bankProfiles){
-				$output .= "<div><span class='head2'>".__('Use Bank Account on file.','wpsc')."</span>\n";
+				$output .= "<div><span class='head2'>".__('Use Bank Account on file.','wpsc_gold_cart')."</span>\n";
 				$output .= $bankProfiles;
-				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Bank Account','wpsc')."</span>\n";
+				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Bank Account','wpsc_gold_cart')."</span>\n";
 			}
-			$output .= "<span id='saveBankAccount'><input type='checkbox' name='auth_net[SaveBankAccount]' value='Keep On File'>".__('Save Payment Info (You Can Save Up To 10 accounts).','wpsc')."</span>\n";
+			$output .= "<span id='saveBankAccount'><input type='checkbox' name='auth_net[SaveBankAccount]' value='Keep On File'>".__('Save Payment Info (You Can Save Up To 10 accounts).','wpsc_gold_cart')."</span>\n";
 		}
 		$output .= $this->showNewBankAccountForm();
 		$output .= "</fieldset></div>";
@@ -742,15 +742,15 @@ EOF;
 
 	function showCCForm(){
 		$output = "<div id='creditCardForms' class='paymentType'>";
-		$output .= "<fieldset><legend>".__('Credit Card','wpsc')."</legend>";
+		$output .= "<fieldset><legend>".__('Credit Card','wpsc_gold_cart')."</legend>";
 		if(isset($this->conf['cimon']) && $this->conf['cimon'] =='checked'){
 			$creditcards     = $this->getCreditCardProfiles();
 			if($creditcards){
-				$output .= "<div><span class='head2'>".__('Use Credit Card on file.','wpsc')."</span>\n";
+				$output .= "<div><span class='head2'>".__('Use Credit Card on file.','wpsc_gold_cart')."</span>\n";
 				$output .= $creditcards;
-				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Card','wpsc')."</span>\n";
+				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Card','wpsc_gold_cart')."</span>\n";
 			}
-			$output .= "<span id='saveCreditCard'><input type='checkbox' name='auth_net[SaveCreditCard]' value='Keep On File'>".__('Save Payment Info (You Can Save Up To 10 accounts).','wpsc')."</span>\n";
+			$output .= "<span id='saveCreditCard'><input type='checkbox' name='auth_net[SaveCreditCard]' value='Keep On File'>".__('Save Payment Info (You Can Save Up To 10 accounts).','wpsc_gold_cart')."</span>\n";
 		}
 		$output .= $this->showNewCCForm();
 		$output .= "</fieldset></div>";
@@ -768,14 +768,14 @@ EOF;
 		}
 
 		$bankAccountText = array(
-			'bank-name-text'					=> __( 'Bank Name', 'wpsc' ),
-			'account-type-text' 			=> __( 'Account Type', 'wpsc' ),
-			'business-checking-text' 	=> __( 'Business Checking', 'wpsc' ),
-			'checking-text' 					=> __( 'Checking', 'wpsc' ),
-			'savings-text' 						=> __( 'Savings', 'wpsc' ),
-			'name-on-account-text' 		=> __( 'Name on Account', 'wpsc' ),
-			'routing-number-text' 		=> __( 'Routing Number', 'wpsc' ),
-			'account-number-text' 		=> __( 'Account Number', 'wpsc' )
+			'bank-name-text'					=> __( 'Bank Name', 'wpsc_gold_cart' ),
+			'account-type-text' 			=> __( 'Account Type', 'wpsc_gold_cart' ),
+			'business-checking-text' 	=> __( 'Business Checking', 'wpsc_gold_cart' ),
+			'checking-text' 					=> __( 'Checking', 'wpsc_gold_cart' ),
+			'savings-text' 						=> __( 'Savings', 'wpsc_gold_cart' ),
+			'name-on-account-text' 		=> __( 'Name on Account', 'wpsc_gold_cart' ),
+			'routing-number-text' 		=> __( 'Routing Number', 'wpsc_gold_cart' ),
+			'account-number-text' 		=> __( 'Account Number', 'wpsc_gold_cart' )
 		);
 
 		return <<<EOF
@@ -835,10 +835,10 @@ EOF;
 		}
 
 		$creditCardFormText = array(
-			'appears-on-card-text' 			=> __( 'Name as It Appears on Card *', 'wpsc' ),
-			'credit-card-number-text' 	=> __( 'Credit Card Number *', 'wpsc' ),
-			'credit-card-expires-text' 	=> __( 'Credit Card Expiry *', 'wpsc' ),
-			'cvv-text' 									=> __( 'CVV *', 'wpsc' ),
+			'appears-on-card-text' 			=> __( 'Name as It Appears on Card *', 'wpsc_gold_cart' ),
+			'credit-card-number-text' 	=> __( 'Credit Card Number *', 'wpsc_gold_cart' ),
+			'credit-card-expires-text' 	=> __( 'Credit Card Expiry *', 'wpsc_gold_cart' ),
+			'cvv-text' 									=> __( 'CVV *', 'wpsc_gold_cart' ),
 			'01' 												=> '01',
 			'02' 												=> '02',
 			'03' 												=> '03',
@@ -1046,7 +1046,7 @@ EOF;
 				}else{
 					//error occured, bailing back to checkout stand
 					$this->set_transaction_details($this->cart_data['session_id'],6);
-					$this->set_error_message(__('Failed to Authorize the Subscription','wpsc'));
+					$this->set_error_message(__('Failed to Authorize the Subscription','wpsc_gold_cart'));
 					$this->return_to_checkout();
 					return false;
 				}
@@ -1088,11 +1088,11 @@ function form_auth_net(){
 	}
 
 	$authFormText = array(
-		'api-login-id-text' 							=> __( 'API Login ID', 'wpsc' ),
-		'transaction-key-text' 						=> __( 'Transaction Key', 'wpsc' ),
-		'test-mode-text' 									=> __( 'Test Mode', 'wpsc' ),
-		'enable-cim-text' 								=> sprintf( __( 'Enable %1$sCIM%2$s', 'wpsc' ), '<a href="http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/">', '</a>' ),
-		'verify-first-capture-later-text' => __( 'Verify First, Capture Later', 'wpsc' )
+		'api-login-id-text' 							=> __( 'API Login ID', 'wpsc_gold_cart' ),
+		'transaction-key-text' 						=> __( 'Transaction Key', 'wpsc_gold_cart' ),
+		'test-mode-text' 									=> __( 'Test Mode', 'wpsc_gold_cart' ),
+		'enable-cim-text' 								=> sprintf( __( 'Enable %1$sCIM%2$s', 'wpsc_gold_cart' ), '<a href="http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/">', '</a>' ),
+		'verify-first-capture-later-text' => __( 'Verify First, Capture Later', 'wpsc_gold_cart' )
 	);
 	$output =<<<EOF
 	<tr>

@@ -16,7 +16,7 @@ global $gateway_checkout_form_fields;
 	* @subpackage wpsc-merchants
 */
 $nzshpcrt_gateways[$num] = array(
-	'name' => __( 'Authorize.net 2.0', 'wpsc' ),
+	'name' => __( 'Authorize.net 2.0', 'wpsc_gold_cart' ),
 	'api_version' => 2.0,
 	'class_name' => 'wpsc_merchant_authorize',
 	'has_recurring_billing' => true,
@@ -45,19 +45,19 @@ $nzshpcrt_gateways[$num] = array(
 if(in_array('wpsc_merchant_authorize',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
-		<td>".__( 'Credit Card Number *', 'wpsc' )."</td>
+		<td>".__( 'Credit Card Number *', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' value='' name='card_number' />
 		</td>
 	</tr>
 	<tr>
-		<td>".__( 'Credit Card Expiry *', 'wpsc' )."</td>
+		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 		</td>
 	</tr>
 	<tr>
-		<td>".__( 'CVV', 'wpsc' )."</td>
+		<td>".__( 'CVV', 'wpsc_gold_cart' )."</td>
 		<td><input type='text' size='4' value='' maxlength='4' name='card_code' /></td>
 	</tr>
 ";
@@ -286,7 +286,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 			case 3: /// case 3 is error state
 			default: /// default is http or unknown error state
 			if($parsed_response['response_description'] == '') { // If there is no error message it means there was some sort of HTTP connection failure, use the following error message
-			  $parsed_response['response_description'] = __("There was an error contacting the payment gateway, please try again later.", 'wpsc');
+			  $parsed_response['response_description'] = __("There was an error contacting the payment gateway, please try again later.", 'wpsc_gold_cart');
 			}
 			$this->set_error_message($parsed_response['response_description']);
 			$this->return_to_checkout();

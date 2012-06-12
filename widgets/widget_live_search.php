@@ -8,7 +8,7 @@ class WPSC_Live_Search extends WP_Widget {
    * Constructor 
    */
   function WPSC_Live_Search() {
-    parent::WP_Widget( false, $name = __( 'wp-e-commerce Live Search', 'wpsc' ) );	
+    parent::WP_Widget( false, $name = __( 'wp-e-commerce Live Search', 'wpsc_gold_cart' ) );	
   }
 
   /** 
@@ -19,7 +19,7 @@ class WPSC_Live_Search extends WP_Widget {
       
     $title = $instance['title'];
     if ( empty( $title ) ) {
-      $title = __( 'Live search', 'wpsc' );
+      $title = __( 'Live search', 'wpsc_gold_cart' );
     }
 
     $title = apply_filters( 'widget_title', $title );
@@ -50,7 +50,7 @@ class WPSC_Live_Search extends WP_Widget {
     ?>
     <p>
       <label for="<?php echo $this->get_field_id('title'); ?>">
-        <?php _e( 'Title:', 'wpsc' ); ?> 
+        <?php _e( 'Title:', 'wpsc_gold_cart' ); ?> 
         <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
       </label>
     </p>

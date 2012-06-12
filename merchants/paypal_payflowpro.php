@@ -6,7 +6,7 @@ if(!is_callable('get_option')) {
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
 
-$nzshpcrt_gateways[$num]['name'] = __( 'Paypal - Payflow Pro', 'wpsc' );
+$nzshpcrt_gateways[$num]['name'] = __( 'Paypal - Payflow Pro', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['internalname'] = 'paypal_payflow';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_paypal_payflow';
 $nzshpcrt_gateways[$num]['form'] = "form_paypal_payflow";
@@ -16,10 +16,10 @@ $nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
 
 if(in_array('paypal_payflow',(array)get_option('custom_gateway_options'))) {
    $gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
-         <tr><td><strong>".__( '3. Credit Card Information', 'wpsc' ) ."</strong></td></tr>
+         <tr><td><strong>".__( '3. Credit Card Information', 'wpsc_gold_cart' ) ."</strong></td></tr>
       <tr>
          <td>
-         ".__( 'Credit Card Number* (no dashes or spaces)', 'wpsc' )."
+         ".__( 'Credit Card Number* (no dashes or spaces)', 'wpsc_gold_cart' )."
          </td>
          <td>
             <input type='text' value='' name='card_number' maxlength='19'/>
@@ -27,7 +27,7 @@ if(in_array('paypal_payflow',(array)get_option('custom_gateway_options'))) {
       </tr>
       <tr>
          <td>
-            ".__( 'CVV*', 'wpsc' )."
+            ".__( 'CVV*', 'wpsc_gold_cart' )."
          </td>
          <td>
             <input type='text' value='' name='card_cvv' maxlength='3' size='4'/>
@@ -35,7 +35,7 @@ if(in_array('paypal_payflow',(array)get_option('custom_gateway_options'))) {
       </tr>
       <tr>
          <td>
-         ".__( 'Credit Card Expiry* (MM/YY)', 'wpsc' )."
+         ".__( 'Credit Card Expiry* (MM/YY)', 'wpsc_gold_cart' )."
          </td>
          <td>
             <input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
@@ -277,18 +277,18 @@ function submit_paypal_payflow()
 function form_paypal_payflow()
 {
 	$currencies = array(
-		'USD' => __( 'U.S. Dollar', 'wpsc' ),
-		'CAD' => __( 'Canadian Dollar', 'wpsc' ),
-		'AUD' => __( 'Australian Dollar', 'wpsc' ),
-		'EUR' => __( 'Euro', 'wpsc' ),
-		'GBP' => __( 'Pound Sterling', 'wpsc' ),
-		'JPY' => __( 'Japanese Yen', 'wpsc' ),
+		'USD' => __( 'U.S. Dollar', 'wpsc_gold_cart' ),
+		'CAD' => __( 'Canadian Dollar', 'wpsc_gold_cart' ),
+		'AUD' => __( 'Australian Dollar', 'wpsc_gold_cart' ),
+		'EUR' => __( 'Euro', 'wpsc_gold_cart' ),
+		'GBP' => __( 'Pound Sterling', 'wpsc_gold_cart' ),
+		'JPY' => __( 'Japanese Yen', 'wpsc_gold_cart' ),
 	);
 	$chosen_currency = get_option( 'paypal_payflow_curcode' );
 	
 	$methods = array(
-		__( 'Payment Express', 'wpsc' ),
-		__( 'Credit Card Direct Payment', 'wpsc' ),
+		__( 'Payment Express', 'wpsc_gold_cart' ),
+		__( 'Credit Card Direct Payment', 'wpsc_gold_cart' ),
 	);
 	$chosen_method = get_option( 'paypal_payflow_method' );
 	$payflow_test = get_option( 'paypal_payflow_test' );
@@ -297,7 +297,7 @@ function form_paypal_payflow()
 ?>
 <tr>
 	<td>
-		<?php _e( 'PayPal Payflow Pro User', 'wpsc' ); ?>
+		<?php _e( 'PayPal Payflow Pro User', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_user') ); ?>' name='paypal_payflow_user' />
@@ -305,7 +305,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'PayPal Payflow Pro Password', 'wpsc' ); ?>
+		<?php _e( 'PayPal Payflow Pro Password', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_pass') ); ?>' name='paypal_payflow_pass' />
@@ -313,24 +313,24 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'PayPal Payflow Pro Vendor', 'wpsc' ); ?>
+		<?php _e( 'PayPal Payflow Pro Vendor', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_vendor') ); ?>' name='paypal_payflow_vendor' />
 	</td>
 <tr>
 	<td>
-		<?php _e( 'PayPal Testing Environment', 'wpsc' ); ?>
+		<?php _e( 'PayPal Testing Environment', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
-		<label><input type='checkbox'<?php echo $payflow_test == 1 ? ' checked="checked"' : ''; ?> value='1' name='paypal_payflow_test' /><?php _e( 'Enable', 'wpsc' ); ?></label>
+		<label><input type='checkbox'<?php echo $payflow_test == 1 ? ' checked="checked"' : ''; ?> value='1' name='paypal_payflow_test' /><?php _e( 'Enable', 'wpsc_gold_cart' ); ?></label>
 	</td>
 	</tr>
 </tr>
 
 <tr>
 	<td>
-		<?php _e( 'Payment Method', 'wpsc' ); ?>
+		<?php _e( 'Payment Method', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<?php foreach ( $methods as $method => $title ) {
@@ -341,7 +341,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'PayPal Payflow Pro Partner', 'wpsc' ); ?>
+		<?php _e( 'PayPal Payflow Pro Partner', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<input type='text' value='<?php echo esc_attr( get_option('paypal_payflow_partner') ); ?>' name='paypal_payflow_partner' />
@@ -349,7 +349,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'PayPal Accepted Currency (e.g. USD, AUD)', 'wpsc' ); ?>
+		<?php _e( 'PayPal Accepted Currency (e.g. USD, AUD)', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_payflow_curcode'>
@@ -364,11 +364,11 @@ function form_paypal_payflow()
 </tr>
 
 <tr>
-	<td colspan="2"><h2><?php _e( 'Forms Sent to Gateway', 'wpsc' ); ?></h2></td>
+	<td colspan="2"><h2><?php _e( 'Forms Sent to Gateway', 'wpsc_gold_cart' ); ?></h2></td>
 </tr>
 <tr>
 	<td>
-		<?php _e( 'First Name Field', 'wpsc' ); ?>
+		<?php _e( 'First Name Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 		<select name='paypal_form[first_name]'>
@@ -378,7 +378,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'Last Name Field', 'wpsc' ); ?>
+		<?php _e( 'Last Name Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[last_name]'>
@@ -388,7 +388,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'Address Field', 'wpsc' ); ?>
+		<?php _e( 'Address Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[address]'>
@@ -398,7 +398,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'City Field', 'wpsc' ); ?>
+		<?php _e( 'City Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[city]'>
@@ -408,7 +408,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'State Field', 'wpsc' ); ?>
+		<?php _e( 'State Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[state]'>
@@ -418,7 +418,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'Postal code/Zip code Field', 'wpsc' ); ?>
+		<?php _e( 'Postal code/Zip code Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[post_code]'>
@@ -428,7 +428,7 @@ function form_paypal_payflow()
 </tr>
 <tr>
 	<td>
-		<?php _e( 'Country Field', 'wpsc' ); ?>
+		<?php _e( 'Country Field', 'wpsc_gold_cart' ); ?>
 	</td>
 	<td>
 	<select name='paypal_form[country]'>
@@ -481,9 +481,9 @@ function fetch_data($unique_id, $submiturl, $data) {
    }
     }
           if ($headers['http_code'] != 200) {
-       echo '<h2>'.__( 'General Error!', 'wpsc' ).'</h2>';
-       echo '<h3>'.__( 'Unable to receive response from PayPal server.', 'wpsc' ).'</h3><p>';
-       echo '<h4>'.sprintf( __( 'Verify host URL of %s and check for firewall/proxy issues.', 'wpsc'), $submiturl ).'</h4>';
+       echo '<h2>'.__( 'General Error!', 'wpsc_gold_cart' ).'</h2>';
+       echo '<h3>'.__( 'Unable to receive response from PayPal server.', 'wpsc_gold_cart' ).'</h3><p>';
+       echo '<h4>'.sprintf( __( 'Verify host URL of %s and check for firewall/proxy issues.', 'wpsc_gold_cart'), $submiturl ).'</h4>';
        curl_close($ch);
        exit;
           }
@@ -508,7 +508,7 @@ function response_handler($nvpArray, $fraud,$sessionid,$data=null,$recurring=nul
    //$RespMsg = 'General Error.  Please contact Customer Support.';
 //    echo ($result_code);
    if ($result_code == 1 || $result_code == 26) {
-      $_SESSION['payflow_message'] = __( 'Account configuration issue.  Please verify your login credentials.', 'wpsc' );
+      $_SESSION['payflow_message'] = __( 'Account configuration issue.  Please verify your login credentials.', 'wpsc_gold_cart' );
    } else if ($result_code== '0') {
 
       //$_SESSION['nzshpcrt_cart']=null;
@@ -516,7 +516,7 @@ function response_handler($nvpArray, $fraud,$sessionid,$data=null,$recurring=nul
       $log_id=$wpdb->get_var("SELECT id FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = '".$sessionid."' LIMIT 1");
       if (isset($nvpArray['CVV2MATCH'])) {
          if ($nvpArray['CVV2MATCH'] != "Y") {
-            $RespMsg = __( 'Your billing (cvv2) information does not match. Please re-enter.', 'wpsc' );
+            $RespMsg = __( 'Your billing (cvv2) information does not match. Please re-enter.', 'wpsc_gold_cart' );
          } else {
 //             wpsc_member_activate_subscriptions($log_id);
             //$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `paypal_recurring_profileid` = '".$nvpArray['PROFILEID']."' WHERE `id` = ".$log_id." LIMIT 1");
@@ -546,7 +546,7 @@ foreach((array)$cart_content as $cart_item) {
       $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `id`='$log_id' LIMIT 1");
-      $_SESSION['payflow_message']= __( 'Your credit card has been declined.  You may press the back button in your browser and check that you\'ve entered your card information correctly, otherwise please contact your credit card issuer.', 'wpsc' );
+      $_SESSION['payflow_message']= __( 'Your credit card has been declined.  You may press the back button in your browser and check that you\'ve entered your card information correctly, otherwise please contact your credit card issuer.', 'wpsc_gold_cart' );
       header("Location:".get_option('transact_url').$seperator."payflow=1&message=1");
    } else if ($result_code == 13) {
       $log_id = $wpdb->get_var("SELECT `id` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`='$sessionid' LIMIT 1");
@@ -557,7 +557,7 @@ foreach((array)$cart_content as $cart_item) {
          $cart_item_variations = $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_ITEM_VARIATIONS."` WHERE `cart_id` = '".$cart_item['id']."'", ARRAY_A);
       }
       */
-      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter if you feel that you have received this message in error', 'wpsc' );
+      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter if you feel that you have received this message in error', 'wpsc_gold_cart' );
       wp_die($RespMsg);//die before deleting cart information
       $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
@@ -571,12 +571,12 @@ foreach((array)$cart_content as $cart_item) {
          $cart_item_variations = $wpdb->query("DELETE FROM `".$wpdb->prefix."cart_item_variations` WHERE `cart_id` = '".$cart_item['id']."'", ARRAY_A);
       }
 */
-      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter if you feel that you have received this message in error', 'wpsc' );
+      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter if you feel that you have received this message in error', 'wpsc_gold_cart' );
       wp_die($RespMsg);//die before deleting cart information
       $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `id`='$log_id' LIMIT 1");
-      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter. If you feel that you received this message in error.', 'wpsc' );
+      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter. If you feel that you received this message in error.', 'wpsc_gold_cart' );
    } else {
       $log_id = $wpdb->get_var("SELECT `id` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`='$sessionid' LIMIT 1");
       $delete_log_form_sql = "SELECT * FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'";
@@ -589,7 +589,7 @@ foreach((array)$cart_content as $cart_item) {
       $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `id`='$log_id' LIMIT 1");
-      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter. If you feel that you received this message in error.', 'wpsc' );
+      $RespMsg = __( 'Invalid credit card information. Please use the back button in your browser and re-enter. If you feel that you received this message in error.', 'wpsc_gold_cart' );
    }
 
    if ($fraud == 'YES') {
@@ -607,9 +607,9 @@ foreach((array)$cart_content as $cart_item) {
          $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
          $wpdb->query("DELETE FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `id`='$log_id' LIMIT 1");
       } else if ($result_code == 126) {
-          $RespMsg = __( 'Your Transaction is Under Review. We will notify you via e-mail if accepted.', 'wpsc' );
+          $RespMsg = __( 'Your Transaction is Under Review. We will notify you via e-mail if accepted.', 'wpsc_gold_cart' );
       } else if ($result_code == 127) {
-          $RespMsg = __( 'Your Transaction is Under Review. We will notify you via e-mail if accepted.', 'wpsc' );
+          $RespMsg = __( 'Your Transaction is Under Review. We will notify you via e-mail if accepted.', 'wpsc_gold_cart' );
       }
    }
    //$message=transaction_results($sessionid,false,null,$data,$result_code);
@@ -631,37 +631,37 @@ foreach((array)$cart_content as $cart_item) {
 
 function displayResponse($RespMsg, $nvpArray) {
 
-   echo '<p>'.__( 'Results returned from server:', 'wpsc' ).'<br><br>';
+   echo '<p>'.__( 'Results returned from server:', 'wpsc_gold_cart' ).'<br><br>';
    while (list($key, $val) = each($nvpArray)) {
       echo "\n" . $key . ": " . $val . "\n<br>";
    }
    echo '</p>';
           if(isset ($nvpArray['DUPLICATE'])) {
-            echo '<h2>'.__( 'Error!', 'wpsc' ).'</h2>';
-            echo '<p>'.__( 'This is a duplicate of your previous order.', 'wpsc' ).'</p>';
-            echo '<p>'.__( 'Notice that DUPLICATE=1 is returned and the PNREF is the same as the previous one. You can see this in Manager as the Transaction Type will be "N".', 'wpsc' ).'</p>';
+            echo '<h2>'.__( 'Error!', 'wpsc_gold_cart' ).'</h2>';
+            echo '<p>'.__( 'This is a duplicate of your previous order.', 'wpsc_gold_cart' ).'</p>';
+            echo '<p>'.__( 'Notice that DUPLICATE=1 is returned and the PNREF is the same as the previous one. You can see this in Manager as the Transaction Type will be "N".', 'wpsc_gold_cart' ).'</p>';
           }
           if (isset($nvpArray['PPREF'])) {
          if (isset($nvpArray['PENDINGREASON'])) {
       if ($nvpArray['PENDINGREASON']=='completed') {
-         echo '<h2>'.__( 'Transaction Completed!', 'wpsc' ).'</h2>';
+         echo '<h2>'.__( 'Transaction Completed!', 'wpsc_gold_cart' ).'</h2>';
          echo '<h3>'.$RespMsg.'</h3>';
-         echo '<h4>'.__( 'Note: To simulate a duplicate transaction, refresh this page in your browser. Notice that you will see DUPLICATE=1 returned.', 'wpsc' ).'</h4>';
+         echo '<h4>'.__( 'Note: To simulate a duplicate transaction, refresh this page in your browser. Notice that you will see DUPLICATE=1 returned.', 'wpsc_gold_cart' ).'</h4>';
       }
       elseif($nvpArray['PENDINGREASON']=='echeck') {
-         echo '<h2>'.__( 'Transaction Completed!', 'wpsc' ).'</h2>';
-         echo '<h3>'.__( 'The payment is pending because it was made by an eCheck that has not yet cleared.', 'wpsc' ).'</h3>';
+         echo '<h2>'.__( 'Transaction Completed!', 'wpsc_gold_cart' ).'</h2>';
+         echo '<h3>'.__( 'The payment is pending because it was made by an eCheck that has not yet cleared.', 'wpsc_gold_cart' ).'</h3>';
       }
       else {
-         echo '<h2>'.__( 'Transaction Completed!', 'wpsc' ).'</h2>';
-         echo '<h3>'.sprintf( __( 'The payment is pending due to: %s', 'wpsc' ), $nvpArray['PENDINGREASON'] ).'</h3>';
-         echo '<h4>'.__( 'Please login to your PayPal account for more details.', 'wpsc' ).'</h4>';
+         echo '<h2>'.__( 'Transaction Completed!', 'wpsc_gold_cart' ).'</h2>';
+         echo '<h3>'.sprintf( __( 'The payment is pending due to: %s', 'wpsc_gold_cart' ), $nvpArray['PENDINGREASON'] ).'</h3>';
+         echo '<h4>'.__( 'Please login to your PayPal account for more details.', 'wpsc_gold_cart' ).'</h4>';
       }
          } else {
-            echo '<h2>'.__( 'Transaction Completed!', 'wpsc' ).'</h2>';
+            echo '<h2>'.__( 'Transaction Completed!', 'wpsc_gold_cart' ).'</h2>';
             echo '<h3>'.$RespMsg.'</h3>';
             if ($nvpArray['RESULT'] != "26" && $nvpArray['RESULT'] != "1") {
-               echo '<h4>'.__( 'Note: To simulate a duplicate transaction, refresh this page in your browser. Notice that you will see DUPLICATE=1 returned.', 'wpsc' ).'</h4>';
+               echo '<h4>'.__( 'Note: To simulate a duplicate transaction, refresh this page in your browser. Notice that you will see DUPLICATE=1 returned.', 'wpsc_gold_cart' ).'</h4>';
             }
          }
           }

@@ -6,49 +6,49 @@
 		 * ADDED 18-06-09
 		 */
 		?>
-		<strong><?php _e( 'WP e-Commerce Modules', 'wpsc' ); ?></strong><br />
-		<span><?php _e( 'Add more functionality to your e-Commerce site', 'wpsc' ); ?><input type='button' class='button-primary' onclick='window.open ("http://getshopped.org/extend/premium-upgrades/","mywindow"); ' value='<?php _e( 'Go to Shop', 'wpsc' ); ?>' id='visitInstinct' name='visitInstinct' /></span>
+		<strong><?php _e( 'WP e-Commerce Modules', 'wpsc_gold_cart' ); ?></strong><br />
+		<span><?php _e( 'Add more functionality to your e-Commerce site', 'wpsc_gold_cart' ); ?><input type='button' class='button-primary' onclick='window.open ("http://getshopped.org/extend/premium-upgrades/","mywindow"); ' value='<?php _e( 'Go to Shop', 'wpsc_gold_cart' ); ?>' id='visitInstinct' name='visitInstinct' /></span>
 		<br />
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'Pure Gold', 'wpsc' ); ?></strong>
+			<strong><?php _e( 'Pure Gold', 'wpsc_gold_cart' ); ?></strong>
 			<p class='wpsc_gold_text'><?php _e( 'Add Products search &amp; additional payment gateways to your e-Commerce install' ); ?></p>
 			<span class='wpsc_gold_info'>$25</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'DropShop', 'wpsc' ); ?></strong>
-			<p class='wpsc_gold_text'><?php _e( 'Impress your customers with a sliding DropShop', 'wpsc' ); ?></p>
+			<strong><?php _e( 'DropShop', 'wpsc_gold_cart' ); ?></strong>
+			<p class='wpsc_gold_text'><?php _e( 'Impress your customers with a sliding DropShop', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$75</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'Grid View', 'wpsc' ); ?> </strong>
-			<p class='wpsc_gold_text'><?php _e( 'Change the layout of your shop with this 960 inspired grid view.', 'wpsc' ); ?></p>
+			<strong><?php _e( 'Grid View', 'wpsc_gold_cart' ); ?> </strong>
+			<p class='wpsc_gold_text'><?php _e( 'Change the layout of your shop with this 960 inspired grid view.', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$15</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'MP3 Player', 'wpsc' ); ?></strong>
-			<p class='wpsc_gold_text'><?php _e( 'Selling music? Then this is the module for you!', 'wpsc' ); ?></p>
+			<strong><?php _e( 'MP3 Player', 'wpsc_gold_cart' ); ?></strong>
+			<p class='wpsc_gold_text'><?php _e( 'Selling music? Then this is the module for you!', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$10</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'Members Only Module', 'wpsc' ); ?> </strong>
-			<p class='wpsc_gold_text'><?php _e( 'Private Articles and Images are your business? Sell them with ease using this module.', 'wpsc' ); ?></p>
+			<strong><?php _e( 'Members Only Module', 'wpsc_gold_cart' ); ?> </strong>
+			<p class='wpsc_gold_text'><?php _e( 'Private Articles and Images are your business? Sell them with ease using this module.', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$10</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'Product Slider', 'wpsc' ); ?> </strong>
-			<p class='wpsc_gold_text'><?php _e( 'Display your products in a new and fancy way using the "Product Slider" module.', 'wpsc' ); ?></p>
+			<strong><?php _e( 'Product Slider', 'wpsc_gold_cart' ); ?> </strong>
+			<p class='wpsc_gold_text'><?php _e( 'Display your products in a new and fancy way using the "Product Slider" module.', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$25</span>
 		</div>
 		<div class='wpsc_gold_module'>
 			<br />
-			<strong><?php _e( 'NextGen Gallery Buy Now Buttons', 'wpsc' ); ?> </strong>
-			<p class='wpsc_gold_text'><?php _e( 'Make your Online photo gallery into an e-Commerce solution.', 'wpsc' ); ?></p>
+			<strong><?php _e( 'NextGen Gallery Buy Now Buttons', 'wpsc_gold_cart' ); ?> </strong>
+			<p class='wpsc_gold_text'><?php _e( 'Make your Online photo gallery into an e-Commerce solution.', 'wpsc_gold_cart' ); ?></p>
 			<span class='wpsc_gold_info'>$10</span>
 		</div>
 	</div>
@@ -61,12 +61,12 @@
 				  <?php if ( get_option('activation_state') == "true" ) { ?>
 			  	<p>
 			  		<img align='middle' src='../wp-content/plugins/<?php echo WPSC_DIR_NAME; ?>/images/tick.png' alt='' title='' />
-			  		&nbsp;<?php _e( 'The gold cart is currently activated.', 'wpsc' ); ?>
+			  		&nbsp;<?php _e( 'The gold cart is currently activated.', 'wpsc_gold_cart' ); ?>
 			  	</p>
 				  <?php } else{ ?>
 			    <p>
 			    	<img align='middle' src='../wp-content/plugins/<?php echo WPSC_DIR_NAME; ?>/images/cross.png' alt='' title=''/>
-			    	&nbsp;<?php _e( 'The gold cart is currently deactivated.', 'wpsc' ); ?>
+			    	&nbsp;<?php _e( 'The gold cart is currently deactivated.', 'wpsc_gold_cart' ); ?>
 			  	</p>
 				  <?php } ?>
 					<p>
