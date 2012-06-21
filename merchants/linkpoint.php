@@ -205,6 +205,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 	}else{
 		$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
 		header("Location: ".$transact_url.$seperator."sessionid=".$sessionid);
+		exit();
 		//transaction_results($sessionid, true);
 	}
 }
