@@ -7,11 +7,11 @@ function wpsc_activate_gold_module() {
 		if ( $_POST['activation_name'] != null ) {
 			update_option( 'activation_name', $_POST['activation_name'] );
 		}
-		
+
 		if ( isset( $_POST['activation_key'] ) ){
 			update_option( 'activation_key', $_POST['activation_key'] );
 		}
-		
+
 		$target = "http://instinct.co.nz/wp-goldcart-api/api_register.php?name=".$_POST['activation_name']."&key=".$_POST['activation_key']."&url=".get_option( 'siteurl' )."";
 		$remote_access_fail = false;
 		$useragent = 'WP e-Commerce plugin';
@@ -36,7 +36,7 @@ function wpsc_activate_gold_module() {
 			fclose( $fs );
 			$response = explode( "\r\n\r\n",$response,2 );
 			$returned_value = (int)trim( $response[1] );
-			//$returned_value = 1;    
+			//$returned_value = 1;
 			if ( $returned_value == 1 ) {
 				if( get_option( 'activation_state' ) != 'true' ) {
 					update_option( 'activation_state','true' );
@@ -61,8 +61,8 @@ add_action( 'wpsc_gold_module_activation','wpsc_activate_gold_module' );
 
 /**
  * Activation Form
- */ 
-function wpsc_gold_activation_form() { 
+ */
+function wpsc_gold_activation_form() {
 	?>
 	<div class="postbox">
 		<h3 class="hndle"><?php _e( 'Gold Cart Activation', 'wpsc_gold_cart' );?></h3>

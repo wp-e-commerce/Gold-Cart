@@ -8,8 +8,8 @@
  * Author URI: http://www.getshopped.org
  */
 
-/** 
- * This is the file that converts the normal shopping cart to the gold shopping cart 
+/**
+ * This is the file that converts the normal shopping cart to the gold shopping cart
  */
 
 // Check if Gold Cart is active
@@ -24,20 +24,10 @@ define( 'WPSC_GOLD_VERSION', '2.9.7' );
 
 // Require Upgrade Files
 require( dirname( __FILE__ ) . "/upgrade_panel.php" );
-require( dirname( __FILE__ ) . "/wpec-auto-upgrade/wpec-auto-upgrade.php" );
-
-// Check Upgrade
-$args = array(
-	'plugin_name'				=>	__( 'Gold Cart', 'wpsc' ),
-	'chk_file_location' => 'http://getshopped.org/wp-content/version-checker/gold-cart-plugin.chk',
-	'current_version'		=>	WPSC_GOLD_VERSION,
-	'plugin_basename'		=>	plugin_basename( __FILE__ )
-);
-$gold_upgrade = new wpec_auto_upgrade( $args );
 
 /**
  * Scribu function to find proper plugin url
- */ 
+ */
 function get_plugin_url() {
 	// WP < 2.6
 	if ( ! function_exists( 'plugins_url' ) ) {
@@ -48,13 +38,13 @@ function get_plugin_url() {
 
 /**
  * Default install gold cart kept to preserve backwards compatibility
- */ 
+ */
 function gold_shpcrt_install() {
 	global $wpdb, $user_level, $wp_rewrite;
 }
 
 /**
- * If gold cart is activated add the necessary functions  
+ * If gold cart is activated add the necessary functions
  */
 if ( $gold_shpcrt_active === 'true' ) {
 
@@ -63,41 +53,39 @@ if ( $gold_shpcrt_active === 'true' ) {
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	add_action( 'init', 'wpsc_gc_view_mode' );
 	add_action( 'init', 'wpsc_gold_cart_load_textdomain' );
-	
+
 	// Load Languages
 	function wpsc_gold_cart_load_textdomain() {
 		//load text domain
-		if( !load_plugin_textdomain( 'wpsc_gold_cart', WP_PLUGIN_DIR . plugin_basename( dirname( __FILE__ ).'/languages' ) )) {
-			load_plugin_textdomain( 'wpsc_gold_cart', WP_PLUGIN_DIR . plugin_basename( dirname( __FILE__ ).'/languages' ));
-		}
+		load_plugin_textdomain( 'wpsc_gold_cart', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
 	 * Tell people to configure the new auth net gateway that we are including with version 2.9.2
-	 */ 
+	 */
 	function update_auth_net_message(){
 		$selected_gateways = get_option( 'custom_gateway_options' );
 		if ( in_array( 'wpsc_merchant_authorize', $selected_gateways ) ) { ?>
 			<div id="message" class="updated fade">
 				<p>
-					<?php 
+					<?php
 					printf( __( '<strong>New Authorize.net Gateway for Gold Cart!</strong><br />We have a new Authorize.net gateway supporting the new AIM/CIM API. We recommend you <a href="%1s">configure the new gateway</a> to take advantage of these new features. <a href="%2s">Click here</a> to ignore and remove this box.', 'wpsc' ),
-						admin_url( 'admin.php?page=wpsc-settings&tab=gateway' ), 
-						admin_url( 'admin.php?page=wpsc-settings&wpsc_notices=gc_ignore' ) 
+						admin_url( 'admin.php?page=wpsc-settings&tab=gateway' ),
+						admin_url( 'admin.php?page=wpsc-settings&wpsc_notices=gc_ignore' )
 					);
 					?>
 				</p>
 			</div> <?php
 		}
 	}
-	
+
 	/**
 	 * We only want to do this if they have not already ignored the message
 	 */
 	if ( ! get_option('gc_anet_ignore') ) {
 		add_action( 'admin_notices', 'update_auth_net_message' );
 	}
-	
+
 	/**
 	 * Remove Notices
 	 */
@@ -115,9 +103,9 @@ if ( $gold_shpcrt_active === 'true' ) {
 	 */
 	function wpsc_gc_view_mode() {
 		global $wpsc_gc_view_mode;
-		
+
 		$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
-		
+
 		if ( get_option( 'show_search' ) && get_option( 'show_advanced_search' ) ) {
 			if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) ) {
 				$wpsc_gc_view_mode = $_REQUEST['view_type'];
@@ -126,7 +114,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 			} elseif ( ! empty( $_SESSION['wpsc_display_type'] ) ) {
 				$wpsc_gc_view_mode = $_SESSION['wpsc_display_type'];
 			}
-			
+
 			$wpsc_gc_view_mode_cookie_lifetime = apply_filters( 'wpsc_gc_view_mode_cookie_lifetime', 30000000 );
 			setcookie( 'wpsc_gc_view_mode_' . COOKIEHASH, $wpsc_gc_view_mode, time() + $wpsc_gc_view_mode_cookie_lifetime, COOKIEPATH, COOKIE_DOMAIN );
 			$_SESSION['wpsc_display_type'] = $wpsc_gc_view_mode;
@@ -136,12 +124,12 @@ if ( $gold_shpcrt_active === 'true' ) {
 				setcookie( 'wpsc_gc_view_mode_' . COOKIEHASH, '', time() - 31536000, COOKIEPATH, COOKIE_DOMAIN );
 			}
 		}
-		
+
 		if ( $wpsc_gc_view_mode == 'grid' ) {
 			add_action( 'wp_head', 'wpsc_grid_custom_styles', 9 );
 		}
 	}
-	
+
 	/**
 	 * Grid custom styles
 	 */
@@ -170,12 +158,12 @@ if ( $gold_shpcrt_active === 'true' ) {
 
 	/**
 	 * Enqueue Gold Cart Styles
-	 */ 
+	 */
 	function wpsc_gold_cart_styles() {
 		global $wpsc_gc_view_mode;
-		
+
 		wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/css/gold_cart.css' );
-		
+
 		if ( $wpsc_gc_view_mode == 'grid' ) {
 			wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/css/grid_view.css', array( 'wpsc-gold-cart' ) );
 		}
@@ -183,16 +171,16 @@ if ( $gold_shpcrt_active === 'true' ) {
 
 	/**
 	 * Include necessary js and css files and dynamic JS
-	 */ 
+	 */
 	function wpsc_gold_cart_scripts() {
 		global $wpsc_gc_view_mode;
 
 		$vars = array();
-		
+
 		if ( ! wp_script_is( 'jquery-query', 'registered' ) ) {
 			wp_register_script( 'jquery-query', get_plugin_url() . '/js/jquery.query.js', array( 'jquery' ), '2.1.7' );
 		}
-		
+
 		if ( get_option( 'show_gallery' ) && get_option( 'show_thumbnails_thickbox' ) ) {
 			if ( wp_script_is( 'wpsc-thickbox', 'registered' ) ) {
 				$deps = 'wpsc-thickbox';
@@ -201,7 +189,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 			}
 			$vars['thickboxFix'] = true;
 		}
-		
+
 		$deps = array( 'jquery', 'jquery-query' );
 
 		if ( ( get_option( 'show_search' ) == 1 ) && ( get_option( 'show_live_search' ) == 1 ) ) {
@@ -221,7 +209,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 		if ( $wpsc_gc_view_mode == 'grid' ){
 			$vars['itemsPerRow'] = get_option( 'grid_number_per_row' );
 		}
-			
+
 		$product_list_classes = array(
 			'grid' 		=> apply_filters( 'wpsc_gc_product_grid_class', 'product_grid_display' ),
 			'list' 		=> apply_filters( 'wpsc_gc_product_list_class', 'list_productdisplay' ),
@@ -229,7 +217,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 		);
 
 		$vars['productListClass'] = $product_list_classes[$wpsc_gc_view_mode];
-		
+
 		wp_localize_script( 'wpsc-gold-cart', 'WPSC_GoldCart', $vars );
 	}
 
@@ -286,7 +274,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 							$output .= "</div>\n\r";
 							$output .= "<br clear='both' />\n\r";
 							$output .= "</a>\n\r";
-						$output .= "</li>\n\r";					
+						$output .= "</li>\n\r";
 					}
 				}
 			} else {
@@ -309,7 +297,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 								</div>
 							</div>
 						</a>
-					</li>	
+					</li>
 					<?php
 				}
 				echo '</ul>';
@@ -321,7 +309,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 			}
 			exit( $output );
 		}
-		
+
 		if ( isset( $_POST['affiliate'] ) && $_POST['affiliate'] == true ) {
 		  if ( ! function_exists('affiliate_text') ) {
 				function affiliate_text( $id, $user ) {
@@ -329,7 +317,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 					return $output;
 				}
 			}
-	
+
 			$id = $_POST['prodid'];
 			$product = $wpdb->get_row( "SELECT * FROM `".WPSC_TABLE_PRODUCT_LIST."` WHERE id='$id' LIMIT 1", ARRAY_A );
 			$product = $product[0];
@@ -346,9 +334,9 @@ if ( $gold_shpcrt_active === 'true' ) {
 			exit();
 		}
   }
-  
+
   /**
-   * Function to display additional images in the image gallery	 
+   * Function to display additional images in the image gallery
    */
 	function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 		global $wpdb;
@@ -359,22 +347,22 @@ if ( $gold_shpcrt_active === 'true' ) {
 			if ( version_compare( WPSC_VERSION, '3.8', '<' ) ) {
 				/* get data about the base product image */
 				$product = $wpdb->get_row("SELECT * FROM `".WPSC_TABLE_PRODUCT_LIST."` WHERE `id`='".$product_id."' LIMIT 1",ARRAY_A);
-				$image_link = WPSC_IMAGE_URL.$product['image']."";	  
+				$image_link = WPSC_IMAGE_URL.$product['image']."";
 				$image_file_name = $product['image'];
 				$imagepath = WPSC_THUMBNAIL_DIR.$image_file_name;
 				$base_image_size = @getimagesize($imagepath);
-		
+
 				/* get data about the extra product images */
 				$images = $wpdb->get_results("SELECT * FROM `".WPSC_TABLE_PRODUCT_IMAGES."` WHERE `product_id` = '$product_id' AND `id` NOT IN('$image_file_name')	ORDER BY `image_order` ASC",ARRAY_A);
-				$output = "";	   
+				$output = "";
 				$new_height = get_option( 'wpsc_gallery_image_height' );
-				$new_width = get_option( 'wpsc_gallery_image_width' ); 
+				$new_width = get_option( 'wpsc_gallery_image_width' );
 				if ( count( $images ) > 0 ) {
 					/* display gallery */
-					if ( $invisible == true ) { 
-						foreach($images as $image) {		 
-							$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";	 
-							$extra_image_size = @getimagesize($extra_imagepath); 
+					if ( $invisible == true ) {
+						foreach($images as $image) {
+							$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";
+							$extra_image_size = @getimagesize($extra_imagepath);
 							$thickbox_link = WPSC_IMAGE_URL.$image['image']."";
 							$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";
 							$output .= "<a href='".$thickbox_link."' class='thickbox hidden_gallery_link'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."' rev='$image_link'>&nbsp;</a>";
@@ -383,18 +371,18 @@ if ( $gold_shpcrt_active === 'true' ) {
 						$output .= "<h2 class='prodtitles'>".__( 'Gallery', 'wpsc' )."</h2>";
 						$output .= "<div class='wpcart_gallery'>";
 						if ( $images != null ) {
-							foreach($images as $image) {		 
-								$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";	 
-								$extra_image_size = @getimagesize($extra_imagepath); 
+							foreach($images as $image) {
+								$extra_imagepath = WPSC_IMAGE_DIR.$image['image']."";
+								$extra_image_size = @getimagesize($extra_imagepath);
 								$thickbox_link = WPSC_IMAGE_URL.$image['image']."";
-								$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";	   
+								$image_link = "index.php?image_id=".$image['id']."&amp;width=".$new_width."&amp;height=".$new_height."";
 								$output .= "<a href='".$thickbox_link."' class='thickbox'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."'><img src='$image_link' alt='$product_name' title='$product_name' /></a>";
 							}
-						}		
+						}
 						$output .= "</div>";
 					}
 				}
-			} else { 
+			} else {
 				$output = '';
 				$product_name = get_the_title( $product_id );
 				$output .= "<div class='wpcart_gallery'>";
@@ -405,7 +393,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 					'orderby'        => 'menu_order',
 					'order'          => 'ASC',
 					'numberposts'    => -1
-				); 
+				);
 				$attachments = get_posts( $args );
 				$featured_img = get_post_meta($product_id, '_thumbnail_id');
 				$thumbnails = array();
@@ -416,7 +404,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 						$size = is_single() ? 'medium-single-product' : 'product-thumbnails';
 						$preview_link = wp_get_attachment_image_src( $post->ID, $size);
 						$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
-					
+
 						// always display the featured thumbnail first
 						if ( in_array( $post->ID, $featured_img ) ) {
 							array_unshift( $thumbnails, $link );
@@ -432,13 +420,13 @@ if ( $gold_shpcrt_active === 'true' ) {
 		} //closes if gallery setting condition
 		return $output;
 	}
-    
+
   /**
    * Generated the sql statement used to search for products
-   */ 
+   */
   function gold_shpcrt_search_sql( $search_string = '' ) {
     global $wpdb;
-    
+
     if ( (float)WPSC_VERSION < 3.8 ) {
 			$images_dir = 'images';
 		} else {
@@ -461,8 +449,8 @@ if ( $gold_shpcrt_active === 'true' ) {
       if ( $category_list != null ) {
 				$category_assoc_list = $wpdb->get_col("SELECT DISTINCT `product_id` FROM `".WPSC_TABLE_ITEM_CATEGORY_ASSOC."` WHERE `category_id` IN ('".implode("', '", $category_list)."')");
 				$category_sql = "OR `".WPSC_TABLE_PRODUCT_LIST."`.`id` IN ('".implode("', '", $category_assoc_list)."')";
-      }  
-      // this cannot currently list products that are associated with no categories      
+      }
+      // this cannot currently list products that are associated with no categories
       $output = "AND (`".WPSC_TABLE_PRODUCT_LIST."`.`name` LIKE '".$search_string_title."' OR `".WPSC_TABLE_PRODUCT_LIST."`.`description` LIKE '".$search_string_description."' OR `".WPSC_TABLE_PRODUCT_LIST."`.`id` IN ('".implode("','",$meta_list)."') OR `".WPSC_TABLE_PRODUCT_LIST."`.`additional_description` LIKE '".$search_string_description."' $category_sql )";
       //echo $output;
     }
@@ -488,7 +476,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 			$images_dir = 'wpsc-core/images';
 		}
 
-		$siteurl = get_option( 'siteurl' ); 
+		$siteurl = get_option( 'siteurl' );
 		$output = '';
 
 		if ( get_option( 'permalink_structure' ) != '' ) {
@@ -496,11 +484,11 @@ if ( $gold_shpcrt_active === 'true' ) {
 		} else {
 			$seperator ="&amp;";
 		}
-	
+
 		wp_parse_str( $_SERVER['QUERY_STRING'], $params );
 		$params = array_diff_key( $params, array( 'product_search' => '', 'search' => '' ) );
 		$params = array_intersect_key( $params, array( 'page_number' => '', 'page_id' => '' ) );
-	
+
 		$_SERVER['REQUEST_URI'] = remove_query_arg( 'view_type' );
 		$show_advanced_search = get_option( 'show_advanced_search' ) == '1';
 		$show_live_search = get_option( 'show_live_search' ) == 1;
@@ -565,7 +553,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 		</div>
 		<?php
 	}
-  
+
 	/**
 	 * Product Display List
 	 */
@@ -573,21 +561,21 @@ if ( $gold_shpcrt_active === 'true' ) {
 
     global $wpdb;
     $siteurl = get_option( 'siteurl' );
-    
+
     if ( (float)WPSC_VERSION < 3.8 ) {
 			$images_dir = 'images';
 		} else {
 			$images_dir = 'wpsc-core/images';
 		}
-      
+
     if(get_option('permalink_structure') != '') {
       $seperator ="?";
 		} else {
 			$seperator ="&amp;";
 		}
-    
+
     $product_listing_data = wpsc_get_product_listing($product_list, $group_type, $group_sql, $search_sql);
-    
+
     $product_list = $product_listing_data['product_list'];
     $output .= $product_listing_data['page_listing'];
 		if($product_listing_data['category_id']) {
@@ -595,14 +583,14 @@ if ( $gold_shpcrt_active === 'true' ) {
 		} else {
 			$category_nice_name = '';
 		}
-      
+
     if ( $product_list != null ) {
-      
+
       $output .= "<table class='list_productdisplay $category_nice_name'>";
 			$i=0;
-      
+
       foreach ( $product_list as $product ) {
-	
+
         $num++;
 				if ( $i%2 == 1 ) {
 					$output .= "<tr class='product_view_{$product['id']}'>";
@@ -611,9 +599,9 @@ if ( $gold_shpcrt_active === 'true' ) {
 				}
 
 				$i++;
-				
+
 				$output .= "<td style='width: 9px;'>";
-        
+
         if ( $product['description'] != null ) {
           $output .= "<a href='#' class='additional_description_link' onclick='return show_additional_description(\"list_description_".$product['id']."\",\"link_icon".$product['id']."\");'>";
           	$output .= "<img style='margin-top:3px;' id='link_icon".$product['id']."' src='$siteurl/wp-content/plugins/".WPSC_DIR_NAME."/".$images_dir."/icon_window_expand.gif' title='".$product['name']."' alt='".$product['name']."' />";
@@ -621,7 +609,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 				}
         $output .= "</td>\n\r";
         $output .= "<td width='55%'>";
-        
+
         if ( $product['special'] == 1 ) {
           $special = "<strong class='special'>".TXT_WPSC_SPECIAL." - </strong>";
 				} else {
@@ -640,7 +628,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 				}
 
 				$output .= "<td width='10px' style='text-align: center;'>";
-        
+
         if ( ( $product['quantity'] < 1 ) && ( $product['quantity_limited'] == 1 ) ) {
           $output .= "<img style='margin-top:5px;' src='$siteurl/wp-content/plugins/".WPSC_DIR_NAME."/".$images_dir."/no_stock.gif' title='No' alt='No' />";
 				} else {
@@ -670,7 +658,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 				$output .= $variations_output[0];
 				$output .= "<input type='hidden' name='item' value='".$product['id']."' />";
 				$output .= "<input type='hidden' name='prodid' value='".$product['id']."'>";
-				
+
 				if ( get_option('wpsc_selected_theme')=='iShop' ) {
 					if ( get_option('addtocart_or_buynow') == '0' ) {
 						if ( ( $product['quantity_limited'] == 1 ) && ( $product['quantity'] < 1 ) ) {
@@ -700,7 +688,7 @@ if ( $gold_shpcrt_active === 'true' ) {
         $output .= "</form>";
         $output .= "</td>\n\r";
         $output .= "</tr>\n\r";
-        
+
         $output .= "<tr class='list_view_description'>\n\r";
         $output .= "<td colspan='5'>\n\r";
         $output .= "<div id='list_description_".$product['id']."'>\n\r";
@@ -708,7 +696,7 @@ if ( $gold_shpcrt_active === 'true' ) {
         $output .= "</div>\n\r";
         $output .= "</td>\n\r";
         $output .= "</tr>\n\r";
-        
+
        }
 
       $output .= "</table>";
@@ -722,7 +710,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 
   /**
    * XML Maker
-   * 
+   *
    * @author allen
    */
   function  gold_shpcrt_xmlmaker(){
@@ -752,7 +740,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 				echo "&lt;/td&gt;\n\r";
 				echo "&lt;td width='5px' rowspan='2'&gt;\n\r";
 				echo "&lt;/td&gt;\n\r";
-				
+
 				echo "&lt;td align='left'&gt;\n\r";
 				echo "&lt;strong&gt;".$product['name']."&lt;/strong&gt;\n\r";
 				echo "&lt;/td&gt;\n\r";
@@ -767,7 +755,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 				echo "&lt;/table&gt;\n\r";
 				echo "&lt;/a&gt;";
 				echo "</text>\n\r";
-				
+
 				echo "<value>\n\r";
 				echo $product['name'];
 				echo "</value>\n\r";
@@ -808,50 +796,50 @@ if ( $gold_shpcrt_active === 'true' ) {
 	    }
 	    $num++;
 	  }
-	}    
-	
+	}
+
 	// Check active gateways
-	if ( count( (array)get_option('custom_gateway_options') ) == 1 ) { 
+	if ( count( (array)get_option('custom_gateway_options') ) == 1 ) {
 	  // if there is only one active gateway, and it has form fields, append them to the end of the checkout form.
 	  $active_gateway = implode( '', (array)get_option( 'custom_gateway_options' ) );
 	  if ( isset( $gateway_checkout_form_fields ) && ( count( (array)$gateway_checkout_form_fields ) == 1 ) && ( $gateway_checkout_form_fields[$active_gateway] != '' ) ) {
-			$gateway_checkout_form_field =  $gateway_checkout_form_fields[$active_gateway];	
+			$gateway_checkout_form_field =  $gateway_checkout_form_fields[$active_gateway];
 		}
 	}
 
 	// Debug
   //exit("<pre>".print_r($gateway_checkout_form_field,true)."</pre>");
-  
+
 	// Require mp3 functions file.
   if ( file_exists( dirname( __FILE__ ) . '/mp3_functions/mp3_functions.php' ) ) {
     require_once( dirname( __FILE__ ) . '/mp3_functions/mp3_functions.php' );
 	}
-  
+
   // Require drag and drop cart file.
   if ( file_exists( dirname( __FILE__ ) . '/dropshop/drag_and_drop_cart.php' ) ) {
     require_once( dirname( __FILE__ ) . '/dropshop/drag_and_drop_cart.php' );
 	}
-  
+
   // Require display grid functions.
   if ( file_exists( dirname( __FILE__ ) . '/grid_display_functions.php' ) ) {
     require_once( dirname( __FILE__ ) . '/grid_display_functions.php' );
 	}
-  
+
   // Require members file.
   if ( file_exists( dirname( __FILE__ ) . '/members/members.php' ) ) {
    require_once( dirname( __FILE__ ) . '/members/members.php' );
 	}
-  
+
   // Require product slider file.
   if ( file_exists( dirname( __FILE__ ) . '/product_slider/product_slider.php' ) ) {
     require_once( dirname( __FILE__ ) . '/product_slider/product_slider.php' );
 	}
-	
+
 	// Require api key generator.
   if ( file_exists( dirname( __FILE__ ) . '/api_key_generator/api_key_generator.php' ) ) {
     require_once( dirname( __FILE__ ) . '/api_key_generator/api_key_generator.php' );
 	}
-   
+
   // Require touch shop core file. Re-added by dev.xiligroup 090701
   if ( file_exists( dirname( __FILE__ ) . '/touchShop/touchShopCore.php' ) ) {
     require_once( dirname( __FILE__ ) . '/touchShop/touchShopCore.php' );
@@ -861,7 +849,7 @@ if ( $gold_shpcrt_active === 'true' ) {
   if ( isset( $_GET['activate'] ) && $_GET['activate'] == 'true' ) {
     add_action( 'init', 'gold_shpcrt_install' );
 	}
-  
+
   // Show search if option is 1
 	if ( get_option('show_search') == 1 ) {
 		add_action( 'wpsc_top_of_products_page', 'gold_shpcrt_search_form' );
@@ -869,7 +857,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 
 	// Ajax on init
   add_action('init', 'wpsc_gold_shpcrt_ajax');
-	
+
 	/**
 	 * Live search query modification.
 	 */
@@ -879,7 +867,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Live Search emebed
 	 */
@@ -889,26 +877,26 @@ if ( $gold_shpcrt_active === 'true' ) {
 		wpsc_include_products_page_template($wpsc_gc_view_mode);
 		exit;
 	}
-	
+
 	// Check live search for init action
 	if ( ! empty( $_REQUEST['wpsc_gc_action'] ) && $_REQUEST['wpsc_gc_action'] == 'live_search_embed' ) {
 		add_action( 'init', 'wpsc_gc_live_search_embed', 10 );
 	}
-	
+
 	/**
 	 * Register Template Redirect
 	 */
 	function wpsc_gc_register_template_redirect() {
 		add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
 	}
-	
+
 	/**
 	 * De-register Template Redirect
 	 */
 	function wpsc_gc_deregister_template_redirect() {
 		remove_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
 	}
-	
+
 	// Check product search action.
 	if ( ! empty( $_REQUEST['product_search'] ) ) {
 		add_action( 'template_redirect', 'wpsc_gc_register_template_redirect', 7 );
@@ -918,7 +906,7 @@ if ( $gold_shpcrt_active === 'true' ) {
 
 /**
  * List Directory
- */ 
+ */
 function wpsc_gc_list_dir($dirname) {
   // lists the provided directory, was nzshpcrt_listdir
   $dir = @opendir( $dirname );
@@ -934,7 +922,7 @@ function wpsc_gc_list_dir($dirname) {
   //  $dirlist[0] = "paypal.php";
   //  $dirlist[1] = "testmode.php";
   }
-  return $dirlist; 
+  return $dirlist;
 }
 
 /**
