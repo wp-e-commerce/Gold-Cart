@@ -182,11 +182,16 @@ if ( $gold_shpcrt_active === 'true' ) {
 		}
 
 		if ( get_option( 'show_gallery' ) && get_option( 'show_thumbnails_thickbox' ) ) {
-			if ( wp_script_is( 'wpsc-thickbox', 'registered' ) ) {
-				$deps = 'wpsc-thickbox';
-			} else {
-				wp_enqueue_script( 'wpsc-thickbox', WPSC_CORE_JS_URL . '/thickbox.js', array( 'jquery' ), 'Instinct_e-commerce' );
-			}
+			$lightbox =
+				  get_option( 'wpsc_lightbox', 'thickbox' ) == 'thickbox'
+			    ? 'wpsc-thickbox'
+			    : 'wpsc_colorbox';
+
+			if ( wp_script_is( 'wpsc-thickbox', 'registered' ) )
+				$deps = $lightbox;
+			else
+				wp_enqueue_script( $lightbox );
+
 			$vars['thickboxFix'] = true;
 		}
 

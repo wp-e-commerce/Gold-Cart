@@ -157,5 +157,28 @@
 		if (WPSC_GoldCart.thickboxFix) {
 			thickboxPreviewFix();
 		}
+
+		if( $.colorbox ) {
+			$('.imagecol').each(function(){
+				var t = $(this).find('.wpcart_gallery .thickbox');
+				t.colorbox({
+					maxWidth :'90%',
+					maxHeight :'90%',
+					returnFocus : false
+				});
+				
+				$(this).children('.thickbox').click(function(e){
+					var that = $(this);
+					e.preventDefault();
+					t.each(function(i,e){
+						if ($(this).attr('href') == that.attr('href')) {
+							$(this).click();
+							return;
+						}
+					});
+				});
+			});
+		}
 	});
+	
 })(jQuery);
