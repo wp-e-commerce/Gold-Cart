@@ -21,7 +21,7 @@ class wpec_auth_net extends wpsc_merchant {
 
 		// Account Types
 		$accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc_gold_cart' ), 'savings' => __( 'Savings Account', 'wpsc_gold_cart' ), 'checking' => __( 'Checking', 'wpsc_gold_cart' ) );
-		
+
 		//Get our config, or bail
 		if(get_option('wpec_auth_net') != false){
 			$this->conf = get_option('wpec_auth_net');
@@ -29,12 +29,12 @@ class wpec_auth_net extends wpsc_merchant {
 			return false;
 		}
 		//Only Load the class when you actually need it
-		require_once(WPECAUTHNET_CLASSES.'anet_php_sdk/AuthorizeNet.php'); 
+		require_once(WPECAUTHNET_CLASSES.'anet_php_sdk/AuthorizeNet.php');
 		if(!defined('AUTHORIZENET_API_LOGIN_ID')) define('AUTHORIZENET_API_LOGIN_ID', $this->conf['login']);
 		if(!defined('AUTHORIZENET_TRANSACTION_KEY')) define('AUTHORIZENET_TRANSACTION_KEY', $this->conf['key']);
 		if(isset($this->conf['testmode']) && $this->conf['testmode'] == 'checked'){
 			$this->validationMode = "testMode";
-			if(!defined('AUTH_NET_TRANSID_URL')) 
+			if(!defined('AUTH_NET_TRANSID_URL'))
 				define('AUTH_NET_TRANSID_URL', 'https://sandbox.authorize.net/UI/themes/sandbox/transaction/transactiondetail.aspx?menukey=CustomerProfile&transID=');
 		}else{
 			$this->validationMode = "liveMode";
@@ -42,13 +42,13 @@ class wpec_auth_net extends wpsc_merchant {
 		}
 		//We have our env ready, lets get the auth handler ready for action.
 		$this->auth = new AuthorizeNetAIM;
-		if(AUTHORIZENET_SANDBOX === false) 
+		if(AUTHORIZENET_SANDBOX === false)
 			$this->auth->setSandbox(false);
 		else
         	$this->auth->setSandbox(true);
 
 		if(isset($_REQUEST['payType'])) $this->payType = $_REQUEST['payType'];
-		//If We Are Using Authorize.net CIM, lets load up the profiles and address.  We'll store them back 
+		//If We Are Using Authorize.net CIM, lets load up the profiles and address.  We'll store them back
 		//During the submit processes
 		if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' ){
 			$this->auth_cim = new AuthorizeNetCIM;
@@ -119,7 +119,7 @@ class wpec_auth_net extends wpsc_merchant {
 		}else{
 			return true;
 		}
-		
+
 	}
 
 	function displayPurchaseDetails($purchaselog_id){
@@ -163,10 +163,10 @@ EOF;
 		    jQuery("#purchaseDetails").dialog({ minWidth: 600, modal: true });
 		  }
 		  </script>
-		
+
 		  <style>
-			#purchaseDetails{ 
-				display: none; 
+			#purchaseDetails{
+				display: none;
 				text-align: left;
 			}
 			#purchaseDetails table th{
@@ -185,7 +185,7 @@ EOF;
 		</table>
 		{$post}
 		</div>
-		
+
 EOF;
 		return $popupDisplay;
 	}
@@ -227,7 +227,7 @@ EOF;
 				}
 			}
 			return $output;
-		}				
+		}
 	}
 
 	function getCreditCardProfiles(){
@@ -246,7 +246,7 @@ EOF;
 				}
 			}
 			return $output;
-		}				
+		}
 	}
 	function getShippingProfiles(){
 		//For What Ever Reason the ship to profiles are no good, then bail
@@ -291,10 +291,10 @@ EOF;
 		}else{
 			return false;
 		}
-		
+
 	}
-				
-				
+
+
 	function capturePreAuth($order){
 		global $purchlogitem;
 		extract($order);
@@ -375,14 +375,14 @@ EOF;
 		$paymentProfile = $_REQUEST['auth_net']['payment_preset'];
 		$this->auth     = new AuthorizeNetCIM;
 		$cimTransaction = new AuthorizeNetTransaction;
-		
+
 		$cimTransaction->amount = number_format($this->cart_data['total_price'],2);
 		$cimTransaction->tax->amount = $this->cart_data['cart_tax'];
 		$cimTransaction->shipping->amount = $this->cart_data['base_shipping'];
 		if(isGood($this->purchase_id)) $cimTransaction->order->invoiceNumber = $this->purchase_id;
 		$cimTransaction->customerProfileId = $this->CIM_ID;
 		$cimTransaction->customerPaymentProfileId = $paymentProfile;
-		
+
 		foreach($this->cart_items as $i => $Item) {
 		    $taxable = isset($Item->tax) ? true : false;
 		    //For Some Lame Reason the name can only be 30characters long... weak sauce.
@@ -453,8 +453,8 @@ EOF;
 		$this->metaOrder['response']['split_tender_ip'] = $resultOptions[42];
 		$this->metaOrder['response']['requested_amount'] = $resultOptions[43];
 		$this->metaOrder['response']['balance_on_card'] = $resultOptions[44];
-		
-		
+
+
 		if($this->response->isOk()) return true;
 		else return false;
 	}
@@ -512,7 +512,7 @@ EOF;
 				$this->metaOrder['status'] = 'AuthOnly';
 				return true;
 			}else return false;
-			
+
 		}else{
 			//This is what we set the proccess status to if we are successful for the AIM type transactions
 			$this->process_status = 3;
@@ -523,10 +523,10 @@ EOF;
 				$this->metaOrder['status'] = 'AuthCapture';
 				return true;
 			}else return false;
-			
+
 		}
 	}
-		
+
 	function submit() {
 		global $wpdb;
 		$this->collate_data();
@@ -573,23 +573,23 @@ EOF;
 		if ($result == true) {
 			$this->metaOrder['result'] = true;
 			//Save The Credit Card if they asked us to
-			if(isset($_REQUEST['auth_net']['SaveCreditCard']) && $_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon']) 
+			if(isset($_REQUEST['auth_net']['SaveCreditCard']) && $_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon'])
 				&& $this->conf['cimon'] == 'checked' && $this->payType == 'creditCardForms' && isset($_REQUEST['auth_net']['creditCard']) ){
 				//Ok, We Should Save This Credit Card
 				$creditCard = $_REQUEST['auth_net']['creditCard'];
 				$this->addPaymentProfile(array('type'=>'CC', 'card_number'=>$creditCard['card_number'], 'expire'=>$creditCard['expiry']));
 			}
 			//Now For the Bank account
-			if(isset($_REQUEST['auth_net']['SaveBankAccount']) &&$_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon']) 
+			if(isset($_REQUEST['auth_net']['SaveBankAccount']) &&$_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon'])
 				&& $this->conf['cimon'] == 'checked' && $this->payType == 'bankForms' && isset($_REQUEST['auth_net']['bankAccount']) ){
 				//Ok, We Should Save This bank account
 				$bankAccount = $_REQUEST['auth_net']['bankAccount'];
 				$this->addPaymentProfile(array(
-				'type'=>'bank', 
-				'account_type'=>$bankAccount['account_type'], 
-				'routing_number'=>$bankAccount['routing_number'], 
-				'account_number'=>$bankAccount['account_number'], 
-				'account_name'=>$bankAccount['name_on_account'], 
+				'type'=>'bank',
+				'account_type'=>$bankAccount['account_type'],
+				'routing_number'=>$bankAccount['routing_number'],
+				'account_number'=>$bankAccount['account_number'],
+				'account_name'=>$bankAccount['name_on_account'],
 				'echeck_type'=>'WEB',
 				'bank_name'=>$bankAccount['bank_name']
 				));
@@ -635,7 +635,7 @@ EOF;
 			}else{
 				return false;
 			}
-		
+
 		}else{ return false; }
 	}
 
@@ -666,7 +666,7 @@ EOF;
 			return 'Not implemented yet';
 		}
 	}
-	
+
 	function CheckOrCC(){
 		global $wpdb, $wpsc_cart, $user_ID;
 		//Find out if their is a subscription in the cart and disable cimon
@@ -715,10 +715,10 @@ EOF;
 		$output .= '</div>';
 		return $output;
 	}
-	
 
 
-	
+
+
 	function showCheckForm(){
 		$output = "<div id='checkForms' class='paymentType'>";
 		$output .= "<fieldset><legend>".__('E-Check','wpsc_gold_cart')."</legend>";
@@ -756,7 +756,7 @@ EOF;
 		$output .= "</fieldset></div>";
 		return $output;
 	}
-	
+
 
 	function showNewBankAccountForm(){
 		if(isset($_REQUEST['auth_net']['bankAccount'])) $auth_net = $_REQUEST['auth_net']['bankAccount'];
@@ -785,7 +785,7 @@ EOF;
 			<td class='wpsc_BankAccount_details'>{$bankAccountText['bank-name-text']}</td>
 			<td>
 				<input type='text' class='authNetPaymentInput' value='{$auth_net['bank_name']}' name='auth_net[bankAccount][bank_name]' />
-			</td> 
+			</td>
 		</tr>
 		<tr>
 			<td class='wpsc_BankAccount_details'>{$bankAccountText['account-type-text']}</td>
@@ -860,13 +860,13 @@ EOF;
 			<td class='wpsc_CC_details'>{$creditCardFormText['appears-on-card-text']}</td>
 			<td>
 				<input type='text' value='{$auth_net['name_on_card']}' name='auth_net[creditCard][name_on_card]' class='authNetPaymentInput' />
-			</td> 
+			</td>
 		</tr>
 		<tr>
 			<td class='wpsc_CC_details'>{$creditCardFormText['credit-card-number-text']}</td>
 			<td>
 				<input type='text' value='{$auth_net['card_number']}' name='auth_net[creditCard][card_number]' class='authNetPaymentInput' />
-			</td> 
+			</td>
 		</tr>
 		<tr>
 			<td class='wpsc_CC_details'>{$creditCardFormText['credit-card-expires-text']}</td>
@@ -879,9 +879,9 @@ EOF;
 				<option value='03'>{$creditCardFormText['03']}</option>
 				<option value='04'>{$creditCardFormText['04']}</option>
 				<option value='05'>{$creditCardFormText['05']}</option>
-				<option value='06'>{$creditCardFormText['06']}</option>  
+				<option value='06'>{$creditCardFormText['06']}</option>
 				<option value='07'>{$creditCardFormText['07']}</option>
-				<option value='08'>{$creditCardFormText['08']}</option>  
+				<option value='08'>{$creditCardFormText['08']}</option>
 				<option value='09'>{$creditCardFormText['09']}</option>
 				<option value='10'>{$creditCardFormText['10']}</option>
 				<option value='11'>{$creditCardFormText['11']}</option>
@@ -925,7 +925,8 @@ EOF;
 
 	function setSubscription(){
 		global $user_ID;
-		
+
+		if ( class_exists( 'WPSC_Subscription' ) )
 		$sub = new WPSC_Subscription($user_ID);
 		foreach($this->cart_items as $itemIndex => $item){
 			if(isset($item['is_recurring']) && (int)$item['is_recurring']>0){
@@ -963,7 +964,7 @@ EOF;
 				}else{
 					$subscription->totalOccurrences = 1;
 				}
-			
+
 				//Always set the start date to today
 				$subscription->startDate = date('Y-m-d');
 				$subscription->amount = ($item['price'] * $item['quantity']) + $item['tax'] + $item['shipping'];
@@ -1029,9 +1030,9 @@ EOF;
 					$subscriptionId = $this->response->getSubscriptionId();
 					$end  = strtotime($length.' '.$unit);
 					$sub->saveSubscriptionMeta(array(
-						'purchase_id'=>$this->purchase_id, 
+						'purchase_id'=>$this->purchase_id,
 						'producti_d'=>$item['product_id'],
-						'ref_id'=>$refid, 
+						'ref_id'=>$refid,
 						'subscription_id'=>$this->response->getSubscriptionId(),
 						'startTime'=>time(),'endTime'=>$end)
 					);
@@ -1051,7 +1052,7 @@ EOF;
 					return false;
 				}
 			}
-		}	
+		}
 		return true;
 	}
 
@@ -1070,7 +1071,7 @@ EOF;
                         $cancel_response = $cancellation->cancelSubscription($subscription_id);
                         if($cancel_response->isOk()){
                                 return true;
-                        }else{  
+                        }else{
                                 return false;
                         }
                 }else{
