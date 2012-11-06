@@ -38,7 +38,7 @@ if(in_array('authorize',(array)get_option('custom_gateway_options'))) {
 		<td><input type='text' size='4' value='' maxlength='4' name='card_code' />
 		<p class='validation-error'>%s</p>
 		</td>
-		
+
 	</tr>
 ";
   }
@@ -64,7 +64,7 @@ if (($status[0] == 1) && function_exists('wpsc_members_init')) {
 	} elseif ($unit == 'm') {
 		$unit='months';
 	}
-	$amount = nzshpcrt_overall_total_price($_SESSION['selected_country']);
+	$amount = nzshpcrt_overall_total_price( wpsc_get_customer_meta( 'billing_country' ) );
 	$loginname = get_option('authorize_login');
 	$transactionkey = get_option("authorize_password");
 	$firstName = $_POST['collected_data'][get_option('authorize_form_first_name')];
@@ -138,7 +138,7 @@ if (($status[0] == 1) && function_exists('wpsc_members_init')) {
 	} else {
 		echo "send failed <br>";
 	}
-	
+
 	//Dump the response to the screen for debugging
 	//echo "<xmp>$response</xmp>";  //Display response SOAP
 	exit('');
@@ -149,17 +149,17 @@ if (($status[0] == 1) && function_exists('wpsc_members_init')) {
 if($purchase_log['shipping_country'] != null) {
 	$shipping_country = $purchase_log['shipping_country'];
 
-} 
+}
 if($purchase_log['shipping_region'] != null) {
 	$shipping_region = $purchase_log['shipping_region'];
 
 }else{
 	$shipping_region = 0;
-} 
+}
 if($purchase_log['billing_country'] != null) {
 	$billing_country = $purchase_log['billing_country'];
 
-} 
+}
 if($purchase_log['billing_region'] != null) {
 	$billing_region = $purchase_log['billing_region'];
   $billing_region=$wpdb->get_var("SELECT code FROM `".WPSC_TABLE_REGION_TAX."` WHERE id='".$billing_region."'");
@@ -167,31 +167,31 @@ if($purchase_log['billing_region'] != null) {
 
 }else{
 	$billing_region = 0;
-} 
+}
 
 $authorize_data = array();
 $authorize_data['x_Version'] = "3.1";
 $authorize_data['x_Login'] = urlencode(get_option('authorize_login'));
 $authorize_data['x_Password'] = urlencode(get_option("authorize_password"));
-$authorize_data['x_Delim_Data'] = urlencode("TRUE"); 
-$authorize_data['x_Delim_Char'] = urlencode(","); 
-$authorize_data['x_Encap_Char'] = urlencode(""); 
-$authorize_data['x_Type'] = urlencode("AUTH_CAPTURE"); 
+$authorize_data['x_Delim_Data'] = urlencode("TRUE");
+$authorize_data['x_Delim_Char'] = urlencode(",");
+$authorize_data['x_Encap_Char'] = urlencode("");
+$authorize_data['x_Type'] = urlencode("AUTH_CAPTURE");
 
-$authorize_data['x_ADC_Relay_Response'] = urlencode("FALSE"); 
+$authorize_data['x_ADC_Relay_Response'] = urlencode("FALSE");
 if(get_option('authorize_testmode') == 1) {
 	$authorize_data['x_Test_Request'] = urlencode("TRUE");
 }
 $authorize_data['x_Method'] = urlencode("CC");
-$authorize_data['x_Amount'] = number_format(nzshpcrt_overall_total_price($_SESSION['delivery_country'],false,false),2);
-$authorize_data['x_First_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_first_name')]); 
-$authorize_data['x_Last_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_last_name')]); 
-$authorize_data['x_Card_Num'] = urlencode($_POST['card_number']); 
-$authorize_data['x_Exp_Date'] = urlencode(($_POST['expiry']['month'] . $_POST['expiry']['year'])); 
+$authorize_data['x_Amount'] = number_format(nzshpcrt_overall_total_price( wpsc_get_customer_meta( 'shipping_country' ), false,false),2);
+$authorize_data['x_First_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_first_name')]);
+$authorize_data['x_Last_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_last_name')]);
+$authorize_data['x_Card_Num'] = urlencode($_POST['card_number']);
+$authorize_data['x_Exp_Date'] = urlencode(($_POST['expiry']['month'] . $_POST['expiry']['year']));
 $authorize_data['x_Card_Code'] = urlencode($_POST['card_code']);
-$authorize_data['x_Address'] = urlencode($_POST['collected_data'][get_option('authorize_form_address')]); 
-$authorize_data['x_City'] = urlencode($_POST['collected_data'][get_option('authorize_form_city')]); 
-$authorize_data['x_Zip'] = urlencode($_POST['collected_data'][get_option('authorize_form_post_code')]); 
+$authorize_data['x_Address'] = urlencode($_POST['collected_data'][get_option('authorize_form_address')]);
+$authorize_data['x_City'] = urlencode($_POST['collected_data'][get_option('authorize_form_city')]);
+$authorize_data['x_Zip'] = urlencode($_POST['collected_data'][get_option('authorize_form_post_code')]);
 $authorize_data['x_State'] = urlencode($billing_region);
 $authorize_data['x_Country'] = urlencode($billing_country);
 $authorize_data['x_Phone'] = urlencode($_POST['collected_data'][get_option('authorize_form_phone')]);
@@ -200,8 +200,8 @@ $authorize_data['x_Phone'] = urlencode($_POST['collected_data'][get_option('auth
 
 
 
-$authorize_data['x_Email'] = urlencode($_POST['collected_data'][get_option('authorize_form_email')]); 
-$authorize_data['x_Email_Customer'] = urlencode("TRUE"); 
+$authorize_data['x_Email'] = urlencode($_POST['collected_data'][get_option('authorize_form_email')]);
+$authorize_data['x_Email_Customer'] = urlencode("TRUE");
 $authorize_data['x_Merchant_Email'] = urlencode(get_option('purch_log_email'));
 
 
@@ -214,17 +214,17 @@ $authorize_data['x_Merchant_Email'] = urlencode(get_option('purch_log_email'));
   //  $authorize_data['x_State'] = urlencode($setstate);
   $setcountry=$_POST['collected_data'][get_option('authorize_form_country')][0];
   //  $authorize_data['x_Country'] = urlencode($setcountry);
-  $authorize_data['x_ship_to_First_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_first_name')]); 
-  $authorize_data['x_ship_to_Last_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_last_name')]); 
-  $authorize_data['x_ship_to_Address'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_address')]); 
+  $authorize_data['x_ship_to_First_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_first_name')]);
+  $authorize_data['x_ship_to_Last_Name'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_last_name')]);
+  $authorize_data['x_ship_to_Address'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_address')]);
   $authorize_data['x_ship_to_City'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_city')]);
-  $authorize_data['x_ship_to_Zip'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_post_code')]); 
+  $authorize_data['x_ship_to_Zip'] = urlencode($_POST['collected_data'][get_option('authorize_form_ship_post_code')]);
   $setstate=$_POST['collected_data'][get_option('authorize_form_ship_state')];
   $shipping_region=$wpdb->get_var("SELECT code FROM `".WPSC_TABLE_REGION_TAX."` WHERE id='".$shipping_region."'");
   $authorize_data['x_ship_to_State'] = urlencode($shipping_region);
-//  $setcountry=$_POST['collected_data'][get_option('authorize_form_ship_country')];	
+//  $setcountry=$_POST['collected_data'][get_option('authorize_form_ship_country')];
   $authorize_data['x_ship_to_Country'] = urlencode($shipping_country);
-  $authorize_data['x_tax'] = urlencode($wpsc_cart->total_tax);	
+  $authorize_data['x_tax'] = urlencode($wpsc_cart->total_tax);
   if(wpsc_uses_shipping()){
   	$authorize_data['x_freight'] = urlencode($wpsc_cart->selected_shipping_method  . '<|>' . $wpsc_cart->selected_shipping_option . '<|>' . $wpsc_cart->base_shipping);
   }
@@ -233,11 +233,11 @@ $authorize_data['x_Merchant_Email'] = urlencode(get_option('purch_log_email'));
   	foreach ($cart as $k=>$v) {
   		$authorize_data['item_' . $k . '_name'] = $v['name'];
   		$authorize_data['item_' . $k . '_qty'] = $v['quantity'];
-  		$authorize_data['item_' . $k . '_price'] = $v['price'];		
+  		$authorize_data['item_' . $k . '_price'] = $v['price'];
   	}
 	}
-  
-if($x_Password!='') { 
+
+if($x_Password!='') {
 	$authorize_data['x_Password']=$x_Password;
 }
 
@@ -246,31 +246,31 @@ if($x_Password!='') {
   #
 $num = 0;
 foreach($authorize_data as $key => $value) {
-	if($num > 0) { 
-		$fields .= "&"; 
+	if($num > 0) {
+		$fields .= "&";
 	}
 	$fields .= $key."=".$value;
 	$num++;
 }
-    
-  # 
-  # Start CURL session 
-  # 
-  $user_agent = "WP eCommerce plugin for Wordpress"; 
+
+  #
+  # Start CURL session
+  #
+  $user_agent = "WP eCommerce plugin for Wordpress";
   $referrer = get_option('transact_url');
-  
-  $ch=curl_init(); 
-  curl_setopt($ch, CURLOPT_URL, "https://secure.authorize.net/gateway/transact.dll"); 
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); 
-  curl_setopt($ch, CURLOPT_NOPROGRESS, 1); 
-  curl_setopt($ch, CURLOPT_VERBOSE, 1); 
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION,0); 
-  curl_setopt($ch, CURLOPT_POST, 1); 
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $fields); 
-  curl_setopt($ch, CURLOPT_TIMEOUT, 120); 
-  curl_setopt($ch, CURLOPT_USERAGENT, $user_agent); 
-  curl_setopt($ch, CURLOPT_REFERER, $referrer); 
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+  $ch=curl_init();
+  curl_setopt($ch, CURLOPT_URL, "https://secure.authorize.net/gateway/transact.dll");
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_NOPROGRESS, 1);
+  curl_setopt($ch, CURLOPT_VERBOSE, 1);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION,0);
+  curl_setopt($ch, CURLOPT_POST, 1);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+  curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
+  curl_setopt($ch, CURLOPT_REFERER, $referrer);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
   $buffer = curl_exec($ch);
   curl_close($ch);
@@ -284,10 +284,10 @@ foreach($authorize_data as $key => $value) {
 
   $return = preg_split("/[,]+/", "$buffer"); // Splits out the buffer return into an array so . . .
   $details = $return[0]; // This can grab the Transaction ID at position 1 in the array
-  
-  
+
+
   $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `transactid` = '".$wpdb->escape($return[18])."' WHERE `sessionid` = ".$sessionid." LIMIT 1");
-  
+
  // echo "Location: ".$transact_url.$seperator."sessionid=".$sessionid;
  // exit("<pre>".print_r($return,true)."</pre>");
   // Change the number to grab additional information.  Consult the AIM guidelines to see what information is provided in each position.
@@ -307,22 +307,26 @@ foreach($authorize_data as $key => $value) {
       {
       $seperator ="&";
       }
-  switch ($details) 
-    { 
-    case 1: // Credit Card Successfully Charged 
+  switch ($details)
+    {
+    case 1: // Credit Card Successfully Charged
     $processing_stage = $wpdb->get_var("SELECT `processed` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = ".$sessionid." LIMIT 1");
     if($processing_stage < 2) {
       $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '2' WHERE `sessionid` = ".$sessionid." LIMIT 1");
       }
     header("Location: ".get_option('transact_url').$seperator."sessionid=".$sessionid);
     exit();
-    break; 
-        
-    default: // Credit Card Not Successfully Charged 
-    $_SESSION['wpsc_checkout_misc_error_messages'][] = "Credit Card Processing Error: ".$return[3];//. " ". print_r($return,true)
+    break;
+
+    default: // Credit Card Not Successfully Charged
+    $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+    if ( ! is_array( $error_messages ) )
+      $error_messages = array();
+    $error_messages[] = "Credit Card Processing Error: ".$return[3];
+    wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
     header("Location: ".get_option('shopping_cart_url').$seperator."total=".nzshpcrt_overall_total_price($_POST['collected_data'][get_option('country_form_field')]));
     exit();
-    break; 
+    break;
     }
   }
 
@@ -336,7 +340,7 @@ function submit_authorize()
   } else {
     update_option('authorize_testmode', 0);
   }
-  
+
   foreach((array)$_POST['authorize_form'] as $form => $value) {
     update_option(('authorize_form_'.$form), $value);
 	}
@@ -378,9 +382,9 @@ if(get_option('authorize_testmode') == 1)
     }
 $output .= "      </td>
   </tr>
-  
-   
-   
+
+
+
    <tr class='update_gateway' >
 		<td colspan='2'>
 			<div class='submit'>
@@ -398,7 +402,7 @@ $output .= "      </td>
 			<strong class='form_group'>".__( 'Forms Sent to Gateway', 'wpsc_gold_cart' )."</strong>
 		</td>
 	</tr>
-  
+
   <tr>
       <td>
         ".__( 'Description', 'wpsc_gold_cart' )."
@@ -408,13 +412,13 @@ $output .= "      </td>
       </select>
       </td>
   </tr>
-  
+
 	<tr>
   	<td colspan='2'>
 			<u>".__( 'Bill To Info:', 'wpsc_gold_cart' ). "</u>
   	</td>
 	</tr>
-	
+
   <tr>
       <td>
       ".__( 'First Name Field', 'wpsc_gold_cart' )."

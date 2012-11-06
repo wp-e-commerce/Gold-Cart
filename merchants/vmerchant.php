@@ -14,7 +14,7 @@ if ( in_array( 'vmerchant', (array)get_option( 'custom_gateway_options' ) ) ) {
 
   //generate year options
   $years = '';
-  
+
   for ( $i = 0; $i < 10; $i++ ) {
     $years .= "<option value='" . $curryear_2 . "'>" . $curryear . "</option>\r\n";
     $curryear++;
@@ -44,14 +44,14 @@ if ( in_array( 'vmerchant', (array)get_option( 'custom_gateway_options' ) ) ) {
 			<option value='02'>02</option>
 			<option value='03'>03</option>
 			<option value='04'>04</option>
-			<option value='05'>05</option>						
-			<option value='06'>06</option>						
-			<option value='07'>07</option>					
-			<option value='08'>08</option>						
-			<option value='09'>09</option>						
-			<option value='10'>10</option>						
-			<option value='11'>11</option>																			
-			<option value='12'>12</option>																			
+			<option value='05'>05</option>
+			<option value='06'>06</option>
+			<option value='07'>07</option>
+			<option value='08'>08</option>
+			<option value='09'>09</option>
+			<option value='10'>10</option>
+			<option value='11'>11</option>
+			<option value='12'>12</option>
 			</select>
 			<select class='wpsc_ccBox' name='ExpiryYear'>
 			" . $years . "
@@ -61,7 +61,7 @@ if ( in_array( 'vmerchant', (array)get_option( 'custom_gateway_options' ) ) ) {
   ";
 }
 
-function form_vmerchant() {  
+function form_vmerchant() {
   $args = array(
   	'user_id'      => '',
     'merchant_id'  => '',
@@ -101,7 +101,7 @@ function form_vmerchant() {
       ' . __( 'AVS Security', 'wpsc_gold_cart' ) .'
     </td>
     <td>
-		 <input type="radio" value="yes" name="wpsc_vmerchnat[avs]"  ' . checked( 'yes',$options['avs'],false ) .'  /><label> ' .  TXT_WPSC_YES . ' </label> 
+		 <input type="radio" value="yes" name="wpsc_vmerchnat[avs]"  ' . checked( 'yes',$options['avs'],false ) .'  /><label> ' .  TXT_WPSC_YES . ' </label>
 		 <input type="radio" value="no"  name="wpsc_vmerchnat[avs]"  ' . checked( 'no', $options['avs'],false ) .'  /><label> ' .  TXT_WPSC_NO . '</label>
 	  </td>
   </tr>
@@ -110,7 +110,7 @@ function form_vmerchant() {
       ' . __( 'Mode', 'wpsc_gold_cart' ) .'
     </td>
     <td>
-      <input type="radio" value="live" name="wpsc_vmerchnat[mode]"  ' .  checked( 'live', $options['mode'],false ) .'  /><label> ' .  __( 'Live Mode', 'wpsc_gold_cart' ) . ' </label> 
+      <input type="radio" value="live" name="wpsc_vmerchnat[mode]"  ' .  checked( 'live', $options['mode'],false ) .'  /><label> ' .  __( 'Live Mode', 'wpsc_gold_cart' ) . ' </label>
       <input type="radio" value="test"  name="wpsc_vmerchnat[mode]"  ' . checked( 'test', $options['mode'],false ) .'  /><label> ' . __( 'Test Mode', 'wpsc_gold_cart' ) . '</label>
 	  </td>
   </tr>
@@ -142,7 +142,7 @@ class Virtual_Merchant extends wpsc_merchant {
   // r47hg5fre3b is test password
   // 549114 is pin
   public function submit(){
-    
+
     // basic credit card verification
     $errorMsg = "";
 
@@ -151,7 +151,7 @@ class Virtual_Merchant extends wpsc_merchant {
     } else {
       $errorMsg .= __( 'Credit Card Number Required', 'wpsc_gold_cart' ) . '<br/>';
     }
-    
+
     if ( isset( $_POST['ExpiryMonth'] ) && strlen( $_POST['ExpiryMonth'] ) > 0 ) {
       $ExpiryMonth = $_POST['ExpiryMonth'];
     } else {
@@ -169,7 +169,7 @@ class Virtual_Merchant extends wpsc_merchant {
     } else {
       $errorMsg .= __( 'Credit Card Cvc2 code Required', 'wpsc_gold_cart' ) . '<br/>';
     }
-    
+
     if ( strlen( $errorMsg ) > 0 ) {
       $this->set_error_message( $errorMsg );
       header( 'Location: '.$this->cart_data['shopping_cart_url'] );
@@ -184,7 +184,7 @@ class Virtual_Merchant extends wpsc_merchant {
     } else {
       $separator ="&";
     }
-    
+
     if ( $options['mode'] == 'test' ) {
       // test url goes here
       $url = 'https://demo.myvirtualmerchant.com/VirtualMerchantDemo/process.do';
@@ -213,7 +213,7 @@ class Virtual_Merchant extends wpsc_merchant {
       $avs_zip                = $this->cart_data['billing_address']['post_code'];
       $avs_address            = $this->cleanInput($this->cart_data['billing_address']['address']);
     }
-        
+
     $form = '
       <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
       <html lang="en">
@@ -222,21 +222,21 @@ class Virtual_Merchant extends wpsc_merchant {
         </head>
         <body>
           <form id="vmerchant_form" action="' .$url . '" method="POST">
-            <input type="hidden" name="ssl_transaction_type"       value="ccsale"> 
+            <input type="hidden" name="ssl_transaction_type"       value="ccsale">
             <input type="hidden" name="ssl_show_form"              value="false">
             <input type="hidden" name="ssl_merchant_id"            value="'. $options['merchant_id'] .'">
             <input type="hidden" name="ssl_user_id"                value="'. $options['user_id'] .'">
             <input type="hidden" name="ssl_pin"                    value="'. $options['pin'] .'">
-   	        <input type="hidden" name="ssl_amount"                 value="'. $amount .'"> 
-           	<input type="hidden" name="ssl_salestax"               value="'. $sales_tax .'"> 
-            <input type="hidden" name="ssl_invoice_number"         value="'. $invoice_number . '"> 
-            <input type="hidden" name="ssl_email"                  value="'. $email . '">  
-            <input type="hidden" name="ssl_card_number"            value="'. $CardNumber . '">  
-            <input type="hidden" name="ssl_exp_date"               value="'. $credit_card_date . '">  
+   	        <input type="hidden" name="ssl_amount"                 value="'. $amount .'">
+           	<input type="hidden" name="ssl_salestax"               value="'. $sales_tax .'">
+            <input type="hidden" name="ssl_invoice_number"         value="'. $invoice_number . '">
+            <input type="hidden" name="ssl_email"                  value="'. $email . '">
+            <input type="hidden" name="ssl_card_number"            value="'. $CardNumber . '">
+            <input type="hidden" name="ssl_exp_date"               value="'. $credit_card_date . '">
             <input type="hidden" name="ssl_cvv2cvc2_indicator"     value="1">
-            <input type="hidden" name="ssl_cvv2cvc2"               value="'. $Cvc2 . '"> 
-            <input type="hidden" name="ssl_receipt_decl_get_url"   value="'. $transaction_results_page . '">  
-            <input type="hidden" name="ssl_receipt_apprvl_get_url" value="'. $transaction_results_page . '' .$separator .'"> 
+            <input type="hidden" name="ssl_cvv2cvc2"               value="'. $Cvc2 . '">
+            <input type="hidden" name="ssl_receipt_decl_get_url"   value="'. $transaction_results_page . '">
+            <input type="hidden" name="ssl_receipt_apprvl_get_url" value="'. $transaction_results_page . '' .$separator .'">
             <input type="hidden" name="ssl_result_format"          value="HTML">
             <input type="hidden" name="ssl_receipt_decl_method"    value="REDG">
   	        <input type="hidden" name="ssl_receipt_apprvl_method"  value="REDG">
@@ -264,7 +264,7 @@ class Virtual_Merchant extends wpsc_merchant {
     if ( strlen( $country ) > 0 ) {
         $form .= '<input type="hidden" name="ssl_country" 	       value="' . $country. '">';
     }
-    
+
     if ( $options['mode'] == 'test' ) {
       $form .= '<input type="hidden" name="ssl_test_mode"          value="true">';
     } else {
@@ -275,23 +275,23 @@ class Virtual_Merchant extends wpsc_merchant {
       $form .= '<input type="hidden" name="ssl_avs_address"        value="' . $avs_address . '">
                 <input type="hidden" name="ssl_avs_zip"            value="' . $avs_zip . '">';
     }
-    
+
     $form .= '
           </form>
           <script type="text/javascript">document.getElementById("vmerchant_form").submit();</script>
         </body>
       </html>';
-    
+
     echo $form;
   }
-    
+
   private function cleanInput($strRawText){
     $iCharPos = 0;
     $chrThisChar = "";
     $strCleanedText = "";
     $strAllowableChars     = "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_/\(),.:|";
     $blnAllowAccentedChars = TRUE;
-    
+
     //Compare each character based on list of acceptable characters
     while ( $iCharPos < strlen( $strRawText ) ) {
       // Only include valid characters **
@@ -309,18 +309,18 @@ class Virtual_Merchant extends wpsc_merchant {
     }
 
     return $strCleanedText;
-  } 
+  }
 }
 
-if ( isset( $_GET['ssl_card_number'] ) && 
-     isset( $_GET['ssl_exp_date'] ) && 
-     isset( $_GET['ssl_amount'] ) && 
-     isset( $_GET['ssl_invoice_number']) && 
-     isset( $_GET['ssl_email'] ) && 
-     isset( $_GET['ssl_result_message'] ) && 
-     isset( $_GET['ssl_txn_id'] ) && 
-     isset( $_GET['ssl_approval_code'] ) && 
-     isset( $_GET['ssl_cvv2_response'] ) && 
+if ( isset( $_GET['ssl_card_number'] ) &&
+     isset( $_GET['ssl_exp_date'] ) &&
+     isset( $_GET['ssl_amount'] ) &&
+     isset( $_GET['ssl_invoice_number']) &&
+     isset( $_GET['ssl_email'] ) &&
+     isset( $_GET['ssl_result_message'] ) &&
+     isset( $_GET['ssl_txn_id'] ) &&
+     isset( $_GET['ssl_approval_code'] ) &&
+     isset( $_GET['ssl_cvv2_response'] ) &&
      isset( $_GET['ssl_txn_time'] ) ) {
   // just to make sure that this is a vmerchnat responce
   add_action('init', 'wpec_vmerchant_return');
@@ -328,25 +328,28 @@ if ( isset( $_GET['ssl_card_number'] ) &&
 
 function wpec_vmerchant_return(){
   global $sessionid, $wpdb;
-  
+
   $sessionid = $_GET['ssl_invoice_number'];
-  
+
   if ( $_GET['ssl_result_message'] == 'APPROVED' || $_GET['ssl_result_message'] == 'APPROVAL' ) {
     // success
     $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
-                	 SET `processed` = '3', `transactid` = '" . $_GET['ssl_txn_id'] . "', 
-                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "' 
+                	 SET `processed` = '3', `transactid` = '" . $_GET['ssl_txn_id'] . "',
+                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "'
                 	 WHERE `sessionid` = " . $sessionid . " LIMIT 1" );
-    
+
     // set this global, wonder if this is ok
     transaction_results( $sessionid, true );
   } else {
-    $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` 
-    				       SET `processed` = '1',`transactid` = '" . $_GET['ssl_txn_id'] . "', 
-                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "' 
+    $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
+    				       SET `processed` = '1',`transactid` = '" . $_GET['ssl_txn_id'] . "',
+                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "'
                 	 WHERE `sessionid` = " . $sessionid . " LIMIT 1" );
-    
-    $_SESSION['wpsc_checkout_misc_error_messages'][] = '<strong style="color:red">' . urldecode( $_GET['ssl_result_message'] ) . ' </strong>';
+    $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+    if ( ! is_array( $error_messages ) )
+        $error_messages = array();
+    $error_messages[] = '<strong style="color:red">' . urldecode( $_GET['ssl_result_message'] ) . ' </strong>';
+    wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
     $checkout_page_url = get_option( 'shopping_cart_url' );
     if ( $checkout_page_url ) {
       header( 'Location: '.$checkout_page_url );

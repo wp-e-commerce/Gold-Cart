@@ -7,10 +7,9 @@ $nzshpcrt_gateways[$num]['submit_function'] = "submit_paystation";
 $nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
 
 function gateway_paystation($seperator, $sessionid){
-  
-	$price =  number_format(nzshpcrt_overall_total_price($_SESSION['delivery_country']), 2, '', ',');
+
+	$price =  number_format( nzshpcrt_overall_total_price( wpsc_get_customer_meta( 'billing_country' ) ), 2, '', ',' );
 	$url = "https://www.paystation.co.nz/dart/darthttp.dll?paystation&pi=".get_option('paystation_id')."&ms=".	$sessionid."&am=".$price."";
-	$_SESSION['checkoutdata'] = '';
 	header("Location: $url");
 	exit();
 }

@@ -27,11 +27,11 @@ if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
 <td>
 <input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 </td>
-</tr> 
+</tr>
 <td> ".__( 'CVV Code *', 'wpsc_gold_cart' )." </td>
 <td>
 <input type='text' size='4' value='' maxlength='4' name='cvmvalue' /></td>
-</tr> 
+</tr>
 ";
 }
 function gateway_linkpoint($seperator, $sessionid) {
@@ -41,20 +41,20 @@ function gateway_linkpoint($seperator, $sessionid) {
 	$purchase_log = $wpdb->get_results($purchase_log_sql,ARRAY_A) ;
 	$purchase_log=$purchase_log[0];
 		//Get provided user info
-		
+
 	//Here starts most of the changes implemented into linkpoint for passing userinfo
-	$usersql = "SELECT 
-		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.value, 
-		`".WPSC_TABLE_CHECKOUT_FORMS."`.`name`, 
-		`".WPSC_TABLE_CHECKOUT_FORMS."`.`unique_name` FROM 
-		`".WPSC_TABLE_CHECKOUT_FORMS."` LEFT JOIN 
-		`".WPSC_TABLE_SUBMITED_FORM_DATA."` ON 
-		`".WPSC_TABLE_CHECKOUT_FORMS."`.id = 
-		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`form_id` WHERE  
+	$usersql = "SELECT
+		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.value,
+		`".WPSC_TABLE_CHECKOUT_FORMS."`.`name`,
+		`".WPSC_TABLE_CHECKOUT_FORMS."`.`unique_name` FROM
+		`".WPSC_TABLE_CHECKOUT_FORMS."` LEFT JOIN
+		`".WPSC_TABLE_SUBMITED_FORM_DATA."` ON
+		`".WPSC_TABLE_CHECKOUT_FORMS."`.id =
+		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`form_id` WHERE
 		`".WPSC_TABLE_SUBMITED_FORM_DATA."`.`log_id`=".$purchase_log['id']." ORDER BY `".WPSC_TABLE_CHECKOUT_FORMS."`.`checkout_order`";
-		
+
 	$userinfo = $wpdb->get_results($usersql, ARRAY_A);
-	
+
 
 	foreach((array)$userinfo as $key => $value){
 		if(($value['unique_name']=='billingfirstname') && $value['value'] != ''){
@@ -79,7 +79,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 			$sql = "SELECT `code` FROM `".WPSC_TABLE_REGION_TAX."` WHERE `id` ='".$value['value']."' LIMIT 1";
 			$myorder1['STATE'] = $wpdb->get_var($sql);
 		}else{
-			
+
 		//	$data['STATE']='CA';
 		}
 		if(($value['unique_name']=='billingcountry') && $value['value'] != ''){
@@ -93,7 +93,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 				$sql = "SELECT `code` FROM `".WPSC_TABLE_REGION_TAX."` WHERE `id` ='".$value['value'][1]."' LIMIT 1";
 				$myorder1['STATE'] = $wpdb->get_var($sql);
 			}
-		}		
+		}
 		if(($value['unique_name']=='billingpostcode') && $value['value'] != ''){
 			$myorder1['ZIP']	= $value['value'];
 		}
@@ -109,17 +109,17 @@ function gateway_linkpoint($seperator, $sessionid) {
 		}
 		if(($value['unique_name']=='shippingaddress') && $value['value'] != ''){
 			$myorder1['SHIPTOSTREET']	= $value['value'];
-		}	
+		}
 		if(($value['unique_name']=='shippingcity') && $value['value'] != ''){
 			$myorder1['SHIPTOCITY']	= $value['value'];
-		}	
+		}
 			//$data['SHIPTOCITY'] = 'CA';
 		if(($value['unique_name']=='shippingstate') && $value['value'] != ''){
 		//	$data['SHIPTOSTATE'] = $value['value'];
 			$sql = "SELECT `code` FROM `".WPSC_TABLE_REGION_TAX."` WHERE `id` ='".$value['value']."' LIMIT 1";
 			$myorder1['SHIPTOSTATE'] = $wpdb->get_var($sql);
 		}else{
-		}	
+		}
 		if(($value['unique_name']=='shippingcountry') && $value['value'] != ''){
 			$value['value'] = maybe_unserialize($value['value']);
 			if(is_array($value['value'])){
@@ -135,11 +135,11 @@ function gateway_linkpoint($seperator, $sessionid) {
 			}else{
 				$myorder1['SHIPTOCOUNTRY']	= $value['value'];
 			}
-			
-		}	
+
+		}
 		if(($value['unique_name']=='shippingpostcode') && $value['value'] != ''){
 			$myorder1['SHIPTOZIP']	= $value['value'];
-		}	
+		}
 	}
 
 //Here ends most of the changes implemented into linkpoint
@@ -149,7 +149,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 	$myorder["port"] = "1129";
 	$myorder["keyfile"] = WPSC_GOLD_FILE_PATH."/merchants/linkpointpem/".$store.".pem";
 	$myorder["configfile"] = $store;
-	
+
 	//	# CREDIT CARD INFO
 	//if (get_option('linkpoint_test')=='0') {
 		$myorder["ordertype"] = "SALE";
@@ -165,8 +165,8 @@ function gateway_linkpoint($seperator, $sessionid) {
 */
 	$myorder["cardexpmonth"] = $_POST['expiry']['month'];
 	$myorder["cardexpyear"] = $_POST['expiry']['year'];
-	$myorder["cvmvalue"] = $_POST['cvmvalue'];	
-	
+	$myorder["cvmvalue"] = $_POST['cvmvalue'];
+
 //	# BILLING INFO
 	$myorder["name"]     = $myorder1['FIRSTNAME'].' '.$myorder1['LASTNAME'];
 	//	$myorder["billingcompany"]  = $_POST["company"];
@@ -190,7 +190,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 	$myorder["szip"]      = $myorder1['SHIPTOZIP'];
 	$myorder["scountry"]  = $myorder1['SHIPTOCOUNTRY'];
 
-	
+
 //	# ORDER INFO
 	$myorder["chargetotal"] = $purchase_log['totalprice'];
 //	exit('<pre>'.print_r($myorder,true).'</pre>');
@@ -199,9 +199,10 @@ function gateway_linkpoint($seperator, $sessionid) {
 	if($responce["r_approved"]!="APPROVED"){
 		$message .= "<h3>".__( 'Please Check the Payment Results', 'wpsc_gold_cart' )."</h3>";
 		$message .= __( 'Your transaction was not successful.', 'wpsc_gold_cart' )."<br /><br />";
-		//$message .= "<a href=".get_option('shopping_cart_url').">Click here to go back to checkout page.</a>";
-		$_SESSION['wpsc_checkout_misc_error_messages'][] = $message;
-		//header("Location:".get_option('transact_url').$seperator."eway=1&result=".$sessionid."&message=1");
+		$errors = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+		if ( ! is_array( $errors ) )
+			$errors[] = $message;
+		wpsc_update_customer_meta( 'checkout_misc_error_messages', $errors );
 	}else{
 		$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
 		header("Location: ".$transact_url.$seperator."sessionid=".$sessionid);
@@ -213,7 +214,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 function submit_linkpoint() {
 
 /* Doing a test account with link point this way is silly because we send linkpoint the test card number that is always used for accepted payment, and there is no way to test a faild payment. Link point have two card numbers which you can use with your live account to test transactions one card number will generate a faild response and one an accepted one. Also some people were having issues where this option was not re updated to change the option to use test account back to no. The foreach is redundent but this is getting rewritten to use new api so for now it will stay like this */
-	
+
 	$options = array(
 		'store_number',
 		//'test',
@@ -230,7 +231,7 @@ function form_linkpoint() {
 
 	$linkpoint_test1 = ( isset( $linkpoint_test1 ) ) ? $linkpoint_test1 : '';
 	$linkpoint_test2 = ( isset( $linkpoint_test2 ) ) ? $linkpoint_test2 : '';
-	
+
 	return "
 		<tr>
 			<td>
@@ -253,15 +254,15 @@ function form_linkpoint() {
 
 
 		/* lphp.php  LINKPOINT PHP MODULE */
-	
+
 		/* A php interlocutor CLASS for
 		LinkPoint: LINKPOINT LSGS API using
 		libcurl, liblphp.so and liblpssl.so
 		v3.0.005  20 Aug. 2003  smoffet */
-		
-		
+
+
 # Copyright 2003 LinkPoint International, Inc. All Rights Reserved.
-# 
+#
 # This software is the proprietary information of LinkPoint International, Inc.
 # Use is subject to license terms.
 
@@ -273,9 +274,9 @@ class lphp {
 	var $debugging;
 	###########################################
 	#
-	#	F U N C T I O N    p r o c e s s ( ) 
+	#	F U N C T I O N    p r o c e s s ( )
 	#
-	#	process a hash table or XML string 
+	#	process a hash table or XML string
 	#	using LIBLPHP.SO and LIBLPSSL.SO
 	#
 	###########################################
@@ -291,7 +292,7 @@ class lphp {
 		if ( isset($data["debugging"]) || isset($data["debug"]) ) {
 			if ($data["debugging"] == "true" || $data["debug"] == "true"  ) {
 				$this->debugging = 1;
-				
+
 				# print out incoming hash
 				if ($webspace) {
 					echo "at process, incoming data: <br>";
@@ -300,9 +301,9 @@ class lphp {
 				} else {     // don't use html output
 					echo "at process, incoming data: \n";
 					while (list($key, $value) = each($data))
-						echo "$key = $value\n"; 
+						echo "$key = $value\n";
 				}
-				reset($data); 
+				reset($data);
 			}
 		}
 		if (isset($data["xml"])){
@@ -320,7 +321,7 @@ class lphp {
 
 
 		# FOR PERFORMANCE, Use the 'extensions' statement in your php.ini to load
-		# this library at PHP startup, then comment out the next seven lines 
+		# this library at PHP startup, then comment out the next seven lines
 
 		// load library
 		if (!extension_loaded('liblphp')) {
@@ -331,7 +332,7 @@ class lphp {
 
 		if ($this->debugging) {
 			if ($webspace)
-				echo "<br>sending xml string:<br>" . htmlspecialchars($xml) . "<br><br>";    
+				echo "<br>sending xml string:<br>" . htmlspecialchars($xml) . "<br><br>";
 			else
 				echo "\nsending xml string:\n$xml\n\n";
 		}
@@ -342,18 +343,18 @@ class lphp {
 
 		if (strlen($retstg) < 4)
 			exit ("cannot connect to lsgs, exiting");
-		
+
 		if ($this->debugging) {
 			if ($this->webspace)	// we're web space
 				echo "<br>server responds:<br>" . htmlspecialchars($retstg) . "<br><br>";
 			else						// not html output
 				echo "\nserver responds:\n $retstg\n\n";
 		}
-	
+
 		if ($using_xml != 1) {
 			// convert xml response back to hash
 			$retarr = $this->decodeXML($retstg);
-			
+
 			// and send it back to caller
 			return ($retarr);
 		} else {
@@ -365,14 +366,14 @@ class lphp {
 
 	#####################################################
 	#
-	#	F U N C T I O N    c u r l _ p r o c e s s ( ) 
+	#	F U N C T I O N    c u r l _ p r o c e s s ( )
 	#
-	#	process hash table or xml string table using 
-	#	curl, either with PHP built-in curl methods 
+	#	process hash table or xml string table using
+	#	curl, either with PHP built-in curl methods
 	#	or binary executable curl
 	#
 	#####################################################
-	
+
 	function curl_process($data) {
 		$using_xml = 0;
 		$webspace = 1;
@@ -393,11 +394,11 @@ class lphp {
 						 echo htmlspecialchars($key) . " = " . htmlspecialchars($value) . "<BR>\n";
 				} else {
 					echo "at curl_process, incoming data: \n";
-					
+
 					while (list($key, $value) = each($data))
 						echo "$key = $value\n";
 				}
-				reset($data); 
+				reset($data);
 			}
 		}
 		if (isset($data["xml"])) {
@@ -410,7 +411,7 @@ class lphp {
 
 		if ($this->debugging) {
 			if ($webspace)
-				echo "<br>sending xml string:<br>" . htmlspecialchars($xml) . "<br><br>";    
+				echo "<br>sending xml string:<br>" . htmlspecialchars($xml) . "<br><br>";
 			else
 				echo "\nsending xml string:\n$xml\n\n";
 		}
@@ -422,7 +423,7 @@ class lphp {
 			if ($data["cbin"] == "true") {
 				if (isset($data["cpath"]))
 					$cpath = $data["cpath"];
-						
+
 				else {
 					if (getenv("OS") == "Windows_NT")
 						$cpath = "c:\\curl\\curl.exe";
@@ -443,7 +444,7 @@ class lphp {
 					else
 						$result = exec ("$cpath -d \"$xml\" -E $key  -k $host", $retarr, $retnum);
 				} else {	//*nix string
-				
+
 					if ($this->debugging)
 						$result = exec ("'$cpath' $args -v -E '$key' -d '$xml' '$host'", $retarr, $retnum);
 					else
@@ -453,7 +454,7 @@ class lphp {
 				# EVALUATE RESPONSE #
 
 				if (strlen($result) < 2) {
-					$result = "<r_approved>FAILURE</r_approved><r_error>Could not connect.</r_error>"; 
+					$result = "<r_approved>FAILURE</r_approved><r_error>Could not connect.</r_error>";
 					return $result;
 				}
 
@@ -470,13 +471,13 @@ class lphp {
 				} else {
 					// convert xml response back to hash
 					$retarr = $this->decodeXML($result);
-					
+
 					// and send it back to caller. Done.
 					return ($retarr);
 				}
 			}
 		} else {	// using BUILT-IN PHP curl methods
-		
+
 			$ch = curl_init ();
 			curl_setopt ($ch, CURLOPT_URL,$host);
 			curl_setopt ($ch, CURLOPT_POST, 1);
@@ -493,11 +494,11 @@ class lphp {
 
 			#  use curl to send the xml SSL string
 			$result = curl_exec ($ch);
-			
+
 			curl_close($ch);
 
 			if (strlen($result) < 2) {
-				$result = "<r_approved>FAILURE</r_approved><r_error>Could not connect.</r_error>"; 
+				$result = "<r_approved>FAILURE</r_approved><r_error>Could not connect.</r_error>";
 				return $result;
 			}
 
@@ -514,17 +515,17 @@ class lphp {
 			} else {
 				#convert xml response to hash
 				$retarr = $this->decodeXML($result);
-				
+
 				# and send it back
 				return ($retarr);
 			}
 		}
 	}
-	#############################################	
+	#############################################
 	#
-	#	F U N C T I O N   d e c o d e X M L ( ) 
+	#	F U N C T I O N   d e c o d e X M L ( )
 	#
-	#	converts the LSGS response xml string	
+	#	converts the LSGS response xml string
 	#	to a hash of name-value pairs
 	#
 	#############################################
@@ -542,7 +543,7 @@ class lphp {
 
 	############################################
 	#
-	#	F U N C T I O N    b u i l d X M L ( ) 
+	#	F U N C T I O N    b u i l d X M L ( )
 	#
 	#	converts a hash of name-value pairs
 	#	to the correct XML format for LSGS
@@ -606,10 +607,10 @@ class lphp {
 
 		if (isset($pdata["city"]))
 			$xml .= "<city>" . $pdata["city"] . "</city>";
-			
+
 		if (isset($pdata["state"]))
 			$xml .= "<state>" . $pdata["state"] . "</state>";
-			
+
 		if (isset($pdata["zip"]))
 			$xml .= "<zip>" . $pdata["zip"] . "</zip>";
 
@@ -633,7 +634,7 @@ class lphp {
 
 		$xml .= "</billing>";
 
-		
+
 		## SHIPPING NODE ##
 		$xml .= "<shipping>";
 
@@ -753,7 +754,7 @@ class lphp {
 		$xml .= "</payment>";
 
 
-		### CHECK NODE ### 
+		### CHECK NODE ###
 
 
 		if (isset($pdata["voidcheck"]))
@@ -770,7 +771,7 @@ class lphp {
 
 			if (isset($pdata["bankname"]))
 				$xml .= "<bankname>" . $pdata["bankname"] . "</bankname>";
-	
+
 			if (isset($pdata["bankstate"]))
 				$xml .= "<bankstate>" . $pdata["bankstate"] . "</bankstate>";
 
@@ -785,7 +786,7 @@ class lphp {
 
 			if (isset($pdata["checknumber"]))
 				$xml .= "<checknumber>" . $pdata["checknumber"] . "</checknumber>";
-				
+
 			if (isset($pdata["accounttype"]))
 				$xml .= "<accounttype>" . $pdata["accounttype"] . "</accounttype>";
 
@@ -836,7 +837,7 @@ class lphp {
 		}
 
 		### ITEMS AND OPTIONS NODES ###
-	
+
 		if ($this->debugging)	// make it easy to see
 		{						// LSGS doesn't mind whitespace
 			reset($pdata);
@@ -869,7 +870,7 @@ class lphp {
 
 								$xml .= "\t\t\t<option>\n";
 								$otag = 1;
-								
+
 								while (list($key3, $val3) = each ($val2))
 									$xml .= "\t\t\t\t<$key3>$val3</$key3>\n";
 							}
@@ -922,7 +923,7 @@ class lphp {
 
 								$xml .= "<option>";
 								$otag = 1;
-								
+
 								while (list($key3, $val3) = each ($val2))
 									$xml .= "<$key3>$val3</$key3>";
 							}

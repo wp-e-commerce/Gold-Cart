@@ -11,7 +11,7 @@ if ( is_user_logged_in() ) {
 	//We sneak right infront of user profile page filter
 	add_filter( 'the_content', 'wpec_auth_net_user_profile_hook', 11 );
 	function wpec_auth_net_user_profile_hook( $content ){
-	
+
 		if ( preg_match( "/\[userlog\]/", $content ) &&  isset($_REQUEST['wpec_auth_net_user_profile'])) {
 			define( 'DONOTCACHEPAGE', true );
 
@@ -47,17 +47,17 @@ if ( is_user_logged_in() ) {
 		if($type!='shippingadress'){
 			$result = $myGateway->deletePay($id);
 			if($result === false){
-				$_SESSION['wpec_message'] = $result;
+				wpsc_update_customer_meta( 'auth_net_message', $result );
 			}else{
-				$_SESSION['wpec_message'] = __( 'Saved Payment Details Have Been Deleted.', 'wpsc_gold_cart' );
+				wpsc_update_customer_meta( 'auth_net_message', __( 'Saved Payment Details Have Been Deleted.', 'wpsc_gold_cart' ) );
 			}
 		}else{
 			$result = $myGateway->deleteShip($id);
 			if($result === false){
-				$_SESSION['wpec_message'] = $result;
+				wpsc_update_customer_meta( 'auth_net_message', $result );
 			}else{
-                                $_SESSION['wpec_message'] = __( 'Saved Shipping Details Have Been Deleted.', 'wpsc_gold_cart' );
-                        }
+                wpsc_update_customer_meta( 'auth_net_message', __( 'Saved Shipping Details Have Been Deleted.', 'wpsc_gold_cart' ) );
+            }
 		}
 	}
 
@@ -67,16 +67,18 @@ if ( is_user_logged_in() ) {
 		$creditcards = $myGateway->getCreditCardProfiles();
 		$bankaccounts = $myGateway->getBankAccountProfiles();
 		$shipaddress = $myGateway->getShippingProfiles();
+		$auth_net_message = wpsc_get_customer_meta( 'auth_net_message' );
+
 		if ( class_exists('WPSC_Subscription') )
 			$subs = new WPSC_Subscription();
 		?>
 		<div id='wpec_auth_net_user_profile_manager'>
 		<h2><?php _e( 'Saved Credit Card, Bank and Shipping Information', 'wpsc_gold_cart' );?></h2>
-		<?php if(isGood($_SESSION['wpec_message'])){ ?>
-			<div class='notice'><?php echo $_SESSION['wpec_message'];?></div>
-		<?php 
-			unset($_SESSION['wpec_message']);
-		} 
+		<?php if( isGood( $auth_net_message ) ){ ?>
+			<div class='notice'><?php echo $auth_net_message; ?></div>
+		<?php
+			wpsc_delete_customer_meta( 'auth_net_message' );
+		}
 		if($bankaccounts){ ?>
 		<form action="<?php echo $wpec_auth_net_user_profile_url;?>" method="post">
 			<div id='bankaccounts'class='sectionBox'>

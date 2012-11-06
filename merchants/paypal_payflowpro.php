@@ -99,11 +99,13 @@ function gateway_paypal_payflow($seperator, $sessionid) {
    }
 
    if($_POST['collected_data'][get_option('paypal_form_state')] != '') {
-      $data['state'] = $wpdb->get_var("SELECT code FROM `".WPSC_TABLE_REGION_TAX."` WHERE id='".$_SESSION['selected_region']."'");
+      $data['state'] = $wpdb->get_var("SELECT code FROM `".WPSC_TABLE_REGION_TAX."` WHERE id='" . wpsc_get_customer_meta( 'billing_region' ) ."'");
    }
 
-   if(preg_match("/^[a-zA-Z]{2}$/",$_SESSION['selected_country'])) {
-      $data['country'] = $_SESSION['selected_country'];
+   $customer_billing_country = wpsc_get_customer_meta( 'billing_country' );
+
+   if( preg_match("/^[a-zA-Z]{2}$/", $customer_billing_country ) ) {
+      $data['country'] = $customer_billing_country;
    }
 
    if(is_numeric($_POST['collected_data'][get_option('paypal_form_post_code')])) {
@@ -262,7 +264,7 @@ function submit_paypal_payflow()
 		if ( isset( $_POST[$key] ) && $_POST[$key] !== '' ) {
 			update_option( $key, $_POST[$key] );
 		}
-			
+
 		elseif ( $field == 'test' )
 			update_option( $key, 0 );
 	}
@@ -270,7 +272,7 @@ function submit_paypal_payflow()
 		foreach( (array) $_POST['paypal_form'] as $form => $value ) {
 			update_option( 'paypal_form_' . $form , $value);
 		}
-	}	
+	}
 	return true;
 }
 
@@ -285,14 +287,14 @@ function form_paypal_payflow()
 		'JPY' => __( 'Japanese Yen', 'wpsc_gold_cart' ),
 	);
 	$chosen_currency = get_option( 'paypal_payflow_curcode' );
-	
+
 	$methods = array(
 		__( 'Payment Express', 'wpsc_gold_cart' ),
 		__( 'Credit Card Direct Payment', 'wpsc_gold_cart' ),
 	);
 	$chosen_method = get_option( 'paypal_payflow_method' );
 	$payflow_test = get_option( 'paypal_payflow_test' );
-	
+
 	ob_start();
 ?>
 <tr>
@@ -508,31 +510,15 @@ function response_handler($nvpArray, $fraud,$sessionid,$data=null,$recurring=nul
    //$RespMsg = 'General Error.  Please contact Customer Support.';
 //    echo ($result_code);
    if ($result_code == 1 || $result_code == 26) {
-      $_SESSION['payflow_message'] = __( 'Account configuration issue.  Please verify your login credentials.', 'wpsc_gold_cart' );
+      wpsc_update_customer_meta( 'payflow_message', __( 'Account configuration issue.  Please verify your login credentials.', 'wpsc_gold_cart' ) );
    } else if ($result_code== '0') {
 
-      //$_SESSION['nzshpcrt_cart']=null;
       $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '3' WHERE `sessionid` = ".$sessionid." LIMIT 1");
       $log_id=$wpdb->get_var("SELECT id FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = '".$sessionid."' LIMIT 1");
       if (isset($nvpArray['CVV2MATCH'])) {
          if ($nvpArray['CVV2MATCH'] != "Y") {
             $RespMsg = __( 'Your billing (cvv2) information does not match. Please re-enter.', 'wpsc_gold_cart' );
-         } else {
-//             wpsc_member_activate_subscriptions($log_id);
-            //$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `paypal_recurring_profileid` = '".$nvpArray['PROFILEID']."' WHERE `id` = ".$log_id." LIMIT 1");
-            $_SESSION['nzshpcrt_cart'] = '';
-            $_SESSION['nzshpcrt_cart'] = Array();
-
-//             header("Location:".get_option('product_list_url'));
-//             exit();
          }
-      } else {
-//          wpsc_member_activate_subscriptions($log_id);
-         //$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `paypal_recurring_profileid` = '".$nvpArray['PROFILEID']."' WHERE `id` = ".$log_id." LIMIT 1");
-         $_SESSION['nzshpcrt_cart'] = '';
-         $_SESSION['nzshpcrt_cart'] = Array();
-         //header("Location:".get_option('product_list_url'));
-         //exit();
       }
    } else if ($result_code == 12) {
       $log_id = $wpdb->get_var("SELECT `id` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`='$sessionid' LIMIT 1");
@@ -546,7 +532,7 @@ foreach((array)$cart_content as $cart_item) {
       $wpdb->query("DELETE FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='$log_id'");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_SUBMITED_FORM_DATA."` WHERE `log_id` IN ('$log_id')");
       $wpdb->query("DELETE FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `id`='$log_id' LIMIT 1");
-      $_SESSION['payflow_message']= __( 'Your credit card has been declined.  You may press the back button in your browser and check that you\'ve entered your card information correctly, otherwise please contact your credit card issuer.', 'wpsc_gold_cart' );
+      wpsc_update_customer_meta( 'payflow_message', __( 'Your credit card has been declined.  You may press the back button in your browser and check that you\'ve entered your card information correctly, otherwise please contact your credit card issuer.', 'wpsc_gold_cart' ) );
       header("Location:".get_option('transact_url').$seperator."payflow=1&message=1");
    } else if ($result_code == 13) {
       $log_id = $wpdb->get_var("SELECT `id` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`='$sessionid' LIMIT 1");
@@ -620,12 +606,10 @@ foreach((array)$cart_content as $cart_item) {
    }
 
    if ($result_code!=0) {
-      $_SESSION['payflow_message']=$RespMsg;
+      wpsc_update_customer_meta( 'payflow_message', $RespMsg );
       header("Location:".get_option('transact_url').$seperator."payflow=1&&sessionid=".$sessionid."result=".$result_code."&message=1");
-   } else {
-      //header("Location:".get_option('transact_url').$seperator."payflow=1&message=1");
    }
-   //displayResponse($RespMsg, $nvpArray);
+
    header("Location:".get_option('transact_url').$seperator."payflow=1&sessionid=".$sessionid."&result=".$result_code."&message=1");
 }
 

@@ -12,9 +12,7 @@ function gateway_ideal($seperator, $sessionid) {
 	$purchase_log_sql = "SELECT * FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`= ".$sessionid." LIMIT 1";
 	$purchase_log = $wpdb->get_results($purchase_log_sql,ARRAY_A) ;
 	$submiturl="https://internetkassa.abnamro.nl/ncol/prod/orderstandard.asp";
-	$amount = nzshpcrt_overall_total_price($_SESSION['delivery_country']);
-// 	$amount = round($amount,2)*100;
-// 	exit($amount);
+	$amount = nzshpcrt_overall_total_price( wpsc_get_customer_meta( 'shipping_country' ) );
 
 	if($_POST['collected_data'][get_option('ideal_form_post_code')] != ''){
 		$postcode= $_POST['collected_data'][get_option('ideal_form_post_code')];
@@ -23,16 +21,16 @@ function gateway_ideal($seperator, $sessionid) {
 	if($_POST['collected_data'][get_option('ideal_form_address')] != ''){
 		$address = $_POST['collected_data'][get_option('ideal_form_address')];
 	}
-	
+
 	if($_POST['collected_data'][get_option('ideal_form_email')] != ''){
 		$email = $_POST['collected_data'][get_option('ideal_form_email')];
 	}
 
 	if($_POST['collected_data'][get_option('ideal_form_city')] != ''){
-		$city = $_POST['collected_data'][get_option('ideal_form_city')]; 
+		$city = $_POST['collected_data'][get_option('ideal_form_city')];
 	}
 
-	if($_POST['collected_data'][get_option('ideal_form_country')] != ''){ 
+	if($_POST['collected_data'][get_option('ideal_form_country')] != ''){
 		$country = $_POST['collected_data'][get_option('ideal_form_country')][0];
 		$country = $wpdb->get_var("SELECT country FROM {$wpdb->prefix}currency_list WHERE isocode='{$country}'");
 	}
