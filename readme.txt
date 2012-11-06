@@ -2,10 +2,10 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7
+Version: 2.9.7.1
 Requires at least: 2.8
-Tested up to: 3.1.1
-Requires: Wp e-Commerce: 3.7.6.7
+Tested up to: 3.4.2
+Requires: Wp e-Commerce: 3.8.9
 
 == Description ==
 
@@ -65,7 +65,7 @@ Support Forum: http://www.getshopped.org/forums/
 
 Premium Support Forum: http://getshopped.org/resources/premium-support/
 
-== Changelog == 
+== Changelog ==
 2.9.1
 * Change: Featured thumbnail is always displayed first in a product image gallery
 * Fix: Session view mode is not preserved
