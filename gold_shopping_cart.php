@@ -105,6 +105,8 @@ if ( $gold_shpcrt_active === 'true' ) {
 		global $wpsc_gc_view_mode;
 
 		$wpsc_gc_view_mode = wpsc_get_customer_meta( 'display_type' );
+		if ( empty( $wpsc_gc_view_mode ) )
+			$wpsc_gc_view_mode =  wpsc_check_display_type();
 
 		if ( get_option( 'show_search' ) && get_option( 'show_advanced_search' ) ) {
 			if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) ) {
@@ -113,8 +115,6 @@ if ( $gold_shpcrt_active === 'true' ) {
 			} elseif ( empty( $wpsc_gc_view_mode ) ) {
 				$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
 			}
-		} elseif ( ! empty( $wpsc_gc_view_mode ) ) {
-			wpsc_delete_customer_meta( 'display_type' );
 		}
 
 		if ( $wpsc_gc_view_mode == 'grid' ) {
