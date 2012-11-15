@@ -20,7 +20,7 @@ class wpec_auth_net extends wpsc_merchant {
 	function __construct($purchase_id = null, $is_receiving = false){
 
 		// Account Types
-		$accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc_gold_cart' ), 'savings' => __( 'Savings Account', 'wpsc_gold_cart' ), 'checking' => __( 'Checking', 'wpsc_gold_cart' ) );
+		$this->accountTypes = array( 'businessChecking' => __( 'Business Checking', 'wpsc_gold_cart' ), 'savings' => __( 'Savings Account', 'wpsc_gold_cart' ), 'checking' => __( 'Checking', 'wpsc_gold_cart' ) );
 
 		//Get our config, or bail
 		if(get_option('wpec_auth_net') != false){
