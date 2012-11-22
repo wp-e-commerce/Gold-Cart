@@ -28,7 +28,7 @@ require( dirname( __FILE__ ) . "/upgrade_panel.php" );
 if ( $gold_shpcrt_active !== 'true' )
 	return;
 
-add_action( 'wpsc_init', '_wpsc_gc_init', 10 );
+add_action( 'wpsc_pre_init', '_wpsc_gc_init', 10 );
 function _wpsc_gc_init() {
 	// Add actions
 	add_action( 'wp_enqueue_scripts', 'wpsc_gold_cart_scripts' );
