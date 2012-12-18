@@ -22,51 +22,51 @@ if ( in_array( 'vmerchant', (array)get_option( 'custom_gateway_options' ) ) ) {
   }
 
   $gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
-	<tr>
-		<td class='wpsc_CC_details'>
-			<label for='CardNumber'>".__( 'Card Number', 'wpsc_gold_cart' )." * </label></td>
-		<td>
-			<input type='text' value='' name='CardNumber' id='CardNumber' maxlength='16' />
-		</td>
-	</tr>
-	<tr>
-		<td class='wpsc_CC_details'>
-			<label for='Cvc2'>".__( 'Cvc2', 'wpsc_gold_cart' )." * </label></td>
-		<td><input type='text' size='4' value='' maxlength='4' name='Cvc2' id='Cvc2' />
-		</td>
-	</tr>
-	<tr>
-		<td class='wpsc_CC_details'>
-			<label for='ExpiryMonth'>".__( 'Expiry', 'wpsc_gold_cart' )." * </label></td>
-		<td>
-			<select class='wpsc_ccBox' name='ExpiryMonth' id='ExpiryMonth'>
-			<option value='01'>01</option>
-			<option value='02'>02</option>
-			<option value='03'>03</option>
-			<option value='04'>04</option>
-			<option value='05'>05</option>
-			<option value='06'>06</option>
-			<option value='07'>07</option>
-			<option value='08'>08</option>
-			<option value='09'>09</option>
-			<option value='10'>10</option>
-			<option value='11'>11</option>
-			<option value='12'>12</option>
-			</select>
-			<select class='wpsc_ccBox' name='ExpiryYear'>
-			" . $years . "
-			</select>
-		</td>
-	</tr>
+  <tr>
+    <td class='wpsc_CC_details'>
+      <label for='CardNumber'>".__( 'Card Number', 'wpsc_gold_cart' )." * </label></td>
+    <td>
+      <input type='text' value='' name='CardNumber' id='CardNumber' maxlength='16' />
+    </td>
+  </tr>
+  <tr>
+    <td class='wpsc_CC_details'>
+      <label for='Cvc2'>".__( 'Cvc2', 'wpsc_gold_cart' )." * </label></td>
+    <td><input type='text' size='4' value='' maxlength='4' name='Cvc2' id='Cvc2' />
+    </td>
+  </tr>
+  <tr>
+    <td class='wpsc_CC_details'>
+      <label for='ExpiryMonth'>".__( 'Expiry', 'wpsc_gold_cart' )." * </label></td>
+    <td>
+      <select class='wpsc_ccBox' name='ExpiryMonth' id='ExpiryMonth'>
+      <option value='01'>01</option>
+      <option value='02'>02</option>
+      <option value='03'>03</option>
+      <option value='04'>04</option>
+      <option value='05'>05</option>
+      <option value='06'>06</option>
+      <option value='07'>07</option>
+      <option value='08'>08</option>
+      <option value='09'>09</option>
+      <option value='10'>10</option>
+      <option value='11'>11</option>
+      <option value='12'>12</option>
+      </select>
+      <select class='wpsc_ccBox' name='ExpiryYear'>
+      " . $years . "
+      </select>
+    </td>
+  </tr>
   ";
 }
 
 function form_vmerchant() {
   $args = array(
-  	'user_id'      => '',
+    'user_id'      => '',
     'merchant_id'  => '',
-    'pin'		       => '',
-    'avs'		       => 'no',
+    'pin'          => '',
+    'avs'          => 'no',
     'mode'         => 'live'
   );
   add_option( 'wpsc_vmerchnat', $args );
@@ -101,9 +101,9 @@ function form_vmerchant() {
       ' . __( 'AVS Security', 'wpsc_gold_cart' ) .'
     </td>
     <td>
-		 <input type="radio" value="yes" name="wpsc_vmerchnat[avs]"  ' . checked( 'yes',$options['avs'],false ) .'  /><label> ' .  TXT_WPSC_YES . ' </label>
-		 <input type="radio" value="no"  name="wpsc_vmerchnat[avs]"  ' . checked( 'no', $options['avs'],false ) .'  /><label> ' .  TXT_WPSC_NO . '</label>
-	  </td>
+     <input type="radio" value="yes" name="wpsc_vmerchnat[avs]"  ' . checked( 'yes',$options['avs'],false ) .'  /><label> ' .  TXT_WPSC_YES . ' </label>
+     <input type="radio" value="no"  name="wpsc_vmerchnat[avs]"  ' . checked( 'no', $options['avs'],false ) .'  /><label> ' .  TXT_WPSC_NO . '</label>
+    </td>
   </tr>
   <tr>
     <td>
@@ -112,7 +112,7 @@ function form_vmerchant() {
     <td>
       <input type="radio" value="live" name="wpsc_vmerchnat[mode]"  ' .  checked( 'live', $options['mode'],false ) .'  /><label> ' .  __( 'Live Mode', 'wpsc_gold_cart' ) . ' </label>
       <input type="radio" value="test"  name="wpsc_vmerchnat[mode]"  ' . checked( 'test', $options['mode'],false ) .'  /><label> ' . __( 'Test Mode', 'wpsc_gold_cart' ) . '</label>
-	  </td>
+    </td>
   </tr>
   ';
   $struc = get_option('permalink_structure');
@@ -125,7 +125,7 @@ function form_vmerchant() {
     </tr>
     ';
    }
-	return $output;
+  return $output;
 }
 
 function submit_vmerchant() {
@@ -227,8 +227,8 @@ class Virtual_Merchant extends wpsc_merchant {
             <input type="hidden" name="ssl_merchant_id"            value="'. $options['merchant_id'] .'">
             <input type="hidden" name="ssl_user_id"                value="'. $options['user_id'] .'">
             <input type="hidden" name="ssl_pin"                    value="'. $options['pin'] .'">
-   	        <input type="hidden" name="ssl_amount"                 value="'. $amount .'">
-           	<input type="hidden" name="ssl_salestax"               value="'. $sales_tax .'">
+            <input type="hidden" name="ssl_amount"                 value="'. $amount .'">
+            <input type="hidden" name="ssl_salestax"               value="'. $sales_tax .'">
             <input type="hidden" name="ssl_invoice_number"         value="'. $invoice_number . '">
             <input type="hidden" name="ssl_email"                  value="'. $email . '">
             <input type="hidden" name="ssl_card_number"            value="'. $CardNumber . '">
@@ -239,10 +239,10 @@ class Virtual_Merchant extends wpsc_merchant {
             <input type="hidden" name="ssl_receipt_apprvl_get_url" value="'. $transaction_results_page . '' .$separator .'">
             <input type="hidden" name="ssl_result_format"          value="HTML">
             <input type="hidden" name="ssl_receipt_decl_method"    value="REDG">
-  	        <input type="hidden" name="ssl_receipt_apprvl_method"  value="REDG">
+            <input type="hidden" name="ssl_receipt_apprvl_method"  value="REDG">
             <input type="hidden" name="ssl_customer_code"          value="1111">';
     if ( strlen( $first_name ) > 0 ){
-      $form .= '<input type="hidden" name="ssl_first_name" 	       value="' . $first_name . '">';
+      $form .= '<input type="hidden" name="ssl_first_name"         value="' . $first_name . '">';
     }
 
     if ( strlen( $last_name ) > 0 ) {
@@ -250,19 +250,19 @@ class Virtual_Merchant extends wpsc_merchant {
     }
 
     if ( strlen( $address2 ) > 0 ) {
-      $form .= '<input type="hidden" name="ssl_address2" 	         value="' . $address2 . '">';
+      $form .= '<input type="hidden" name="ssl_address2"           value="' . $address2 . '">';
     }
 
     if ( strlen( $city ) > 0 ) {
-      $form .= '<input type="hidden" name="ssl_city" 		           value="' . $city . '">';
+      $form .= '<input type="hidden" name="ssl_city"               value="' . $city . '">';
     }
 
     if ( strlen( $state ) > 0 ) {
-      $form .= '<input type="hidden" name="ssl_state" 		         value="' . $state . '">';
+      $form .= '<input type="hidden" name="ssl_state"              value="' . $state . '">';
     }
 
     if ( strlen( $country ) > 0 ) {
-        $form .= '<input type="hidden" name="ssl_country" 	       value="' . $country. '">';
+        $form .= '<input type="hidden" name="ssl_country"          value="' . $country. '">';
     }
 
     if ( $options['mode'] == 'test' ) {
@@ -312,17 +312,20 @@ class Virtual_Merchant extends wpsc_merchant {
   }
 }
 
+
+
 if ( isset( $_GET['ssl_card_number'] ) &&
      isset( $_GET['ssl_exp_date'] ) &&
      isset( $_GET['ssl_amount'] ) &&
      isset( $_GET['ssl_invoice_number']) &&
-     isset( $_GET['ssl_email'] ) &&
+     //isset( $_GET['ssl_email'] ) &&
      isset( $_GET['ssl_result_message'] ) &&
      isset( $_GET['ssl_txn_id'] ) &&
      isset( $_GET['ssl_approval_code'] ) &&
      isset( $_GET['ssl_cvv2_response'] ) &&
      isset( $_GET['ssl_txn_time'] ) ) {
   // just to make sure that this is a vmerchnat responce
+  //exit("<pre>".print_r($_GET,true)."</pre>");
   add_action('init', 'wpec_vmerchant_return');
 }
 
@@ -333,18 +336,25 @@ function wpec_vmerchant_return(){
 
   if ( $_GET['ssl_result_message'] == 'APPROVED' || $_GET['ssl_result_message'] == 'APPROVAL' ) {
     // success
-    $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
-                	 SET `processed` = '3', `transactid` = '" . $_GET['ssl_txn_id'] . "',
-                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "'
-                	 WHERE `sessionid` = " . $sessionid . " LIMIT 1" );
+    $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+    $purchase_log->set( array(
+      'processed' => WPSC_Purchase_Log::ACCEPTED_PAYMENT,
+      'transactid' => $_GET['ssl_txn_id'],
+      'notes' => 'Virtual Merchant time : "' . $_GET['ssl_txn_time'] . '"',
+    ) );
+    $purchase_log->save();
 
     // set this global, wonder if this is ok
     transaction_results( $sessionid, true );
   } else {
-    $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
-    				       SET `processed` = '1',`transactid` = '" . $_GET['ssl_txn_id'] . "',
-                	 `notes` = 'Virtual Merchant time : " .     $_GET['ssl_txn_time'] . "'
-                	 WHERE `sessionid` = " . $sessionid . " LIMIT 1" );
+    // success
+    $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+    $purchase_log->set( array(
+      'processed' => WPSC_Purchase_Log::INCOMPLETE_SALE,
+      'transactid' => $_GET['ssl_txn_id'],
+      'notes' => 'Virtual Merchant time : "' . $_GET['ssl_txn_time'] . '"',
+    ) );
+    $purchase_log->save();
     $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
     if ( ! is_array( $error_messages ) )
         $error_messages = array();

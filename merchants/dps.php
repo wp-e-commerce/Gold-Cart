@@ -79,13 +79,14 @@ function decrypt_dps_response(){
     $siteurl = get_option('siteurl');
     $total_weight = 0;
     if(($rsp->ResponseText == 'APPROVED')){
-      $sessionid = $rsp->MerchantReference;
-			$processing_stage = $wpdb->get_var("SELECT `processed` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = ".$sessionid." LIMIT 1");
-			if($processing_stage < 3) {
-				$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '3' WHERE `sessionid` = ".$sessionid." LIMIT 1");
-			}
+    	$sessionid = $rsp->MerchantReference;
+    	$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+		if( ! $purchase_log->is_transaction_completed() ) {
+			$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+			$purchase_log->save();
 		}
 	}
+  }
   return $sessionid;
 }
 

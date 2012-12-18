@@ -277,7 +277,9 @@ function gateway_eway($seperator, $sessionid) {
 			header("Location:".get_option('transact_url').$seperator."eway=0&result=".$sessionid."&message=1");
 			//exit();
 		}else if($ewayResponseFields["EWAYTRXNSTATUS"]=="True"){
-			$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
+			$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+			$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+			$purchase_log->save();
 			transaction_results($sessionid, false);
 			$message .= __( 'Your transaction was successful.', 'wpsc_gold_cart' )."<br><br>";
 			$message .= $ewayResponseFields['EWAYTRXNERROR']."<br><br>";

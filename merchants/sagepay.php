@@ -563,10 +563,13 @@ function sagepay_process_gateway_info($sessionid){
     global $sessionid;
     switch ( $success ) {
         case 'Completed':
-            $wpdb->query( 	"UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
-            				SET `processed` = '3', `transactid` = '" . $unencrypted_values['VPSTxId'] . "',
-            				`notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "'
-            				WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
+            $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
+            $purchase_log->set( array(
+                'processed'  => WPSC_Purchase_Log::ACCEPTED_PAYMENT,
+                'transactid' => $unencrypted_values['VPSTxId'],
+                'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
+            ) );
+            $purchase_log->save();
 
             // set this global, wonder if this is ok
             $sessionid = $unencrypted_values['VendorTxCode'];
@@ -580,17 +583,24 @@ function sagepay_process_gateway_info($sessionid){
                 case 'MALFORMED':
                 case 'INVALID':
                 case 'ERROR':
-                    $wpdb->query(   "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '1',
-                    				`notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "'
-                    				WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
+                    $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
+                    $purchase_log->set( array(
+                        'processed'  => WPSC_Purchase_Log::INCOMPLETE_SALE,
+                        'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
+                    ) );
+                    $purchase_log->save();
                     break;
             }
             break;
         case 'Pending': // need to wait for "Completed" before processing
-            $wpdb->query(   "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '2',
-            				`transactid` = '" . $unencrypted_values['VPSTxId'] . "', `date` = '" . time() . "',
-            				 `notes` = 'SagePay Status: " . $unencrypted_values['Status'] . "'
-            				 WHERE `sessionid` = " . $unencrypted_values['VendorTxCode'] . " LIMIT 1" );
+            $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
+            $purchase_log->set( array(
+                'processed'  => WPSC_Purchase_Log::ORDER_RECEIVED,
+                'transactid' => $unencrypted_values['VPSTxId'],
+                'date'       => time(),
+                'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
+            ) );
+            $purchase_log->save();
             break;
     }
     // if it fails redirect to the shopping cart page with the error

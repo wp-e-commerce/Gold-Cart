@@ -286,11 +286,9 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
         // wpsc_transaction_theme() function
 
         global $wpdb;
-        $wpdb->query( "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `authcode` = '" . $PXsession_id . "' WHERE `id` = " . absint( $this->purchase_id ) . " LIMIT 1" );
-
-
-
-
+        $purchase_log = new WPSC_Purchase_Log( $this->purchase_id );
+        $purchase_log->set( 'authcode', $PXsession_id );
+        $purchase_log->save();
         $html = '
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head><title></title></head><body>
         <div STYLE="display:none;">
@@ -377,17 +375,21 @@ function wpec_pxfusion_return(){
 
         switch ( $success ) {
         case 'Completed':
-            $wpdb->query( 	"UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "`
-                				SET `processed` = '3',
-                				`notes` = 'PX Fusion Status: " . $transaction_details['responseText']. "'
-                				WHERE `sessionid` = '" . $sessionid . "' LIMIT 1" );
+            $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+            $purchase_log->set( array(
+                'processed' => WPSC_Purchase_Log::ACCEPTED_PAYMENT,
+                'notes' => 'PX Fusion Status: "' . $transaction_details['responseText']. '"',
+            ) );
+            $purchase_log->save();
     		transaction_results($sessionid,true);
             break;
         case 'Failed': // if it fails...
-
-            $wpdb->query(   "UPDATE `" . WPSC_TABLE_PURCHASE_LOGS . "` SET `processed` = '6',
-                				`notes` = 'PX Fusion Status: " . $transaction_details['responseText']. "'
-                				WHERE `sessionid` = '" . $sessionid . "' LIMIT 1" );
+            $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+            $purchase_log->set( array(
+                'processed' => WPSC_Purchase_Log::PAYMENT_DECLINED,
+                'notes' => 'PX Fusion Status: "' . $transaction_details['responseText']. '"',
+            ) );
+            $purchase_log->save();
             // redirect to checkout page with an error
             $checkout_page_url = get_option('shopping_cart_url');
             if($checkout_page_url){

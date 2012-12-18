@@ -123,7 +123,9 @@ if (($status[0] == 1) && function_exists('wpsc_members_init')) {
 	if ($response) {
 		list ($refId, $resultCode, $code, $text, $subscriptionId) =parse_return($response);
 		if ($code == 'I00001') {
-			$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '2' WHERE `sessionid` = ".$sessionid." LIMIT 1");
+      $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+      $purchase_log->set( 'processed', WPSC_Purchase_Log::ORDER_RECEIVED );
+      $purchase_log->save();
 			$results=$wpdb->get_results("select * from `".WPSC_TABLE_LOGGED_SUBSCRIPTIONS."` where cart_id=".$cart[0]['id']."",ARRAY_A);
 			$sub_id=$results[0]['id'];
 			wpsc_member_activate_subscriptions($sub_id);
@@ -285,8 +287,8 @@ foreach($authorize_data as $key => $value) {
   $return = preg_split("/[,]+/", "$buffer"); // Splits out the buffer return into an array so . . .
   $details = $return[0]; // This can grab the Transaction ID at position 1 in the array
 
-
-  $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `transactid` = '".$wpdb->escape($return[18])."' WHERE `sessionid` = ".$sessionid." LIMIT 1");
+  $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+  $purchase_log->set( 'transactid', $return[18] );
 
  // echo "Location: ".$transact_url.$seperator."sessionid=".$sessionid;
  // exit("<pre>".print_r($return,true)."</pre>");
@@ -310,10 +312,10 @@ foreach($authorize_data as $key => $value) {
   switch ($details)
     {
     case 1: // Credit Card Successfully Charged
-    $processing_stage = $wpdb->get_var("SELECT `processed` FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = ".$sessionid." LIMIT 1");
-    if($processing_stage < 2) {
-      $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '2' WHERE `sessionid` = ".$sessionid." LIMIT 1");
+    if ( $purchase_log->is_incomplete_sale() ) {
+      $purchase_log->set( 'processed', WPSC_Purchase_Log::ORDER_RECEIVED );
       }
+    $purchase_log->save();
     header("Location: ".get_option('transact_url').$seperator."sessionid=".$sessionid);
     exit();
     break;
@@ -325,6 +327,7 @@ foreach($authorize_data as $key => $value) {
     $error_messages[] = "Credit Card Processing Error: ".$return[3];
     wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
     header("Location: ".get_option('shopping_cart_url').$seperator."total=".nzshpcrt_overall_total_price($_POST['collected_data'][get_option('country_form_field')]));
+    $purchase_log->save();
     exit();
     break;
     }

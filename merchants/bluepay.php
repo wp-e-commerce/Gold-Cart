@@ -149,7 +149,9 @@ function gateway_bluepay($seperator, $sessionid)
     {
     case 1: // Credit Card Successfully Charged
     global $wpdb;
-    $wpdb->update( WPSC_TABLE_PURCHASE_LOGS, array('processed' => 3),array('sessionid'=>$sessionid), array('%f') );
+    $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+    $purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+    $purchase_log->save();
     header("Location: ".get_option('transact_url').$seperator."sessionid=".$sessionid);
     exit();
     break;

@@ -512,9 +512,10 @@ function response_handler($nvpArray, $fraud,$sessionid,$data=null,$recurring=nul
    if ($result_code == 1 || $result_code == 26) {
       wpsc_update_customer_meta( 'payflow_message', __( 'Account configuration issue.  Please verify your login credentials.', 'wpsc_gold_cart' ) );
    } else if ($result_code== '0') {
-
-      $wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed` = '3' WHERE `sessionid` = ".$sessionid." LIMIT 1");
-      $log_id=$wpdb->get_var("SELECT id FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid` = '".$sessionid."' LIMIT 1");
+      $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+      $purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+      $purchase_log->save();
+      $log_id=$purchase_log->get( 'id' );
       if (isset($nvpArray['CVV2MATCH'])) {
          if ($nvpArray['CVV2MATCH'] != "Y") {
             $RespMsg = __( 'Your billing (cvv2) information does not match. Please re-enter.', 'wpsc_gold_cart' );

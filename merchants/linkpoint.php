@@ -204,7 +204,9 @@ function gateway_linkpoint($seperator, $sessionid) {
 			$errors[] = $message;
 		wpsc_update_customer_meta( 'checkout_misc_error_messages', $errors );
 	}else{
-		$wpdb->query("UPDATE `".WPSC_TABLE_PURCHASE_LOGS."` SET `processed`='3' WHERE `sessionid`='".$sessionid."' LIMIT 1");
+		$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+		$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+		$purchase_log->save();
 		header("Location: ".$transact_url.$seperator."sessionid=".$sessionid);
 		exit();
 		//transaction_results($sessionid, true);
