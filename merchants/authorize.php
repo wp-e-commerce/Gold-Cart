@@ -123,9 +123,9 @@ if (($status[0] == 1) && function_exists('wpsc_members_init')) {
 	if ($response) {
 		list ($refId, $resultCode, $code, $text, $subscriptionId) =parse_return($response);
 		if ($code == 'I00001') {
-      $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
-      $purchase_log->set( 'processed', WPSC_Purchase_Log::ORDER_RECEIVED );
-      $purchase_log->save();
+      $purchase_log_object = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+      $purchase_log_object->set( 'processed', WPSC_Purchase_Log::ORDER_RECEIVED );
+      $purchase_log_object->save();
 			$results=$wpdb->get_results("select * from `".WPSC_TABLE_LOGGED_SUBSCRIPTIONS."` where cart_id=".$cart[0]['id']."",ARRAY_A);
 			$sub_id=$results[0]['id'];
 			wpsc_member_activate_subscriptions($sub_id);
