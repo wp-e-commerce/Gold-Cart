@@ -20,7 +20,7 @@ define( 'WPSC_GOLD_MODULE_PRESENT', true);
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
-define( 'WPSC_GOLD_VERSION', '2.9.7.2' );
+define( 'WPSC_GOLD_VERSION', '2.9.7.3' );
 
 // Require Upgrade Files
 require( dirname( __FILE__ ) . "/upgrade_panel.php" );
