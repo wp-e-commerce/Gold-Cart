@@ -1,457 +1,803 @@
 <?php
-if (!version_compare(phpversion(), "5.0.0", ">=") || !is_callable('get_option')) {
-  // This code absolutely does not work in anything less than PHP 5, therefore, if we are using less than that, we break out of the file here.
-  // This is also here to stop error messages on servers with Zend Accelerator, it includes all files before get_option is declared
+if(!is_callable('get_option')) {
+  // This is here to stop error messages on servers with Zend Accelerator, it includes all files before get_option is declared
   // then evidently includes them again, otherwise this code would break these modules
   return;
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
-$nzshpcrt_gateways[$num]['name'] = __( 'eWay', 'wpsc_gold_cart' );
-$nzshpcrt_gateways[$num]['internalname'] = 'eway';
-$nzshpcrt_gateways[$num]['function'] = 'gateway_eway';
-$nzshpcrt_gateways[$num]['form'] = "form_eway";
-$nzshpcrt_gateways[$num]['submit_function'] = "submit_eway";
-$nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
+global $gateway_checkout_form_fields;
 
-if(in_array('eway',(array)get_option('custom_gateway_options'))) {
+$nzshpcrt_gateways[$num] = array(
+	'name' => __( 'eWay', 'wpsc_gold_cart' ),
+	'api_version' => 2.0,
+	'class_name' => 'wpsc_merchant_eway',
+	'has_recurring_billing' => false,
+	'wp_admin_cannot_cancel' => false,
+	'requirements' => array(
+		 /// so that you can restrict merchant modules to PHP 5, if you use PHP 5 features
+		'php_version' => 5.0,
+		 /// for modules that may not be present, like curl
+		'extra_modules' => array('soap', 'curl')
+	),
+	
+	// this may be legacy, not yet decided
+	'internalname' => 'wpsc_merchant_eway',
+
+	// All array members below here are legacy, and use the code in paypal_multiple.php
+	'form' => "form_eway",
+	'submit_function' => "submit_eway",
+	'payment_type' => "credit_card",
+	'supported_currencies' => array(
+	'currency_list' => array('USD')
+		//,'option_name' => 'paypal_curcode'
+	)
+);
+
+class wpsc_merchant_eway extends wpsc_merchant {
+	var $name = 'eWay';
+	var $credit_card_details = array(
+		'card_number' => null,
+		'expiry_month' => null,
+		'expiry_year' => null,
+		'card_code' => null
+  );
+  
+	function submit() {
+		//Create RapidAPI Service
+		$service = new RapidAPI();
+		$request = new CreateAccessCodeRequest();
+		
+		//Send vars to eWay
+		$request->Customer->FirstName = $this->cart_data['billing_address']['first_name'];
+		$request->Customer->LastName = $this->cart_data['billing_address']['last_name'];
+		$request->Customer->Reference = $this->cart_data['session_id'];
+		$request->Customer->City = $this->cart_data['billing_address']['city'];
+		$request->Customer->State = $this->cart_data['billing_address']['state'];
+		$request->Customer->PostalCode = $this->cart_data['billing_address']['post_code'];
+		$request->Customer->Email = $this->cart_data['email_address'];
+		//Populate values for LineItems
+		$i = 0;
+		foreach($this->cart_items as $cart_row) {
+			$item[$i] = new LineItem();
+			$item[$i]->Description = $cart_row['name'];
+			$item[$i]->Quantity = $cart_row['quantity'];
+			$item[$i]->UnitCost = $cart_row['price'] * 100;
+			$item[$i]->Total = ($cart_row['price'] * 100) * $cart_row['quantity'];
+			$request->Items->LineItem[$i] = $item[$i];
+			$i++;
+		}
+		//Options
+		$opt = new Option();
+		$opt->Value = $this->cart_data['session_id'];
+		$request->Options->Option[0]= $opt;
+		
+		//Populate values for Payment Object
+		$request->Payment->TotalAmount = number_format($this->cart_data['total_price'],2,'.','') * 100;
+		$request->Payment->CurrencyCode = $this->cart_data['store_currency'];
+		//Misc data
+		$request->RedirectUrl = $this->cart_data['transaction_results_url'];
+		$request->Method = 'ProcessPayment';
+		$result = $service->CreateAccessCode($request);
+
+		$accesscode = $result->AccessCode;
+		$redirurl = $result->FormActionURL;
+
+		//Send card data
+		$this->credit_card_details = array(
+			'card_number' => $_POST['card_number'],
+			'expiry_month' => $_POST['expiry']['month'],
+			'expiry_year' => $_POST['expiry']['year'],
+			'card_code' => $_POST['card_code']
+		);
+		$gateway_parameters = array();
+		$gateway_parameters += array(
+			'EWAY_ACCESSCODE' 	=> $accesscode,
+			'EWAY_CARDNAME' 	=> $this->cart_data['billing_address']['first_name'] . $this->cart_data['billing_address']['last_name'],
+			'EWAY_CARDNUMBER' 	=> $this->credit_card_details['card_number'],
+			'EWAY_CARDEXPIRYMONTH' 	=> $this->credit_card_details['expiry_month'],
+			'EWAY_CARDEXPIRYYEAR' 	=> $this->credit_card_details['expiry_year'],
+			'EWAY_CARDCVN' 	=> $this->credit_card_details['card_code'],
+		);
+		$options = array(
+			'timeout' => 10,
+			'body' => $gateway_parameters,
+			'user-agent' => $this->cart_data['software_name'] . " " . get_bloginfo( 'url' ),
+			'sslverify' => false,
+		);
+		
+		$response = wp_remote_post($redirurl, $options);
+		
+		//Get transaction results
+		$request = new GetAccessCodeResultRequest();
+		$request->AccessCode = $accesscode;
+		$result = $service->GetAccessCodeResult($request);
+		if(isset($result->TransactionStatus) && $result->TransactionStatus && (is_bool($result->TransactionStatus) || $result->TransactionStatus != "false")){
+			$this->set_transaction_details($result->TransactionID, 3);
+			transaction_results($this->cart_data['session_id'],false);
+			$this->go_to_transaction_results($this->cart_data['session_id']);	
+		}else{
+		   $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+			if ( ! is_array( $error_messages ) )
+				$error_messages = array();
+			$error_messages[] = '<strong style="color:red">' . $this->parse_error_message_eway($result->ResponseMessage) . ' </strong>';
+			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );	
+		}
+	
+	}
+	
+	function parse_error_message_eway($message){
+		
+		$error_codes = array('F7000' => "Undefined Fraud",'V5000' => "Undefined System",'A0000' => "Undefined Approved",'A2000' => "Transaction Approved",	'A2008' => "Honour With Identification",'A2010' => "Approved For Partial Amount",'A2011' => "Approved VIP",'A2016' => "Approved Update Track 3",'V6000' => "Undefined Validation",'V6001' => "Invalid Request CustomerIP",'V6002' => "Invalid Request DeviceID",'V6011' => "Invalid Payment Amount",'V6012' => "Invalid Payment InvoiceDescription",'V6013' => "Invalid Payment InvoiceNumber",'V6014' => "Invalid Payment InvoiceReference",'V6015' => "Invalid Payment CurrencyCode",'V6016' => "Payment Required",'V6017' => "Payment CurrencyCode Required",'V6018' => "Unknown Payment CurrencyCode",'V6021' => "Cardholder Name Required",'V6022' => "Card Number Required",'V6023' => "CVN Required",'V6031' => "Invalid Card Number",'V6032' => "Invalid CVN",'V6033' => "Invalid Expiry Date",'V6034' => "Invalid Issue Number",'V6035' => "Invalid Start Date",'V6036' => "Invalid Month",'V6037' => "Invalid Year",'V6040' => "Invaild Token Customer Id",'V6041' => "Customer Required",'V6042' => "Customer First Name Required",'V6043' => "Customer Last Name Required",'V6044' => "Customer Country Code Required",'V6045' => "Customer Title Required",'V6046' => "Token Customer ID Required",'V6047' => "RedirectURL Required",'V6051' => "Invalid Customer First Name",'V6052' => "Invalid Customer Last Name",'V6053' => "Invalid Customer Country Code",'V6054' => "Invalid Customer Email",'V6055' => "Invalid Customer Phone",'V6056' => "Invalid Customer Mobile",'V6057' => "Invalid Customer Fax",'V6058' => "Invalid Customer Title",'V6059' => "Redirect URL Invalid",'V6060' => "Redirect URL Invalid",'V6061' => "Invaild Customer Reference",'V6062' => "Invaild Customer CompanyName",'V6063' => "Invaild Customer JobDescription",'V6064' => "Invaild Customer Street1",'V6065' => "Invaild Customer Street2",'V6066' => "Invaild Customer City",'V6067' => "Invaild Customer State",'V6068' => "Invaild Customer Postalcode",'V6069' => "Invaild Customer Email",'V6070' => "Invaild Customer Phone",'V6071' => "Invaild Customer Mobile",'V6072' => "Invaild Customer Comments",'V6073' => "Invaild Customer Fax",'V6074' => "Invaild Customer Url",'V6075' => "Invaild ShippingAddress FirstName",'V6076' => "Invaild ShippingAddress LastName",'V6077' => "Invaild ShippingAddress Street1",'V6078' => "Invaild ShippingAddress Street2",'V6079' => "Invaild ShippingAddress City",'V6080' => "Invaild ShippingAddress State",'V6081' => "Invaild ShippingAddress PostalCode",'V6082' => "Invaild ShippingAddress Email",'V6083' => "Invaild ShippingAddress Phone",'V6084' => "Invaild ShippingAddress Country",'V6091' => "Unknown Country Code",'V6100' => "Invalid ProcessRequest name",'V6101' => "Invalid ProcessRequest ExpiryMonth",'V6102' => "Invalid ProcessRequest ExpiryYear",'V6103' => "Invalid ProcessRequest StartMonth",'V6104' => "Invalid ProcessRequest StartYear",'V6105' => "Invalid ProcessRequest IssueNumber",'V6106' => "Invalid ProcessRequest CVN",'V6107' => "Invalid ProcessRequest AccessCode",'V6108' => "Invalid ProcessRequest CustomerHostAddress",'V6109' => "Invalid ProcessRequest UserAgent",'V6110' => "Invalid ProcessRequest Number",'D4401' => "Refer to Issuer",'D4402' => "Refer to Issuer, special",'D4403' => "No Merchant",'D4404' => "Pick Up Card",'D4405' => "Do Not Honour",'D4406' => "Error",'D4407' => "Pick Up Card, Special",'D4409' => "Request In Progress",'D4412' => "Invalid Transaction",'D4413' => "Invalid Amount",'D4414' => "Invalid Card Number",'D4415' => "No Issuer",'D4419' => "Re-enter Last Transaction",'D4421' => "No Method Taken",'D4422' => "Suspected Malfunction",'D4423' => "Unacceptable Transaction Fee",'D4425' => "Unable to Locate Record On File",'D4430' => "Format Error",'D4431' => "Bank Not Supported By Switch",'D4433' => "Expired Card, Capture",'D4434' => "Suspected Fraud, Retain Card",'D4435' => "Card Acceptor, Contact Acquirer, Retain Card",'D4436' => "Restricted Card, Retain Card",'D4437' => "Contact Acquirer Security Department, Retain Card",'D4438' => "PIN Tries Exceeded, Capture",'D4439' => "No Credit Account",'D4440' => "Function Not Supported",'D4441' => "Lost Card",'D4442' => "No Universal Account",'D4443' => "Stolen Card",'D4444' => "No Investment Account",'D4451' => "Insufficient Funds",'D4452' => "No Cheque Account",'D4453' => "No Savings Account",'D4454' => "Expired Card",'D4455' => "Incorrect PIN",'D4456' => "No Card Record",'D4457' => "Function Not Permitted to Cardholder",'D4458' => "Function Not Permitted to Terminal",'D4460' => "Acceptor Contact Acquirer",'D4461' => "Exceeds Withdrawal Limit",'D4462' => "Restricted Card",'D4463' => "Security Violation",'D4464' => "Original Amount Incorrect",'D4466' => "Acceptor Contact Acquirer, Security",'D4467' => "Capture Card",'D4475' => "PIN Tries Exceeded",'D4482' => "CVV Validation Error",'D4490' => "Cutoff In Progress",'D4491' => "Card Issuer Unavailable",'D4492' => "Unable To Route Transaction",'D4493' => "Cannot Complete, Violation Of The Law",'D4494' => "Duplicate Transaction",'D4496' => "System Error",);
+		$message = $error_codes[$message];
+		return $message;		
+	}
+}
+
+if(in_array('wpsc_merchant_eway',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 	<tr>
-		<td> ".__( 'Credit Card Number *', 'wpsc_gold_cart' )." </td>
+		<td>".__( 'Credit Card Number *', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' value='' name='card_number' />
 		</td>
 	</tr>
 	<tr>
-		<td> ".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )." </td>
+		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
 		<td>
-		<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
+			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 		</td>
-	</tr> ";
-	if (get_option('eway_cvn')) {
-		$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] .= "
-		<tr>
-			<td> ".__( 'CVN', 'wpsc_gold_cart' )." </td>
-			<td>
-				<input type='text' size='4'  maxlength='4' value='' name='cvn' />
-			</td>
-		</tr>
-		";
-	}
+	</tr>
+	<tr>
+		<td>".__( 'CVV', 'wpsc_gold_cart' )."</td>
+		<td><input type='text' size='4' value='' maxlength='4' name='card_code' /></td>
+	</tr>
+";
 }
-
-function gateway_eway($seperator, $sessionid) {
-	global $wpdb, $wpsc_cart;
-	$purchase_log_sql = "SELECT * FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`= '".$sessionid."' LIMIT 1";
-	$purchase_log = $wpdb->get_results($purchase_log_sql,ARRAY_A) ;
-	$purchase_log=$purchase_log[0];
-
-	$cart_sql = "SELECT * FROM `".WPSC_TABLE_CART_CONTENTS."` WHERE `purchaseid`='".$purchase_log['id']."'";
-	$cart = $wpdb->get_results($cart_sql,ARRAY_A) ;
-	$member_subtype = get_product_meta($cart[0]['prodid'],'is_permenant',true);
-	$member_shiptype = get_product_meta($cart[0]['prodid'],'membership_length',true);
-	$member_shiptype = $member_shiptype[0];
-	$status = get_product_meta($cart[0]['prodid'],'is_membership',true);
-	$is_member = $status;
-	$is_perm = $member_subtype;
-	if($_POST['collected_data'][get_option('eway_form_first_name')] != '') {
-		$data['first_name'] = esc_attr($_POST['collected_data'][get_option('eway_form_first_name')]);
-	}
-
-	if($_POST['collected_data'][get_option('eway_form_last_name')] != '') {
-		$data['last_name'] = esc_attr($_POST['collected_data'][get_option('eway_form_last_name')]);
-	}
-
-	if($_POST['collected_data'][get_option('eway_form_address')] != '') {
-		$address_rows = explode("\n\r",$_POST['collected_data'][get_option('eway_form_address')]);
-		$data['address1'] = esc_attr(str_replace(array("\n", "\r"), '', $address_rows[0]));
-		unset($address_rows[0]);
-		if($address_rows != null) {
-			$data['address2'] = implode(", ",$address_rows);
-		} else {
-			$data['address2'] = '';
-		}
-	}
-
-
-	foreach($wpsc_cart->cart_items as $item){
-		$itemsName .= $item->product_name.', ';
-
-	}
-
-	$itemsName = eway_filter_titles($itemsName);
-
-	if( strlen($itemsName) >= 100){
-	    $itemsName = substr($itemsName , 0 , 94) . '...';
-
-	}
-
-
-	if($_POST['collected_data'][get_option('eway_form_city')] != '') {
-		$data['city'] = esc_attr($_POST['collected_data'][get_option('eway_form_city')]);
-	}
-
-	if( empty( $_POST['collected_data'][get_option('eway_form_state')] ) && isset( $_POST['collected_data'][get_option('eway_form_country')][1]) && !empty( $_POST['collected_data'][get_option('eway_form_country')][1])) {
-		$data['state'] = $_POST['collected_data'][get_option('eway_form_country')][1];
-	}elseif(!empty( $_POST['collected_data'][get_option('eway_form_state')] ) ){
-		$data['state'] = $_POST['collected_data'][get_option('eway_form_state')];
-	}
-
-	if($_POST['collected_data'][get_option('eway_form_country')]!='') {
-		$data['country'] = $_POST['collected_data'][get_option('eway_form_country')][0];
-	}
-
-	if(is_numeric($_POST['collected_data'][get_option('eway_form_post_code')])) {
-		$data['zip'] =  esc_attr($_POST['collected_data'][get_option('eway_form_post_code')] );
-	}
-	if($_POST['collected_data'][get_option('eway_form_email')]) {
-		$data['email'] =  $_POST['collected_data'][get_option('eway_form_email')];
-	}
-
-	if(($_POST['collected_data'][get_option('email_form_field')] != null) && ($data['email'] == null)) {
-		$data['email'] = esc_attr( $_POST['collected_data'][get_option('email_form_field')] );
-	}
-	// Live or Test Server?
-	if (get_option('eway_test')) {
-		$user = '87654321';
-		$gateway = false;
-	} else {
-		$user = get_option('ewayCustomerID_id');
-		$gateway = true;
-	}
-
-	if ($is_member[0]) {
-
-		require_once(WPSC_GOLD_FILE_PATH.'/ewaylib/GatewayConnector.php');
-
-		$objRebill = new RebillPayment();
-
-		$objRebill->CustomerRef($purchase_log['id']);
-
-		$objRebill->CustomerTitle('');
-
-		$objRebill->CustomerFirstName($data['first_name']);
-
-		$objRebill->CustomerLastName($data['last_name']);
-
-		$objRebill->CustomerCompany('');
-
-		$objRebill->CustomerJobDesc('');
-
-		$objRebill->CustomerEmail($data['email']);
-
-		$objRebill->CustomerAddress($data['address1']);
-
-		$objRebill->CustomerSuburb('');
-
-		$objRebill->CustomerState($data['state']);
-
-		$objRebill->CustomerPostCode($data['zip']);
-
-		$objRebill->CustomerCountry($data['country']);
-
-		$objRebill->CustomerPhone1($data['phone']);
-
-		$objRebill->CustomerPhone2('');
-
-		$objRebill->CustomerFax('');
-
-		$objRebill->CustomerURL('');
-
-		$objRebill->CustomerComments('');
-
-		$objRebill->RebillInvRef('');
-
-		$objRebill->RebillInvDesc('');
-
-		$objRebill->RebillCCname($data['first_name']." ".$data['last_name']);
-
-		$objRebill->RebillCCNumber($_POST['card_number']);
-
-		$objRebill->RebillInitAmt($purchase_log['totalprice']);
-
-		$objRebill->RebillInitDate(date('d/m/Y'));
-
-		$objRebill->RebillRecurAmt($purchase_log['totalprice']);
-
-		$objRebill->RebillStartDate(date('d/m/Y'));
-
-		$objRebill->RebillEndDate(date("d/m/Y", mktime(0, 0, 0, date('m'), date('d'), (int)date('Y')+1)));
-
-		$objRebill->RebillCCExpMonth($_POST['expiry']['month']);
-
-		$objRebill->RebillCCExpYear($_POST['expiry']['year']);
-
-		$objRebill->RebillInterval($member_shiptype['length']);
-		switch($member_shiptype['unit']) {
-			case 'd':
-				$member_ship_unit = '1';
-				break;
-
-			case 'w':
-				$member_ship_unit = '2';
-				break;
-
-			case 'm':
-				$member_ship_unit = '3';
-				break;
-
-			case 'y':
-				$member_ship_unit = '4';
-				break;
-		}
-		$objRebill->RebillIntervalType($member_ship_unit);
-
-		$objRebill->eWAYCustomerID($user);
-
-		$objConnector = new GatewayConnector($gateway);
-
-		if ($objConnector->ProcessRequest($objRebill)) {
-			$objResponse = $objConnector->Response();
-
-			if ($objResponse != null) {
-				$lblResult = $objResponse->Result();
-				if ($lblResult=='Success') {
-					wpsc_member_activate_subscriptions($purchase_log['id']);
-					header("Location:".get_option('product_list_url'));
-				}
-				$lblErrorDescription = $objResponse->ErrorDetails();
-				$lblErrorSeverity = $objResponse->ErrorSeverity();
-
-				// This is woefully inadequate!!!
-				exit( __( 'An Error has occured >', 'wpsc_gold_cart' ) . $lblResult ." ". $lblErrorDescription ." ". $lblErrorSeverity);
-			}
-		} else {
-			exit( __( 'Rebill Gateway failed: ', 'wpsc_gold_cart' ) . $objConnector->Response() );
-		}
-
-	} else {
-
-		require(WPSC_GOLD_FILE_PATH.'/merchants/ewaylib/EwayPaymentLive.php');
-		//echo WPSC_GOLD_FILE_PATH.'/ewaylib/EwayPaymentLive.php';
-		if (get_option('eway_cvn')) {
-			$method = 'REAL_TIME_CVN';
-		} else {
-			$method = 'REAL_TIME';
-		}
-
-		$eway = new EwayPaymentLive($user, $method, $gateway);
-		$amount = number_format($purchase_log['totalprice'], 2, '.', '')*100;
-		$eway->setTransactionData("TotalAmount", $amount); //mandatory field
-		$eway->setTransactionData("CustomerFirstName", $data['first_name']);
-		$eway->setTransactionData("CustomerLastName", $data['last_name']);
-		$eway->setTransactionData("CustomerEmail", $data['email']);
-		$eway->setTransactionData("CustomerAddress", $data['address1'] . ' ' . $data['state']);
-		$eway->setTransactionData("CustomerPostcode", $data['zip']);
-		$eway->setTransactionData("CustomerInvoiceDescription", $itemsName);
-		$eway->setTransactionData("CustomerInvoiceRef", $purchase_log['id']);
-		$eway->setTransactionData("CardHoldersName", $data['first_name'].' '.$data['last_name']); //mandatory field
-		$eway->setTransactionData("CardNumber", $_POST['card_number']); //mandatory field
-		$eway->setTransactionData("CardExpiryMonth", $_POST['expiry']['month']); //mandatory field
-		$eway->setTransactionData("CardExpiryYear", $_POST['expiry']['year']); //mandatory field
-		$eway->setTransactionData("TrxnNumber", $purchase_log['id']);
-		$eway->setTransactionData("Option1", "");
-		$eway->setTransactionData("Option2", "");
-		$eway->setTransactionData("Option3", "");
-		//for REAL_TIME_CVN
-		$eway->setTransactionData("CVN", $_POST['cvn']);
-
-		//for GEO_IP_ANTI_FRAUD
-		$eway->setTransactionData("CustomerIPAddress", $eway->getVisitorIP()); //mandatory field when using Geo-IP Anti-Fraud
-		$eway->setTransactionData("CustomerBillingCountry", $data['country']); //mandatory field when using Geo-IP Anti-Fraud
-		//special preferences for php Curl
-		$eway->setCurlPreferences(CURLOPT_SSL_VERIFYPEER, 0);  //pass a long that is set to a zero value to stop curl from verifying the peer's certificate
-		//$eway->setCurlPreferences(CURLOPT_CAINFO, "/usr/share/ssl/certs/my.cert.crt"); //Pass a filename of a file holding one or more certificates to verify the peer with. This only makes sense when used in combination with the CURLOPT_SSL_VERIFYPEER option.
-		//$eway->setCurlPreferences(CURLOPT_CAPATH, "/usr/share/ssl/certs/my.cert.path");
-		//$eway->setCurlPreferences(CURLOPT_PROXYTYPE, CURLPROXY_HTTP); //use CURL proxy, for example godaddy.com hosting requires it
-		//$eway->setCurlPreferences(CURLOPT_PROXY, "http://proxy.shr.secureserver.net:3128"); //use CURL proxy, for example godaddy.com hosting requires it
-
-		$ewayResponseFields = $eway->doPayment();
-		//exit(print_r($ewayResponseFields,1));
-		//print_r($ewayResponseFields);
-		if($ewayResponseFields["EWAYTRXNSTATUS"]=="False"){
-			$message .= "<h3>".__( 'Please Check the Payment Results', 'wpsc_gold_cart' )."</h3>";
-			$message .= __( 'Your transaction was not successful.', 'wpsc_gold_cart' )."<br><br>";
-			$message .= $ewayResponseFields['EWAYTRXNERROR']."<br><br>";
-			$message .= "<a href=".get_option('shopping_cart_url').">".__( 'Click here to go back to checkout page.', 'wpsc_gold_cart' )."</a>";
-			wpsc_update_customer_meta( 'eway_message', $message );
-			header("Location:".get_option('transact_url').$seperator."eway=0&result=".$sessionid."&message=1");
-			//exit();
-		}else if($ewayResponseFields["EWAYTRXNSTATUS"]=="True"){
-			$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
-			$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
-			$purchase_log->save();
-			transaction_results($sessionid, false);
-			$message .= __( 'Your transaction was successful.', 'wpsc_gold_cart' )."<br><br>";
-			$message .= $ewayResponseFields['EWAYTRXNERROR']."<br><br>";
-			wpsc_update_customer_meta( 'eway_message', $message );
-			header("Location:".get_option('transact_url').$seperator."eway=1&result=".$sessionid."&message=1");
-			//exit();
-		}
-
-	}
-
-	exit();
-}
-function eway_filter_titles($strRawText ){
-    $strAllowableChars = '0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.';
-    $blnAllowAccentedChars = true;
-    $iCharPos = 0;
-    $chrThisChar = "";
-    $strCleanedText = "";
-
-    //Compare each character based on list of acceptable characters
-    while ($iCharPos < strlen($strRawText))
-    {
-        // Only include valid characters **
-        $chrThisChar = substr($strRawText, $iCharPos, 1);
-        if (strpos($strAllowableChars, $chrThisChar) !== FALSE)
-        {
-            $strCleanedText = $strCleanedText . $chrThisChar;
-        }
-        elseIf ($blnAllowAccentedChars == TRUE)
-        {
-            // Allow accented characters and most high order bit chars which are harmless **
-            if (ord($chrThisChar) >= 191)
-            {
-                $strCleanedText = $strCleanedText . $chrThisChar;
-            }
-        }
-
-        $iCharPos = $iCharPos + 1;
-    }
-
-    return $strCleanedText;
-}
-
 
 function submit_eway() {
 	$options = array(
-		'ewayCustomerID_id',
-		'eway_cvn',
-		'eway_test',
+		'eway_apikey',
+		'eway_apipassword',
+		//'test',
 	);
 	foreach ( $options as $option ) {
-
-			update_option( $option, $_POST[$option] );
-	}
-	if ( ! empty( $_POST['eway_form'] ) ) {
-		foreach((array)$_POST['eway_form'] as $form => $value) {
-			update_option(('eway_form_'.$form), $value);
-		}
+		update_option( $option, $_POST[$option] );
 	}
 	return true;
 }
 
 function form_eway() {
-	//first create the options
-	add_option('ewayCustomerID_id' ,'');
-	add_option('eway_cvn',0);
-	add_option('eway_test',0);	$eway_cvn = get_option('eway_cvn');
-	$eway_cvn1 = $eway_cvn2 = '';
-	if ($eway_cvn=='1') {
-		$eway_cvn1="checked='checked'";
-	} else {
-		$eway_cvn2="checked='checked'";
-	}
-	$eway_test = get_option('eway_test');
-	$eway_test1 = $eway_test2 = '';
-	if ($eway_test=='1') {
-		$eway_test1="checked='checked'";
-	} else {
-		$eway_test2="checked='checked'";
-	}
-	$output = "
-	<tr>
-		<td>
-			".__( 'eWay Customer id', 'wpsc_gold_cart' )."
-		</td>
-		<td>
-			<input type='text' size='10' value='".get_option('ewayCustomerID_id')."' name='ewayCustomerID_id' />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			".__( 'Use Testing enviroment', 'wpsc_gold_cart' )."
-		</td>
-		<td>
-			<input type='radio' value='1' name='eway_test' id='eway_test1' ".$eway_test1." /> <label for='eway_test1'>".TXT_WPSC_YES."</label> &nbsp;
-			<input type='radio' value='0' name='eway_test' id='eway_test2' ".$eway_test2." /> <label for='eway_test2'>".TXT_WPSC_NO."</label>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			".__( 'Use CVN Security', 'wpsc_gold_cart' )."
-		</td>
-		<td>
-			<input type='radio' value='1' name='eway_cvn' id='eway_cvn1' ".$eway_cvn1." /> <label for='eway_cvn1'>".TXT_WPSC_YES."</label> &nbsp;
-			<input type='radio' value='0' name='eway_cvn' id='eway_cvn2' ".$eway_cvn2." /> <label for='eway_cvn2'>".TXT_WPSC_NO."</label>
-		</td>
-	</tr>";
-	$output .= "
+	return "
 		<tr>
-			<td>".__( 'First Name Field', 'wpsc_gold_cart' )."</td>
 			<td>
-				<select name='eway_form[first_name]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_first_name'))."
-				</select>
+				".__( 'Api Key', 'wpsc_gold_cart' )."
+			</td>
+			<td>
+				<input type='text' size='40' value='". get_option('eway_apikey')."' name='eway_apikey' />
 			</td>
 		</tr>
 		<tr>
-			<td>".__( 'Last Name Field', 'wpsc_gold_cart' )."</td>
 			<td>
-				<select name='eway_form[last_name]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_last_name'))."
-				</select>
+				".__( 'Api Password', 'wpsc_gold_cart' )."
 			</td>
-		</tr>
-		<tr>
-			<td>".__( 'Address Field', 'wpsc_gold_cart' )."</td>
 			<td>
-				<select name='eway_form[address]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_address'))."
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>".__( 'City Field', 'wpsc_gold_cart' )."</td>
-			<td>
-				<select name='eway_form[city]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_city'))."
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>".__( 'State Field', 'wpsc_gold_cart' )."</td>
-			<td>
-				<select name='eway_form[state]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_state'))."
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>".__( 'Postal code/Zip code Field', 'wpsc_gold_cart' )."</td>
-			<td>
-				<select name='eway_form[post_code]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_post_code'))."
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>".__( 'Country Field', 'wpsc_gold_cart' )."</td>
-			<td>
-				<select name='eway_form[country]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_country'))."
-				</select>
-			</td>
-		</tr>
-				<tr>
-			<td>".__( 'Email Field', 'wpsc_gold_cart' )."</td>
-			<td>
-				<select name='eway_form[email]'>
-					".nzshpcrt_form_field_list(get_option('eway_form_email'))."
-				</select>
+				<input type='text' size='40' value='". get_option('eway_apipassword')."' name='eway_apipassword' />
 			</td>
 		</tr>";
-	return $output;
 }
- ?>
+
+class RapidAPI {
+
+    var $APIConfig;
+
+    function __construct() {
+        //Load the configuration
+        $this->APIConfig['Payment.Username'] = get_option('eway_apikey');
+		$this->APIConfig['Payment.Password'] = get_option('eway_apipassword');
+		$this->APIConfig['PaymentService.Soap'] = 'https://api.ewaypayments.com/Soap.asmx?WSDL';
+		$this->APIConfig['PaymentService.POST.CreateAccessCode'] = 'https://api.ewaypayments.com/CreateAccessCode.json';
+		$this->APIConfig['PaymentService.POST.GetAccessCodeResult'] = 'https://api.ewaypayments.com/GetAccessCodeResult.json';
+		$this->APIConfig['PaymentService.REST'] = 'https://api.ewaypayments.com/AccessCode';
+		$this->APIConfig['PaymentService.RPC'] = 'https://api.ewaypayments.com/json-rpc';
+		$this->APIConfig['PaymentService.JSONPScript'] = 'https://api.ewaypayments.com/JSONP/v1/js';
+		$this->APIConfig['Request:Method'] = 'SOAP';
+		$this->APIConfig['Request:Format'] = 'JSON';
+		$this->APIConfig['ShowDebugInfo'] = 0;	
+    }
+
+    /**
+     * Description: Create Access Code
+     * @param CreateAccessCodeRequest $request
+     * @return StdClass An PHP Ojbect 
+     */
+    public function CreateAccessCode($request) {
+
+        //Convert An Object to Target Formats
+        if ($this->APIConfig['Request:Method'] != "SOAP")
+            if ($this->APIConfig['Request:Format'] == "XML")
+                if ($this->APIConfig['Request:Method'] != "RPC")
+                    $request = Parser::Obj2XML($request);
+                else
+                    $request = Parser::Obj2RPCXML("CreateAccessCode", $request);
+            else {
+                $i = 0;
+                $tempClass = new stdClass;
+                foreach ($request->Options->Option as $Option) {
+                    $tempClass->Options[$i] = $Option;
+                    $i++;
+                }
+                $request->Options = $tempClass->Options;
+                $i = 0;
+                $tempClass = new stdClass;
+                foreach ($request->Items->LineItem as $LineItem) {
+                    $tempClass->Items[$i] = $LineItem;
+                    $i++;
+                }
+                $request->Items = $tempClass->Items;
+                if ($this->APIConfig['Request:Method'] != "RPC")
+                    $request = Parser::Obj2JSON($request);
+                else
+                    $request = Parser::Obj2JSONRPC("CreateAccessCode", $request);
+            }
+        else
+            $request = Parser::Obj2ARRAY($request);
+
+        $method = 'CreateAccessCode' . $this->APIConfig['Request:Method'];
+
+        $response = $this->$method($request);
+
+        //Convert Response Back TO An Object
+        if ($this->APIConfig['Request:Method'] != "SOAP")
+            if ($this->APIConfig['Request:Format'] == "XML")
+                if ($this->APIConfig['Request:Method'] != "RPC")
+                    $result = Parser::XML2Obj($response);
+                else
+                    $result = Parser::RPCXML2Obj($response);
+            else
+            if ($this->APIConfig['Request:Method'] != "RPC")
+                $result = Parser::JSON2Obj($response);
+            else
+                $result = Parser::JSONRPC2Obj($response);
+        else
+            $result = $response;
+
+        return $result;
+    }
+
+    /**
+     * Description: Get Result with Access Code
+     * @param GetAccessCodeResultRequest $request
+     * @return StdClass An PHP Ojbect 
+     */
+    public function GetAccessCodeResult($request) {
+        
+        if ($this->APIConfig['ShowDebugInfo']) {
+            echo "GetAccessCodeResult Request Object";
+            var_dump($request);
+        }
+
+        //Convert An Object to Target Formats
+        if ($this->APIConfig['Request:Method'] != "SOAP")
+            if ($this->APIConfig['Request:Format'] == "XML")
+                if ($this->APIConfig['Request:Method'] != "RPC")
+                    $request = Parser::Obj2XML($request);
+                else
+                    $request = Parser::Obj2RPCXML("GetAccessCodeResult", $request);
+            else
+            if ($this->APIConfig['Request:Method'] != "RPC")
+                $request = Parser::Obj2JSON($request);
+            else
+                $request = Parser::Obj2JSONRPC("GetAccessCodeResult", $request);
+        else
+            $request = Parser::Obj2ARRAY($request);
+
+        //Build method name
+        $method = 'GetAccessCodeResult' . $this->APIConfig['Request:Method'];
+        
+        //Is Debug Mode
+        if ($this->APIConfig['ShowDebugInfo']) {
+            echo "GetAccessCodeResult Request String";
+            var_dump($request);
+        }
+
+        //Call to the method
+        $response = $this->$method($request);
+        
+        //Is Debug Mode
+        if ($this->APIConfig['ShowDebugInfo']) {
+            echo "GetAccessCodeResult Response String";
+            var_dump($response);
+        }
+
+        //Convert Response Back TO An Object
+        if ($this->APIConfig['Request:Method'] != "SOAP")
+            if ($this->APIConfig['Request:Format'] == "XML")
+                if ($this->APIConfig['Request:Method'] != "RPC")
+                    $result = Parser::XML2Obj($response);
+                else {
+                    $result = Parser::RPCXML2Obj($response);
+
+                    //Tweak the Options Obj to $obj->Options->Option[$i]->Value instead of $obj->Options[$i]->Value
+                    if (isset($result->Options)) {
+                        $i = 0;
+                        $tempClass = new stdClass;
+                        foreach ($result->Options as $Option) {
+                            $tempClass->Option[$i]->Value = $Option->Value;
+                            $i++;
+                        }
+                        $result->Options = $tempClass;
+                    }
+                } else {
+                if ($this->APIConfig['Request:Method'] == "RPC")
+                    $result = Parser::JSONRPC2Obj($response);
+                else
+                    $result = Parser::JSON2Obj($response);
+
+                //Tweak the Options Obj to $obj->Options->Option[$i]->Value instead of $obj->Options[$i]->Value
+                if (isset($result->Options)) {
+                    $i = 0;
+                    $tempClass = new stdClass;
+                    foreach ($result->Options as $Option) {
+                        $tempClass->Option[$i]->Value = $Option->Value;
+                        $i++;
+                    }
+                    $result->Options = $tempClass;
+                }
+            }
+        else
+            $result = $response;
+
+        //Is Debug Mode
+        if ($this->APIConfig['ShowDebugInfo']) {
+            echo "GetAccessCodeResult Response Object";
+            var_dump($result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Description: Create Access Code Via SOAP
+     * @param Array $request
+     * @return StdClass An PHP Ojbect 
+     */
+    public function CreateAccessCodeSOAP($request) {
+
+        try {
+            $client = new SoapClient($this->APIConfig["PaymentService.Soap"], array(
+                        'trace' => true,
+                        'exceptions' => true,
+                        'login' => $this->APIConfig['Payment.Username'],
+                        'password' => $this->APIConfig['Payment.Password'],
+                    ));
+            $result = $client->CreateAccessCode(array('request' => $request));
+            //echo(htmlspecialchars($client->__getLastRequest()));
+        } catch (Exception $e) {
+            $lblError = $e->getMessage();
+        }
+
+        if (isset($lblError)) {
+            echo "<h2>CreateAccessCode SOAP Error: $lblError</h2><pre>";
+            die();
+        }
+        else
+            return $result->CreateAccessCodeResult;
+    }
+
+    /**
+     * Description: Get Result with Access Code Via SOAP
+     * @param Array $request
+     * @return StdClass An PHP Ojbect 
+     */
+    public function GetAccessCodeResultSOAP($request) {
+
+        try {
+            $client = new SoapClient($this->APIConfig["PaymentService.Soap"], array(
+                        'trace' => true,
+                        'exceptions' => true,
+                        'login' => $this->APIConfig['Payment.Username'],
+                        'password' => $this->APIConfig['Payment.Password'],
+                    ));
+            $result = $client->GetAccessCodeResult(array('request' => $request));
+        } catch (Exception $e) {
+            $lblError = $e->getMessage();
+        }
+
+        if (isset($lblError)) {
+            echo "<h2>GetAccessCodeResult SOAP Error: $lblError</h2><pre>";
+            die();
+        }
+        else
+            return $result->GetAccessCodeResultResult;
+    }
+
+    /**
+     * Description: Create Access Code Via REST POST
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function CreateAccessCodeREST($request) {
+
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.REST"] . "s", $request);
+
+        return $response;
+    }
+
+    /**
+     * Description: Get Result with Access Code Via REST GET
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function GetAccessCodeResultREST($request) {
+
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.REST"] . "/" . $_GET['AccessCode'], $request, false);
+
+        return $response;
+    }
+
+    /**
+     * Description: Create Access Code Via HTTP POST
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function CreateAccessCodePOST($request) {
+
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.POST.CreateAccessCode"], $request);
+
+        return $response;
+    }
+
+    /**
+     * Description: Get Result with Access Code Via HTTP POST
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function GetAccessCodeResultPOST($request) {
+
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.POST.GetAccessCodeResult"], $request);
+
+        return $response;
+    }
+
+    /**
+     * Description: Create Access Code Via HTTP POST
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function CreateAccessCodeRPC($request) {
+
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.RPC"], $request);
+
+        return $response;
+    }
+
+    /**
+     * Description: Get Result with Access Code Via HTTP POST
+     * @param XML/JSON Format $request
+     * @return XML/JSON Format Response 
+     */
+    public function GetAccessCodeResultRPC($request) {
+      
+        $response = $this->PostToRapidAPI($this->APIConfig["PaymentService.RPC"], $request);
+
+        return $response;
+    }
+
+    /*
+     * Description A Function for doing a Curl GET/POST
+     */
+
+    private function PostToRapidAPI($url, $request, $IsPost = true) {
+
+        $ch = curl_init($url);
+
+        if ($this->APIConfig['Request:Format'] == "XML")
+            curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
+        else
+            curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/json"));
+
+        curl_setopt($ch, CURLOPT_USERPWD, $this->APIConfig['Payment.Username'] . ":" . $this->APIConfig['Payment.Password']);
+        if ($IsPost)
+            curl_setopt($ch, CURLOPT_POST, true);
+        else
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch) != CURLE_OK) {
+            echo "<h2>POST Error: " . curl_error($ch) . " URL: $url</h2><pre>";
+            die();
+        } else {
+            curl_close($ch);
+            return $response;
+        }
+    }
+
+}
+
+/**
+ * Description of CreateAccessCodeRequest
+ * 
+ * 
+ */
+class CreateAccessCodeRequest {
+
+    /**
+     * @var Customer $Customer
+     */
+    public $Customer;
+
+    /**
+     * @var ShippingAddress $ShippingAddress
+     */
+    public $ShippingAddress;
+    public $Items;
+    public $Options;
+
+    /**
+     * @var Payment $Payment
+     */
+    public $Payment;
+    public $RedirectUrl;
+    public $Method;
+    private $CustomerIP;
+    private $DeviceID;
+
+    function __construct() {
+
+        $this->Customer = new Customer();
+        $this->ShippingAddress = new ShippingAddress();
+        $this->Payment = new Payment();
+        $this->CustomerIP = $_SERVER["SERVER_NAME"];
+    }
+
+}
+
+/**
+ * Description of Customer
+ */
+class Customer {
+
+    public $TokenCustomerID;
+    public $Reference;
+    public $Title;
+    public $FirstName;
+    public $LastName;
+    public $CompanyName;
+    public $JobDescription;
+    public $Street1;
+    public $Street2;
+    public $City;
+    public $State;
+    public $PostalCode;
+    public $Country;
+    public $Email;
+    public $Phone;
+    public $Mobile;
+    public $Comments;
+    public $Fax;
+    public $Url;
+
+}
+
+class ShippingAddress {
+
+    public $FirstName;
+    public $LastName;
+    public $Street1;
+    public $Street2;
+    public $City;
+    public $State;
+    public $Country;
+    public $PostalCode;
+    public $Email;
+    public $Phone;
+    public $ShippingMethod;
+
+}
+
+class Items {
+
+    public $LineItem = array();
+
+}
+
+class LineItem {
+
+    public $SKU;
+    public $Description;
+
+}
+
+class Options {
+
+    public $Option = array();
+
+}
+
+class Option {
+
+    public $Value;
+
+}
+
+class Payment {
+
+    public $TotalAmount;
+    /// <summary>The merchant's invoice number</summary>
+    public $InvoiceNumber;
+    /// <summary>merchants invoice description</summary>
+    public $InvoiceDescription;
+    /// <summary>The merchant's invoice reference</summary>
+    public $InvoiceReference;
+    /// <summary>The merchant's currency</summary>
+    public $CurrencyCode;
+
+}
+
+class GetAccessCodeResultRequest {
+
+    public $AccessCode;
+
+}
+
+/*
+ * Description A Class for conversion between different formats
+ */
+
+class Parser {
+
+    public static function Obj2JSON($obj) {
+
+        return json_encode($obj);
+    }
+
+    public static function Obj2JSONRPC($APIAction, $obj) {
+
+        if ($APIAction == "CreateAccessCode") {
+            //Tweak the request object in order to generate a valid JSON-RPC format for RapidAPI.
+            $obj->Payment->TotalAmount = (int) $obj->Payment->TotalAmount;
+        }
+
+        $tempClass = new stdClass;
+        $tempClass->id = 1;
+        $tempClass->method = $APIAction;
+        $tempClass->params->request = $obj;
+
+        return json_encode($tempClass);
+    }
+
+    public static function Obj2ARRAY($obj) {
+        //var_dump($obj);
+        return get_object_vars($obj);
+    }
+
+    public static function Obj2XML($obj) {
+
+        $xml = new XmlWriter();
+        $xml->openMemory();
+        $xml->setIndent(TRUE);
+
+        $xml->startElement(get_class($obj));
+        $xml->writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        $xml->writeAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
+
+        self::getObject2XML($xml, $obj);
+
+        $xml->endElement();
+
+        $xml->endElement();
+
+        return $xml->outputMemory(true);
+    }
+
+    public static function Obj2RPCXML($APIAction, $obj) {
+
+        if ($APIAction == "CreateAccessCode") {
+            //Tweak the request object in order to generate a valid XML-RPC format for RapidAPI.
+            $obj->Payment->TotalAmount = (int) $obj->Payment->TotalAmount;
+
+            $obj->Items = $obj->Items->LineItem;
+
+            $obj->Options = $obj->Options->Option;
+
+            $obj->Customer->TokenCustomerID = (float) (isset($obj->Customer->TokenCustomerID) ? $obj->Customer->TokenCustomerID : null);
+
+            return str_replace("double>", "long>", xmlrpc_encode_request($APIAction, get_object_vars($obj)));
+        }
+
+        if ($APIAction == "GetAccessCodeResult") {
+            return xmlrpc_encode_request($APIAction, get_object_vars($obj));
+        }
+    }
+
+    public static function JSON2Obj($obj) {
+        return json_decode($obj);
+    }
+
+    public static function JSONRPC2Obj($obj) {
+        
+        
+        $tempClass = json_decode($obj);
+        
+        if (isset($tempClass->error)) {
+            $tempClass->Errors = $tempClass->error->data;
+            return $tempClass;
+        }
+
+        return $tempClass->result;
+    }
+
+    public static function XML2Obj($obj) {
+        //Strip the empty JSON object
+        return json_decode(str_replace("{}", "null", json_encode(simplexml_load_string($obj))));
+    }
+
+    public static function RPCXML2Obj($obj) {
+        return json_decode(json_encode(xmlrpc_decode($obj)));
+    }
+
+    public static function HasProperties($obj) {
+        if (is_object($obj)) {
+            $reflect = new ReflectionClass($obj);
+            $props = $reflect->getProperties();
+            return !empty($props);
+        }
+        else
+            return TRUE;
+    }
+
+    private static function getObject2XML(XMLWriter $xml, $data) {
+        foreach ($data as $key => $value) {
+
+            if ($key == "TokenCustomerID" && $value == "") {
+                $xml->startElement("TokenCustomerID");
+                $xml->writeAttribute("xsi:nil", "true");
+                $xml->endElement();
+            }
+
+            if (is_object($value)) {
+                $xml->startElement($key);
+                self::getObject2XML($xml, $value);
+                $xml->endElement();
+                continue;
+            } else if (is_array($value)) {
+                self::getArray2XML($xml, $key, $value);
+            }
+
+            if (is_string($value)) {
+                $xml->writeElement($key, $value);
+            }
+        }
+    }
+
+    private static function getArray2XML(XMLWriter $xml, $keyParent, $data) {
+        foreach ($data as $key => $value) {
+            if (is_string($value)) {
+                $xml->writeElement($keyParent, $value);
+                continue;
+            }
+
+            if (is_numeric($key)) {
+                $xml->startElement($keyParent);
+            }
+
+            if (is_object($value)) {
+                self::getObject2XML($xml, $value);
+            } else if (is_array($value)) {
+                $this->getArray2XML($xml, $key, $value);
+                continue;
+            }
+
+            if (is_numeric($key)) {
+                $xml->endElement();
+            }
+        }
+    }
+
+}
+?>

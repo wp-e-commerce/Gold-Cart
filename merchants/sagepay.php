@@ -193,7 +193,7 @@ class Sagepay_merchant extends wpsc_merchant {
            $this->separator ="&";
 
         $this->sagepay_options =  get_option('wpec_sagepay');
-        $this->sagepay_options['transact_url'] = $this->cart_data['transaction_results_url'];
+        
         $this->sagepay_options['seperator'] = $this->separator;
 
         wpsc_merchant::__construct($purchase_id , $is_receiving);
@@ -202,7 +202,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
     public function construct_value_array(){
 
-
+		$this->sagepay_options['transact_url'] = $this->cart_data['transaction_results_url'];
         // get the options from the form
 
         //1 construct $strPost string,
@@ -267,8 +267,8 @@ class Sagepay_merchant extends wpsc_merchant {
 
         }
         $strPost .= '&Description=' . $description;
-        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator . 'sagepay=success';
-        $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'] . $this->seperator . 'sagepay=success';;
+        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
+        $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
         $strPost .= '&CustomerName=' . $strBillingFirstnames . ' ' . $strBillingSurname;
         $strPost .= '&CustomerEMail=' . $strCustomerEMail;
 
@@ -290,7 +290,8 @@ class Sagepay_merchant extends wpsc_merchant {
         if (strlen($strBillingState) > 0) $strPost .= "&BillingState=" . $strBillingState;
         if (strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
 
-        // Shipping Details:
+
+		// Shipping Details:
         // if the shipping info isnt present then assign the billing info
         (strlen($strDeliveryFirstnames ) > 0)  ? $strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames : $strPost .= "&DeliveryFirstnames=" .  $strBillingFirstnames;
         (strlen($strDeliverySurname ) > 0)     ? $strPost .= "&DeliverySurname=" . $strDeliverySurname        : $strPost .= "&DeliverySurname=" . $strBillingSurname;
@@ -348,7 +349,9 @@ class Sagepay_merchant extends wpsc_merchant {
                 $itemWithTax = $tax + $item['price'];
 
             }
-            // Description
+            // Description, remove (): if product has variations
+			$restricted_vars = array("(", ")", ":");
+			$item['name'] = str_replace($restricted_vars,'',$item['name']);
             $cartString .= ':' . $item['name'];
             // Quantity of this item
             $cartString .=  ':' . $item['quantity'];
@@ -524,8 +527,6 @@ add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_in
 
 function sagepay_process_gateway_info($sessionid){
     // first set up all the vars that we are going to need later
-    global $wpdb;
-
     $sagepay_options =  get_option('wpec_sagepay');
 
     $crypt = str_replace( " ", "+", $_GET['crypt'] );
@@ -582,6 +583,7 @@ function sagepay_process_gateway_info($sessionid){
                 case 'REJECTED':
                 case 'MALFORMED':
                 case 'INVALID':
+				case 'ABORT':
                 case 'ERROR':
                     $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
                     $purchase_log->set( array(
@@ -589,6 +591,18 @@ function sagepay_process_gateway_info($sessionid){
                         'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
                     ) );
                     $purchase_log->save();
+					// if it fails redirect to the shopping cart page with the error
+					// redirect to checkout page with an error
+					$error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+					if ( ! is_array( $error_messages ) )
+						$error_messages = array();
+					$error_messages[] = '<strong style="color:red">' . $unencrypted_values['StatusDetail'] . ' </strong>';
+					wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
+					$checkout_page_url = get_option( 'shopping_cart_url' );
+					if ( $checkout_page_url ) {
+					  header( 'Location: '.$checkout_page_url );
+					  exit();
+					}
                     break;
             }
             break;
@@ -601,19 +615,19 @@ function sagepay_process_gateway_info($sessionid){
                 'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
             ) );
             $purchase_log->save();
+			// redirect to checkout page with an error
+			$error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+			if ( ! is_array( $error_messages ) )
+				$error_messages = array();
+			$error_messages[] = '<strong style="color:red">' . $unencrypted_values['StatusDetail'] . ' </strong>';
+			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
+			$checkout_page_url = get_option( 'shopping_cart_url' );
+			if ( $checkout_page_url ) {
+			  header( 'Location: '.$checkout_page_url );
+			  exit();
+			}
             break;
     }
-    // if it fails redirect to the shopping cart page with the error
-    // redirect to checkout page with an error
-    $checkout_page_url = get_option('shopping_cart_url');
-    if($checkout_page_url){
-        $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
-        if ( ! is_array( $error_messages ) )
-            $error_messages = array();
-        $error_messages[] = '<strong>' . $unencrypted_values['StatusDetail'] . '</strong>';
-        wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
-        header('Location: '.$checkout_page_url);
 
-    }
     return $unencrypted_values['VendorTxCode'];
 }

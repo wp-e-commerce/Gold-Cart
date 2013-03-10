@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.3
+Version: 2.9.7.4
 Requires at least: 2.8
 Tested up to: 3.5
 Requires: Wp e-Commerce: 3.8.9.5
@@ -85,3 +85,6 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 * Fix: PayPal - proflow Gateway was using the wrong purchase status id to update the logs after successful payment
 * Fix: BluePay was using the wrong purchase status id to update the logs after successful payment
 * Fix: BluePay - send correct customer details
+
+2.9.7.4
+* Change: Minor update to API activation URL
