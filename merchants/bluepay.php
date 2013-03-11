@@ -201,7 +201,7 @@ function form_bluepay()
   </tr>
   <tr>
       <td>
-      ".__( 'Secrete Key:', 'wpsc_gold_cart' )."
+      ".__( 'Secret Key:', 'wpsc_gold_cart' )."
       </td>
       <td colspan='2'>
       <input type='text' size='40' value='".get_option('bluepay_password')."' name='bluepay_password' />
