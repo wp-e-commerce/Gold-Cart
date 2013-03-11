@@ -21,14 +21,21 @@ function submit_paystation(){
 	return true;
 }
 
-function form_paystation(){
-  return "<tr>
-      <td>
-      ".__( 'Paystation ID', 'wpsc_gold_cart' )."
-      </td>
-      <td>
-      <input type='text' size='40' value='".get_option('paystation_id')."' name='paystation_id' />
-      </td>
-    </tr>";
+function form_paystation() {
+return "<tr>
+			<td>
+				".__( 'Paystation ID', 'wpsc_gold_cart' )."
+			</td>
+			<td>
+				<input type='text' size='40' value='".get_option('paystation_id')."' name='paystation_id' />
+			</td>
+		</tr>
+		<tr>
+		  <td colspan='2'>
+			<strong>".__( 'Return URL that needs to be provided to Paystation : ', 'wpsc_gold_cart' ). get_option('transact_url') ."</strong>
+		  </td>
+		</tr>		
+		
+		";
 }
 ?>
