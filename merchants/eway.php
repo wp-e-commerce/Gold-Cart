@@ -92,7 +92,7 @@ class wpsc_merchant_eway extends wpsc_merchant {
 		$gateway_parameters = array();
 		$gateway_parameters += array(
 			'EWAY_ACCESSCODE' 	=> $accesscode,
-			'EWAY_CARDNAME' 	=> $this->cart_data['billing_address']['first_name'] . $this->cart_data['billing_address']['last_name'],
+			'EWAY_CARDNAME' 	=> $this->cart_data['billing_address']['first_name'] . ' ' . $this->cart_data['billing_address']['last_name'],
 			'EWAY_CARDNUMBER' 	=> $this->credit_card_details['card_number'],
 			'EWAY_CARDEXPIRYMONTH' 	=> $this->credit_card_details['expiry_month'],
 			'EWAY_CARDEXPIRYYEAR' 	=> $this->credit_card_details['expiry_year'],
@@ -158,7 +158,7 @@ function submit_eway() {
 	$options = array(
 		'eway_apikey',
 		'eway_apipassword',
-		//'test',
+		'eway_testmode',
 	);
 	foreach ( $options as $option ) {
 		update_option( $option, $_POST[$option] );
@@ -183,6 +183,17 @@ function form_eway() {
 			<td>
 				<input type='text' size='40' value='". get_option('eway_apipassword')."' name='eway_apipassword' />
 			</td>
+		</tr>
+		<tr>
+			<td>
+				". __( 'Transaction Mode:', 'wpsc_gold_cart' ) . "
+			</td>
+			<td>
+				<select lass='widefat' name='eway_testmode'>
+					<option  value='live' ".selected(get_option('eway_testmode') , 'live',false) . " > ". __( 'Live Mode', 'wpsc_gold_cart' ) . "</option>
+					<option  value='test' ".selected(get_option('eway_testmode') , 'test',false) . " >  ". __( 'Test Mode', 'wpsc_gold_cart' ) . "</option>
+				</select>
+			</td>
 		</tr>";
 }
 
@@ -194,12 +205,12 @@ class RapidAPI {
         //Load the configuration
         $this->APIConfig['Payment.Username'] = get_option('eway_apikey');
 		$this->APIConfig['Payment.Password'] = get_option('eway_apipassword');
-		$this->APIConfig['PaymentService.Soap'] = 'https://api.ewaypayments.com/Soap.asmx?WSDL';
-		$this->APIConfig['PaymentService.POST.CreateAccessCode'] = 'https://api.ewaypayments.com/CreateAccessCode.json';
-		$this->APIConfig['PaymentService.POST.GetAccessCodeResult'] = 'https://api.ewaypayments.com/GetAccessCodeResult.json';
-		$this->APIConfig['PaymentService.REST'] = 'https://api.ewaypayments.com/AccessCode';
-		$this->APIConfig['PaymentService.RPC'] = 'https://api.ewaypayments.com/json-rpc';
-		$this->APIConfig['PaymentService.JSONPScript'] = 'https://api.ewaypayments.com/JSONP/v1/js';
+		$this->APIConfig['PaymentService.Soap'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/Soap.asmx?WSDL' : 'https://api.ewaypayments.com/Soap.asmx?WSDL';
+		$this->APIConfig['PaymentService.POST.CreateAccessCode'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/CreateAccessCode.json' : 'https://api.ewaypayments.com/CreateAccessCode.json';
+		$this->APIConfig['PaymentService.POST.GetAccessCodeResult'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/GetAccessCodeResult.json' : 'https://api.ewaypayments.com/GetAccessCodeResult.json';
+		$this->APIConfig['PaymentService.REST'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/AccessCode' : 'https://api.ewaypayments.com/AccessCode';
+		$this->APIConfig['PaymentService.RPC'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/json-rpc' : 'https://api.ewaypayments.com/json-rpc';
+		$this->APIConfig['PaymentService.JSONPScript'] = get_option('eway_testmode') == 'test' ? 'https://api.sandbox.ewaypayments.com/JSONP/v1/js' : 'https://api.ewaypayments.com/JSONP/v1/js';
 		$this->APIConfig['Request:Method'] = 'SOAP';
 		$this->APIConfig['Request:Format'] = 'JSON';
 		$this->APIConfig['ShowDebugInfo'] = 0;	
