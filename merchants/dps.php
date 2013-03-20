@@ -1,5 +1,5 @@
 <?php
-$nzshpcrt_gateways[$num]['name'] = __( 'DPS / Payment Express - PX Post', 'wpsc_gold_cart' );
+$nzshpcrt_gateways[$num]['name'] = __( 'DPS / Payment Express(DPS Hosted) - PxAccess', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['internalname'] = 'dps';
 $nzshpcrt_gateways[$num]['function'] = 'gateway_dps';
 $nzshpcrt_gateways[$num]['form'] = "form_dps";
@@ -75,11 +75,11 @@ function decrypt_dps_response(){
   $sessionid = $_GET['sessionid'];
   $enc_hex = $_GET["result"];
   if($enc_hex != null) {
-    $rsp = $pxaccess->getResponse($enc_hex);
-    $siteurl = get_option('siteurl');
-    $total_weight = 0;
-    if(($rsp->ResponseText == 'APPROVED')){
-    	$sessionid = $rsp->MerchantReference;
+	$rsp = $pxaccess->getResponse($enc_hex);
+	$siteurl = get_option('siteurl');
+	$total_weight = 0;
+	if(($rsp->getResponseText() == 'APPROVED')){
+    	$sessionid = $rsp->getMerchantReference();
     	$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
 		if( ! $purchase_log->is_transaction_completed() ) {
 			$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
@@ -93,8 +93,7 @@ function decrypt_dps_response(){
 function form_dps() {
   $access_url = get_option('access_url');
   if($access_url == '') {
-		update_option('access_url', "https://sec.paymentexpress.com/pxpay/pxaccess.aspx");
-		//update_option('access_url', "https://www.paymentexpress.com/pxpay/pxpay.aspx"); this was the old value which appears to be pxpay is the px post name above wrong? I think so
+		update_option('access_url', "https://sec.paymentexpress.com/pxpay/pxpay.aspx"); //Correct PxAccess URL.
   }
   $output = " \n\r";
 	//   $output = "
@@ -185,18 +184,21 @@ function form_dps() {
 }
 
 #******************************************************************************
-#* Name          : PxAccess.inc
-#* Description   : The objects for PX Payment page
-#* Copyright (c) : 2004 Direct Payment solutions
+#* Name          : PxAccess.inc.php
+#* Description   : The objects for PX Payment page  
+#* Copyright (c) : 2009 Direct Payment solutions
 #* Date          : 2003-12-24
 #* Modifications : 2003-12-24 MifMessage class
-#*         : 2004-09-01 PxAccess, PxPayRequest, PxPayResponse classes
-#*                which encapsulate 3-DES to handle payment requests and
-#*                response.
-#*           2004-10-14 Implements complete transactions
-#*           2005-03-14 change unpack("H*", $enc); to unpack("H$enclen", $enc);
-#*                due to the version 4.3.10 Php unpack function bugs
-#*Version    : 2.01.08
+#*				 : 2004-09-01 PxAccess, PxPayRequest, PxPayResponse classes
+#*							  which encapsulate 3-DES to handle payment requests and
+#*							  response.
+#*				   2004-10-14 Implements complete transactions
+#*				   2005-03-14 change unpack("H*", $enc); to unpack("H$enclen", $enc); 
+#*							  due to the version 4.3.10 Php unpack function bugs
+#*				   2008-02-28 Added missing properties CardNumber, DateExpiry, CardHolderName.
+#*				   2009-11-16 TT Supports V5 (Base-64) encoding of result and request query strings
+#*                Also added support for php version 4 and 5.
+#*Version		 : 3.01
 #******************************************************************************
 
 # MifMessage.
@@ -251,12 +253,12 @@ class MifMessage
     }
     else
     {
-  ## TW2004-09-24: Fixed bug when elemnt existent but empty
+	## TW2004-09-24: Fixed bug when elemnt existent but empty
     #
     $elementObj = $this->xml_value_[$index];
     if (! array_key_exists("value", $elementObj))
       return "";
-
+   
     return $this->xml_value_[$index]["value"];
     }
   }
@@ -293,8 +295,8 @@ class MifMessage
         return 0;   # no children
       }
       $index = $rootindex+1;
-      while ($index<count($this->xml_value_) &&
-             !($this->xml_value_[$index]["level"]==$level &&
+      while ($index<count($this->xml_value_) && 
+             !($this->xml_value_[$index]["level"]==$level && 
                $this->xml_value_[$index]["type"]=="close"))
       {
         # if one below parent and tag matches, bingo
@@ -327,17 +329,17 @@ class PxAccess
 	{
 		#Validate the REquest
 		if($request->validData() == false) return "" ;
-
+			
   		#$txnId=rand(1,100000);
 		$txnId = uniqid("MI");  #You need to generate you own unqiue reference. JZ:2004-08-12
 		$request->setTxnId($txnId);
 		$request->setTs($this->getCurrentTS());
 		$request->setSwVersion("2.01.01");
 		$request->setAppletType("PHPPxAccess");
-
-
+		
+		
 		$xml = $request->toXml();
-
+			
 	  if (strlen($xml)%8 != 0)
 	  {
 	    $xml = str_pad($xml, strlen($xml) + 8-strlen($xml)%8); # pad to multiple of 8
@@ -347,22 +349,18 @@ class PxAccess
 	  $msg = $xml.$mac;
 	  #$msg = $xml;
 	  $enc = $this->encrypt_tripledes($msg, $this->Des_Key); #JZ2004-08-16: Include the MAC code
-
-	  $enclen = strlen($enc) * 2;
-
-	  $enc_hex = unpack("H$enclen", $enc); #JZ2005-03-14: there is a bug in the new version php unpack function
-	  #$enc_hex = @unpack("H*", $enc); #JZ2005-03-14: there is a bug in the new version php unpack function
-
-	  #$enc_hex = $enc_hex[""]; #use this function if PHP version before 4.3.4
-	   #$enc_hex = $enc_hex[1]; #use this function if PHP version after 4.3.4
-	  $enc_hex = (version_compare(PHP_VERSION, "4.3.4", ">=")) ? $enc_hex[1] :$enc_hex[""];
-
-	  $PxAccess_Redirect = "$this->PxAccess_Url?userid=$this->PxAccess_Userid&request=$enc_hex";
+	  
+	  // TT 2009-11-12 Base-64 encoding added
+	  $enc_b64 = 'v5' . base64_encode($enc);
+	  $enc_b64 = str_replace("/", "_", $enc_b64);
+	  $enc_b64 = str_replace("+", "-", $enc_b64);
+	  
+	  $PxAccess_Redirect = "$this->PxAccess_Url?userid=$this->PxAccess_Userid&request=$enc_b64";
 
 		return $PxAccess_Redirect;
-
+		
 	}
-
+		
 	#******************************************************************************
 	# This function ecrypts data using 3DES via libmcrypt
 	#******************************************************************************
@@ -380,8 +378,8 @@ class PxAccess
 	  #mcrypt_generic_deinit($td); #Might cause problem in some PHP version
 	  return $result;
 	}
-
-
+	
+	
 	#******************************************************************************
 	# This function decrypts data using 3DES via libmcrypt
 	#******************************************************************************
@@ -399,15 +397,15 @@ class PxAccess
 	  #mcrypt_generic_deinit($td); #Might cause problem in some PHP version
 	  return $result;
 	}
-
+	
 	#JZ2004-08-16
-
+	
 	#******************************************************************************
 	# Generate and return a message authentication code (MAC) for a string.
 	# (Uses ANSI X9.9 procedure.)
 	#******************************************************************************
 	function makeMAC($msg,$Mackey){
-
+		
 	 if (strlen($msg)%8 != 0)
 	  {
 	  	$extra = 8 - strlen($msg)%8;
@@ -415,26 +413,28 @@ class PxAccess
 	  }
 	  $mac = pack("C*", 0, 0, 0, 0, 0, 0, 0, 0); # start with all zeros
 	  #$mac_result = unpack("C*", $mac);
-
+	  
 	   for ( $i=0; $i<strlen($msg)/8; $i++)
 	  {
 	    $msg8 = substr($msg, 8*$i, 8);
-
+	    
 		$mac ^= $msg8;
 	    $mac = $this->encrypt_des($mac,$Mackey);
-
+	    
 	  }
 		#$mac = pack("C*", $mac);
 	    #$mac_result= encrypt_des($mac, $Mackey);
-
+		
 		$mac_result	= unpack("H8", $mac);
 		#$mac_result	= $mac_result[""]; #use this function if PHP version before 4.3.4
 		#$mac_result	= $mac_result[1]; #use this function if PHP version after 4.3.4
 		$mac_result = (version_compare(PHP_VERSION, "4.3.4", ">=")) ? $mac_result[1]: $mac_result[""];
 
 		return $mac_result;
+	  
+	   
 	}
-
+	 
 	#******************************************************************************
 	# This function ecrypts data using DES via libmcrypt
 	# JZ2004-08-16
@@ -452,259 +452,293 @@ class PxAccess
 	  $result = mcrypt_generic($td, $data);
 	  #mcrypt_generic_deinit($td); #Might cause problem in some PHP version
 	  mcrypt_module_close($td);
-
+	
 	  return $result;
 	}
+
+
 	#JZ2004-08-16
 	function getResponse($resp_enc){
 		#global $Mac_Key;
-		$enc = pack("H*", $resp_enc);
+	$resp_enc = substr($resp_enc, 2);
+	$resp_enc = str_replace("_", "/", $resp_enc);
+	$resp_enc = str_replace("-", "+", $resp_enc);
+	$enc = base64_decode($resp_enc);
+	
 		$resp = trim($this->decrypt_tripledes($enc, $this->Des_Key));
 		$xml = substr($resp, 0, strlen($resp)-8);
+		
 	    $mac = substr($resp, -8);
 		$checkmac = $this->makeMac($xml, $this->Mac_Key);
 		if($mac != $checkmac){
 			$xml = "<success>0</success><ResponseText>Response MAC Invalid</ResponseText>";
 		}
-
+		
 		$pxresp = new PxPayResponse($xml);
 		return $pxresp;
-
+	
 	}
+
+	
+	
 	#******************************************************************************
 	# Return the current time (GMT/UTC).The return time formatted YYYYMMDDHHMMSS.
 	#JZ2004-08-30
 	#******************************************************************************
 	function getCurrentTS()
 	{
-
+	  
 	  return gmstrftime("%Y%m%d%H%M%S", time());
 	}
+	
+	
+
 }
+
 #******************************************************************************
 # Class for PxPay request messages.
 #******************************************************************************
 class PxPayRequest extends PxPayMessage
 {
-  var $TxnId,$UrlFail,$UrlSuccess;
-  var $AmountInput, $AppletVersion, $InputCurrency;
-  var $EnableAddBillCard;
-  var $TS;
+	var $s,$q,$r;
+	var $c, $e, $d;
+	var $v;
+	var $C;
+	
 
-  var $AppletType;
-
-  #Constructor
-  function PxPayRequest(){
-    $this->PxPayMessage();
-
-  }
-
-  function setAppletType($AppletType){
-    $this->AppletType = $AppletType;
-  }
-
-  function getAppletType(){
-    return $this->AppletType;
-  }
-
-
-
-  function setTs($Ts){
-    $this->TS = $Ts;
-  }
-  function setEnableAddBillCard($EnableBillAddCard){
-   $this->EnableAddBillCard = $EnableBillAddCard;
-  }
-
-  function getEnableAddBillCard(){
-    return $this->EnableAddBillCard;
-  }
-  function setInputCurrency($InputCurrency){
-    $this->InputCurrency = $InputCurrency;
-  }
-  function getInputCurrency(){
-    return $this->InputCurrency;
-  }
-  function setTxnId( $TxnId)
-  {
-    $this->TxnId = $TxnId;
-  }
-  function getTxnId(){
-    return $this->TxnId;
-  }
-
-  function setUrlFail($UrlFail){
-    $this->UrlFail = $UrlFail;
-  }
-  function getUrlFail(){
-    return $this->UrlFail;
-  }
-  function setUrlSuccess($UrlSuccess){
-    $this->UrlSuccess = $UrlSuccess;
-  }
-  function setAmountInput($AmountInput){
-    $this->AmountInput = trim(sprintf("%9.2f",$AmountInput));
-  }
-
-  function getAmountInput(){
-    return $this->AmountInput;
-  }
-  function setSwVersion($SwVersion){
-    $this->AppletVersion = $SwVersion;
-  }
-
-  function getSwVersion(){
-    return $this->AppletVersion;
-  }
-  #******************************************************************
-  #Data validation
-  #******************************************************************
-  function validData(){
-    $msg = "";
-    if($this->TxnType != "Purchase")
-      if($this->TxnType != "Auth")
-        if($this->TxnType != "GetCurrRate")
-          if($this->TxnType != "Refund")
-            if($this->TxnType != "Complete")
-              if($this->TxnType != "Order1")
-                $msg = "Invalid TxnType[$this->TxnType]<br>";
-
-    if(strlen($this->MerchantReference) > 64)
-      $msg = "Invalid MerchantReference [$this->MerchantReference]<br>";
-
-    if(strlen($this->TxnId) > 16)
-      $msg = "Invalid TxnId [$this->TxnId]<br>";
-    if(strlen($this->TxnData1) > 255)
-      $msg = "Invalid TxnData1 [$this->TxnData1]<br>";
-    if(strlen($this->TxnData2) > 255)
-      $msg = "Invalid TxnData2 [$this->TxnData2]<br>";
-    if(strlen($this->TxnData3) > 255)
-      $msg = "Invalid TxnData3 [$this->TxnData3]<br>";
-
-    if(strlen($this->EmailAddress) > 255)
-      $msg = "Invalid EmailAddress [$this->EmailAddress]<br>";
-
-    if(strlen($this->UrlFail) > 255)
-      $msg = "Invalid UrlFail [$this->UrlFail]<br>";
-    if(strlen($this->UrlSuccess) > 255)
-      $msg = "Invalid UrlSuccess [$this->UrlSuccess]<br>";
-    if(strlen($this->BillingId) > 32)
-      $msg = "Invalid BillingId [$this->BillingId]<br>";
-    if(strlen($this->DpsBillingId) > 16)
-      $msg = "Invalid DpsBillingId [$this->DpsBillingId]<br>";
-
-    if ($msg != "") {
-        trigger_error($msg,E_USER_ERROR);
-      return false;
-    }
-    return true;
-  }
+	#Constructor
+ 	function PxPayRequest(){
+		$this->PxPayMessage();
+		
+	}
+	
+	function setAppletType($AppletType){
+		$this->e = $AppletType;
+	}
+	
+	function getAppletType(){
+		return $this->e;
+	}
+	
+	
+	
+	function setTs($Ts){
+		$this->C = $Ts;
+	}
+	function setEnableAddBillCard($EnableBillAddCard){
+	 $this->v = $EnableBillAddCard;
+	}
+	
+	function getEnableAddBillCard(){
+		return $this->v;
+	}
+	function setInputCurrency($InputCurrency){
+		$this->d = $InputCurrency;
+	}
+	function getInputCurrency(){
+		return $this->d;
+	}
+	function setTxnId($TxnId)
+	{
+		$this->s = $TxnId;
+	}
+	function getTxnId(){
+		return $this->s;
+	}
+	
+	function setUrlFail($UrlFail){
+		$this->q = $UrlFail;
+	}
+	function getUrlFail(){
+		return $this->q;
+	}
+	function setUrlSuccess($UrlSuccess){
+		$this->r = $UrlSuccess;
+	}
+	function setAmountInput($AmountInput){
+		$this->c = sprintf("%9.2f",$AmountInput); 
+	}
+	
+	function getAmountInput(){
+		return $this->c;
+	}
+	function setSwVersion($SwVersion){
+		$this->AppletVersion = $SwVersion;
+	}
+	
+	function getSwVersion(){
+		return $this->AppletVersion;
+	}
+	#******************************************************************
+	#Data validation 
+	#******************************************************************
+	function validData(){
+		$msg = "";
+		if($this->a != "Purchase")
+			if($this->a != "Auth")
+				if($this->a != "GetCurrRate")
+					if($this->a != "Refund")
+						if($this->a != "Complete")
+							if($this->a != "Order1")
+								$msg = "Invalid a[$this->a]<br>";
+		
+		if(strlen($this->j) > 64)
+			$msg = "Invalid MerchantReference [$this->j]<br>";
+		
+		if(strlen($this->s) > 16)
+			$msg = "Invalid TxnId [$this->s]<br>";
+		if(strlen($this->k) > 255)
+			$msg = "Invalid TxnData1 [$this->k]<br>";
+		if(strlen($this->l) > 255)
+			$msg = "Invalid TxnData2 [$this->l]<br>";
+		if(strlen($this->m) > 255)
+			$msg = "Invalid TxnData3 [$this->m]<br>";
+			
+		if(strlen($this->o) > 255)
+			$msg = "Invalid EmailAddress [$this->o]<br>";
+			
+		if(strlen($this->q) > 255)
+			$msg = "Invalid UrlFail [$this->q]<br>";
+		if(strlen($this->r) > 255)
+			$msg = "Invalid UrlSuccess [$this->r]<br>";
+		if(strlen($this->t) > 32)
+			$msg = "Invalid BillingId [$this->t]<br>";
+		if(strlen($this->u) > 16)
+			$msg = "Invalid DpsBillingId [$this->u]<br>";
+			
+		if ($msg != "") {
+		    trigger_error($msg,E_USER_ERROR);
+			return false;
+		}
+		return true;
+	}
 
 }
 
 #******************************************************************************
 # Abstract base class for PxPay messages.
 # These are messages with certain defined elements,  which can be serialized to XML.
+
 #******************************************************************************
 class PxPayMessage {
-  var $TxnType;
-    var $TxnData1;
-    var $TxnData2;
-    var $TxnData3;
-    var $MerchantReference;
-    var $EmailAddress;
-    var $BillingId;
-    var $DpsBillingId;
-  var $DpsTxnRef;
+    var $a;
+  	var $k;
+  	var $l;
+  	var $m;
+  	var $j;
+  	var $o;
+  	var $t;
+  	var $u;
+    var $x;
+    var $y;
+	
+	function PxPayMessage(){
+	
+	}
+	function setDpsTxnRef($DpsTxnRef){
+		$this->x = $DpsTxnRef;
+	}
+	
+	function getDpsTxnRef(){
+		return $this->x;
+	}
+	
+	function setDpsBillingId($DpsBillingId){
+		$this->u = $DpsBillingId;
+	}
+	
+	function getDpsBillingId(){
+		return $this->u;
+	}
+	function setBillingId($BillingId){
+		$this->t = $BillingId;
+	}
+	
+	function getBillingId(){
+		return $this->t;
+	}
+	function setTxnType($TxnType){
+		$this->a = $TxnType;
+	}
+	function getTxnType(){
+		return $this->a;
+	}
+	function setMerchantReference($MerchantReference){
+		$this->j = $MerchantReference;
+	}
+	
+	function getMerchantReference(){
+		return $this->j;
+	}
+	function setEmailAddress($EmailAddress){
+		$this->o = $EmailAddress;
+		
+	}
+	
+	function getEmailAddress(){
+		return $this->o;
+	}
+	
+	function setTxnData1($TxnData1){
+		$this->k = $TxnData1;
+		
+	}
+	function getTxnData1(){
+		return $this->k;
+	}
+	function setTxnData2($TxnData2){
+		$this->l = $TxnData2;
+		
+	}
+	function getTxnData2(){
+		return $this->l;
+	}
+	
+	function getTxnData3(){
+		return $this->m;
+	}
+	function setTxnData3($TxnData3){
+		$this->m = $TxnData3;
+		
+	}
+  function getCardNumber(){
+		return $this->z;
+	}
+	function setCardNumber($CardNumber){
+		$this->z = $CardNumber;		
+	}
+  function getDateExpiry(){
+		return $this->A;
+	}
+	function setDateExpiry($DateExpiry){
+		$this->A = $DateExpiry;		
+	}
+  function getCardHolderName(){
+		return $this->y;
+	}
+	function setCardHolderName($CardHolderName){
+		$this->y = $CardHolderName;		
+	}
 
-  function PxPayMessage(){
+	function toXml(){
+		$arr = get_object_vars($this);
+		$root = strtolower(get_class($this));
+		if($root == "pxpaypequest")
+			$root = "Request";
+		elseif ($root == "pxpaypesponse")
+			$root = "Response";
+		else
+			$root ="Request";
+			
+		$xml  = "<$root>";
+    	while (list($prop, $val) = each($arr))
+        	$xml .= "<$prop>$val</$prop>" ;
 
-  }
-  function setDpsTxnRef($DpsTxnRef){
-    $this->DpsTxnRef = $DpsTxnRef;
-  }
-
-  function getDpsTxnRef(){
-    return $this->DpsTxnRef;
-  }
-
-  function setDpsBillingId($DpsBillingId){
-    $this->DpsBillingId = $DpsBillingId;
-  }
-
-  function getDpsBillingId(){
-    return $this->DpsBillingId;
-  }
-  function setBillingId($BillingId){
-    $this->BillingId = $BillingId;
-  }
-
-  function getBillingId(){
-    return $this->BillingId;
-  }
-  function setTxnType($TxnType){
-    $this->TxnType = $TxnType;
-  }
-  function getTxnType(){
-    return $this->TxnType;
-  }
-  function setMerchantReference($MerchantReference){
-    $this->MerchantReference = $MerchantReference;
-  }
-
-  function getMerchantReference(){
-    return $this->MerchantReference;
-  }
-  function setEmailAddress($EmailAddress){
-    $this->EmailAddress = $EmailAddress;
-
-  }
-
-  function getEmailAddress(){
-    return $this->EmailAddress;
-  }
-
-  function setTxnData1($TxnData1){
-    $this->TxnData1 = $TxnData1;
-
-  }
-  function getTxnData1(){
-    return $this->TxnData1;
-  }
-  function setTxnData2($TxnData2){
-    $this->TxnData2 = $TxnData2;
-
-  }
-  function getTxnData2(){
-    return $this->TxnData2;
-  }
-
-  function getTxnData3(){
-    return $this->TxnData3;
-  }
-  function setTxnData3($TxnData3){
-    $this->TxnData3 = $TxnData3;
-
-  }
-  function toXml(){
-    $arr = get_object_vars($this);
-    $root = get_class($this);
-    if($root == "PxPayRequest")
-      $root = "Request";
-    elseif ($root == "PxPayResponse")
-      $root = "Response";
-    else
-      $root ="Request";
-
-    $xml  = "<$root>";
-      while (list($prop, $val) = each($arr))
-          $xml .= "<$prop>$val</$prop>" ;
-
-    $xml .= "</$root>";
-    return $xml;
-  }
-
-
+		$xml .= "</$root>";
+		return $xml;
+	}
+	
+	
 }
 
 #******************************************************************************
@@ -713,102 +747,112 @@ class PxPayMessage {
 
 class PxPayResponse extends PxPayMessage
 {
-  var $Success;
-  var $StatusRequired;
-  var $Retry;
-  var $AuthCode;
-  var $AmountSettlement;
-  var $CurrencySettlement;
-  var $CardName;
-  var $CurrencyInput;
+	var $h;
+  var $E;
+  var $F;
+  var $J;
+  var $f;
+  var $b;
+  var $n;
+  var $d;
   var $UserId;
-  var $ResponseText;
-  #var $DpsTxnRef;
-  var $MerchantTxnId;
-  var $TS;
+  var $i;  
+  var $p;
+  var $z;
+  var $A;
+  var $y;
+  var $C;
+  var $s;  
+  
+	function PxPayResponse($xml){
 
-  function PxPayResponse($xml){
-    $msg = new MifMessage($xml);
-    $this->PxPayMessage();
-
-    $TS = $msg->get_element_text("TS");
-    $expiryTS = $this->getExpiredTS();
-    if(strcmp($TS, $expiryTS) < 0 ){
-      $this->Success = "0";
-      $this->ResponseText = "Response TS out of range";
-      return;
-    }
-
-    $this->setBillingId($msg->get_element_text("BillingId"));
-    $this->setDpsBillingId($msg->get_element_text("DpsBillingId"));
-    $this->setEmailAddress($msg->get_element_text("EmailAddress"));
-    $this->setMerchantReference($msg->get_element_text("MerchantReference"));
-    $this->setTxnData1($msg->get_element_text("TxnData1"));
-    $this->setTxnData2($msg->get_element_text("TxnData2"));
-    $this->setTxnData3($msg->get_element_text("TxnData3"));
-    $this->setTxnType($msg->get_element_text("TxnType"));
-
-    $this->Success = $msg->get_element_text("Success");
-    $this->StatusRequired = $msg->get_element_text("StatusRequired");
-    $this->Retry = $msg->get_element_text("Retry");
-    $this->AuthCode = $msg->get_element_text("AuthCode");
-    $this->AmountSettlement = $msg->get_element_text("AmountSettlement");
-    $this->CurrencySettlement = $msg->get_element_text("CurrencySettlement");
-    $this->CardName = $msg->get_element_text("CardName");
-    $this->CurrencyInput = $msg->get_element_text("CurrencyInput");
-    $this->UserId = $msg->get_element_text("UserId");
-    $this->ResponseText = $msg->get_element_text("ResponseText");
-    $this->DpsTxnRef = $msg->get_element_text("DpsTxnRef");
-    $this->MerchantTxnId = $msg->get_element_text("MerchantTxnId");
-    $this->TS = $msg->get_element_text("TS");
-  }
-  function getTS(){
-    return $this->TS;
-  }
-  function getMerchantTxnId(){
-    return $this->MerchantTxnId;
-  }
-
-  function getResponseText(){
-    return $this->ResponseText;
-  }
-  function getUserId(){
-    return $this->UserId;
-  }
-  function getCurrencyInput(){
-    return $this->CurrencyInput;
-  }
-  function getCardName(){
-    return $this->CardName;
-  }
-  function getCurrencySettlement(){
-    $this->CurrencySettlement;
-  }
-  function getAmountSettlement(){
-    return $this->AmountSettlement;
-  }
-  function getSuccess(){
-    return $this->Success;
-  }
-  function getStatusRequired(){
-    return $this->StatusRequired;
-  }
-  function getRetry(){
-    return $this->Retry;
-  }
-  function getAuthCode(){
-    return $this->AuthCode;
-  }
-  #******************************************************************************
-  # Return the expired time, i.e. 2 days ago (GMT/UTC).
-  #JZ2004-08-30
-  #******************************************************************************
-  function  getExpiredTS()
-  {
-
-    return gmstrftime("%Y%m%d%H%M%S", time()- 2 * 24 * 60 * 60);
-  }
-
+		$msg = new MifMessage($xml);
+		$this->PxPayMessage();
+			
+		$TS = $msg->get_element_text("C");
+		$expiryTS = $this->getExpiredTS();
+		if(strcmp($TS, $expiryTS) < 0 ){
+			$this->Success = "0";
+			$this->i = "Response TS out of range";
+			return;
+		}
+		
+	
+		$this->setBillingId($msg->get_element_text("t"));
+		$this->setDpsBillingId($msg->get_element_text("u"));
+		$this->setEmailAddress($msg->get_element_text("o"));
+		$this->setMerchantReference($msg->get_element_text("j"));
+		$this->setTxnData1($msg->get_element_text("k"));
+		$this->setTxnData2($msg->get_element_text("l"));
+		$this->setTxnData3($msg->get_element_text("m"));
+		$this->setTxnType($msg->get_element_text("a"));
+		
+		$this->h = $msg->get_element_text("h");
+		$this->E = $msg->get_element_text("E");
+		$this->F = $msg->get_element_text("F");
+		$this->J = $msg->get_element_text("J");
+		$this->f = $msg->get_element_text("f");
+		$this->b = $msg->get_element_text("b");
+		$this->n = $msg->get_element_text("n");
+		$this->b = $msg->get_element_text("b");
+		$this->UserId = $msg->get_element_text("UserId");
+		$this->i = $msg->get_element_text("i");
+		$this->x = $msg->get_element_text("x");
+		$this->s = $msg->get_element_text("s");
+    
+    $this->z = $msg->get_element_text("z");
+    $this->A = $msg->get_element_text("A");
+    $this->y = $msg->get_element_text("y");
+    
+    
+		$this->TS = $msg->get_element_text("C");
+	}
+	function getTS(){
+		return $this->C;
+	}
+	function getMerchantTxnId(){
+		return $this->s;
+	}
+	
+	function getResponseText(){
+		return $this->i;
+	}
+	function getUserId(){
+		return $this->UserId;
+	}
+	function getCurrencyInput(){
+		return $this->d;
+	}
+	function getCardName(){
+		return $this->n;
+	}
+	function getCurrencySettlement(){
+		$this->b;
+	}
+	function getAmountSettlement(){
+		return $this->f;
+	}
+	function getSuccess(){
+		return $this->h;
+	}
+	function getStatusRequired(){
+		return $this->F;
+	}
+	function getRetry(){
+		return $this->E;
+	}
+	function getAuthCode(){
+		return $this->J;
+	}
+	#******************************************************************************
+	# Return the expired time, i.e. 2 days ago (GMT/UTC).
+	#JZ2004-08-30
+	#******************************************************************************
+	function  getExpiredTS()
+	{
+	  
+	  return gmstrftime("%Y%m%d%H%M%S", time()- 2 * 24 * 60 * 60);
+	}
+	
 }
-
 ?>
