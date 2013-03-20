@@ -16,14 +16,11 @@ function wpsc_activate_gold_module() {
 		$activation_name = urlencode( $_POST['activation_name'] );
 		$activation_key = urlencode( $_POST['activation_key'] );
 		$siteurl = urlencode( get_option( 'siteurl' ) );
-		$request = '';
 		$http_request  = "GET /wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl HTTP/1.0\r\n";
 		$http_request .= "Host: getshopped.org\r\n";
 		$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=".get_option( 'blog_charset' )."\r\n";
-		$http_request .= "Content-Length: ".strlen( $request )."\r\n";
 		$http_request .= "User-Agent: $useragent\r\n";
 		$http_request .= "\r\n";
-		$http_request .= $request;
 		$response = '';
 
 		if ( false != ( $fs = @fsockopen( 'getshopped.org',80,$errno,$errstr,10 ) ) ) {
