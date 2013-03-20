@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.4
+Version: 2.9.7.5
 Requires at least: 2.8
 Tested up to: 3.5
 Requires: Wp e-Commerce: 3.8.9.5
@@ -88,3 +88,14 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 
 2.9.7.4
 * Change: Minor update to API activation URL
+
+2.9.7.5
+* DPS updated name and ap to properly reflect the DPS module being used
+* eway rewrite
+* paystation return url
+* sagepay fixes
+* Gold Cart version checking
+* added an option to hide CHECK payment option when using AIM / CIM module
+* a.net function rename
+* missing ' for a field
+
