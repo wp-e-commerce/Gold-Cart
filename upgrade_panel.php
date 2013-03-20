@@ -12,24 +12,13 @@ function wpsc_activate_gold_module() {
 			update_option( 'activation_key', $_POST['activation_key'] );
 		}
 
-//		CHANGED FOR NEW ACTIVATION 2/25/13 Edward per Gary
-//		$target = "http://instinct.co.nz/wp-goldcart-api/api_register.php?name=".$_POST['activation_name']."&key=".$_POST['activation_key']."&url=".get_option( 'siteurl' )."";
-		$target = "http://getshopped.org/?wpsc_api_activation=true?name=".$_POST['activation_name']."&key=".$_POST['activation_key']."&url=".get_option( 'siteurl' )."";
-
-
-
-		$remote_access_fail = false;
 		$useragent = 'WP e-Commerce plugin';
 		$activation_name = urlencode( $_POST['activation_name'] );
 		$activation_key = urlencode( $_POST['activation_key'] );
 		$siteurl = urlencode( get_option( 'siteurl' ) );
 		$request = '';
 		$http_request  = "GET /wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl HTTP/1.0\r\n";
-
-//		CHANGED FOR NEW ACTIVATION 2/25/13 Edward per Gary
-//		$http_request .= "Host: instinct.co.nz\r\n";
 		$http_request .= "Host: getshopped.org\r\n";
-
 		$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=".get_option( 'blog_charset' )."\r\n";
 		$http_request .= "Content-Length: ".strlen( $request )."\r\n";
 		$http_request .= "User-Agent: $useragent\r\n";
@@ -37,9 +26,6 @@ function wpsc_activate_gold_module() {
 		$http_request .= $request;
 		$response = '';
 
-
-//		CHANGED FOR NEW ACTIVATION 2/25/13 Edward per Gary
-//		if ( false != ( $fs = @fsockopen( 'instinct.co.nz',80,$errno,$errstr,10 ) ) ) {
 		if ( false != ( $fs = @fsockopen( 'getshopped.org',80,$errno,$errstr,10 ) ) ) {
 			fwrite( $fs,$http_request );
 			while ( !feof( $fs ) ){
