@@ -44,9 +44,7 @@ function wpsc_activate_gold_module() {
 			$ch = curl_init();
 			curl_setopt_array($ch, array(
 				CURLOPT_RETURNTRANSFER => 1,
-				//http://www.localhost.com:8080/getshopped/
-				//getshopped.org/wp-goldcart-api/
-				CURLOPT_URL => "http://www.localhost.com:8080/getshopped/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action",
+				CURLOPT_URL => "getshopped.org/wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action",
 				CURLOPT_USERAGENT => $useragent,
 				CURLOPT_SSL_VERIFYPEER => false,
 				CURLOPT_SSL_VERIFYHOST => false
