@@ -100,6 +100,9 @@ function get_plugin_url() {
  */
 function gold_shpcrt_install() {
 	global $wpdb, $user_level, $wp_rewrite;
+	
+	wp_redirect(admin_url('index.php?page=wpsc-upgrades'));
+	exit();
 }
 
 // Load Languages
