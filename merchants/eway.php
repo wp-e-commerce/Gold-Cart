@@ -44,54 +44,12 @@ class wpsc_merchant_eway extends wpsc_merchant {
   
 	function submit() {
 
-		// basic credit card verification
-		$errorMsg = "";
-
-		if ( isset( $_POST['cardnumber'] ) && strlen( $_POST['cardnumber'] ) > 0 ) {
-		  $CardNumber = $_POST['cardnumber'];
-		} else {
-		  $errorMsg .= __( 'Credit Card Number Required', 'wpsc_gold_cart' ) . '<br/>';
-		}
-
-		if ( isset( $_POST['expiry']['month'] ) && strlen( $_POST['expiry']['month'] ) > 0 ) {
-		  $ExpiryMonth = $_POST['expiry']['month'];
-		} else {
-		  $errorMsg .= __( 'Credit Card Expiry Month Required', 'wpsc_gold_cart' ) . '<br/>';
-		}
-
-		if ( isset( $_POST['expiry']['year'] ) && strlen( $_POST['expiry']['year'] ) > 0 ) {
-		  $ExpiryYear = $_POST['expiry']['year'];
-		} else {
-		  $errorMsg .= __( 'Credit Card Expiry Year Required', 'wpsc_gold_cart' ) . '<br/>';
-		}
-
-		if ( isset( $_POST['cardcode'] ) && strlen( $_POST['cardcode'] ) > 0 ) {
-		  $Cvv = $_POST['cardcode'];
-		} else {
-		  $errorMsg .= __( 'Credit Card Cvv code Required', 'wpsc_gold_cart' ) . '<br/>';
-		}
-
-		if ( strlen( $errorMsg ) > 0 ) {
-			print $errorMsg;
-			exit;
-			$error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
-			if ( ! is_array( $error_messages ) )
-				$error_messages = array();
-			$error_messages[] = '<strong style="color:red">' . $errorMsg . ' </strong>';
-			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
-			$checkout_page_url = get_option( 'shopping_cart_url' );
-			if ( $checkout_page_url ) {
-			  header( 'Location: '.$checkout_page_url );
-			  exit();
-			}
-		}
-
 		//Send card data
 		$this->credit_card_details = array(
-			'card_number' => $CardNumber,
-			'expiry_month' => $ExpiryMonth,
-			'expiry_year' => $ExpiryYear,
-			'card_code' => $Cvv
+			'card_number' => $_POST['card_number'],
+			'expiry_month' => $_POST['expiry']['month'],
+			'expiry_year' => $_POST['expiry']['year'],
+			'card_code' => $_POST['card_code']
 		);
 		
 		//Create RapidAPI Service
@@ -227,7 +185,7 @@ if(in_array('wpsc_merchant_eway',(array)get_option('custom_gateway_options'))) {
 	<tr>
 		<td>".__( 'Credit Card Number *', 'wpsc_gold_cart' )."</td>
 		<td>
-			<input type='text' value='' name='cardnumber' />
+			<input type='text' value='' name='card_number' />
 		</td>
 	</tr>
 	<tr>
@@ -238,7 +196,7 @@ if(in_array('wpsc_merchant_eway',(array)get_option('custom_gateway_options'))) {
 	</tr>
 	<tr>
 		<td>".__( 'CVV', 'wpsc_gold_cart' )."</td>
-		<td><input type='text' size='4' value='' maxlength='4' name='cardcode' /></td>
+		<td><input type='text' size='4' value='' maxlength='4' name='card_code' /></td>
 	</tr>
 ";
 }

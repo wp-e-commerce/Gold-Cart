@@ -34,6 +34,7 @@ if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
 </tr>
 ";
 }
+
 function gateway_linkpoint($seperator, $sessionid) {
 	global $wpdb;	
 	$transact_url = get_option('transact_url');
