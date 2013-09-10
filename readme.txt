@@ -2,10 +2,10 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.5
-Requires at least: 2.8
-Tested up to: 3.5
-Requires: Wp e-Commerce: 3.8.9.5
+Version: 2.9.7.6
+Requires at least: 3.5
+Tested up to: 3.6
+Requires: Wp e-Commerce: 3.8.12.1
 
 == Description ==
 
@@ -99,3 +99,8 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 * a.net function rename
 * missing ' for a field
 
+2.9.7.6
+* eWay Update
+* Vmerchant checkout ammount larger than 1000 fix
+* Gold Cart Registration API updates
+* Added nag screen for not registered plugin
