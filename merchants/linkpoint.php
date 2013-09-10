@@ -35,7 +35,7 @@ if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
 ";
 }
 function gateway_linkpoint($seperator, $sessionid) {
-	global $wpdb;
+	global $wpdb;	
 	$transact_url = get_option('transact_url');
 	$purchase_log_sql = "SELECT * FROM `".WPSC_TABLE_PURCHASE_LOGS."` WHERE `sessionid`= '".$sessionid."' LIMIT 1";
 	$purchase_log = $wpdb->get_results($purchase_log_sql,ARRAY_A) ;

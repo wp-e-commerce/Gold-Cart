@@ -47,6 +47,26 @@ function gold_check_plugin_version( $plugin ) {
 add_action( 'after_plugin_row', 'gold_check_plugin_version' );	
 //
 
+/**
+ * Tell people to register Gold Cart after activation
+ */
+if ( $gold_shpcrt_active == 'false' ) {
+	add_action( 'admin_notices', 'update_gc_reg_message' );
+}
+
+function update_gc_reg_message() {
+	?>
+		<div id="message" class="error">
+			<p>
+				<?php
+				printf( __( '<strong>Gold Cart is activated but has not been Registered!</strong><br />Take advantage of all the new features by <a href="%1s">registering Gold Cart plugin now</a>. (This text will go away upon registration of the plugin)', 'wpsc' ),
+					admin_url( 'index.php?page=wpsc-upgrades' )
+				);
+				?>
+			</p>
+		</div><?php
+}
+
 // Require Upgrade Files
 require( dirname( __FILE__ ) . "/upgrade_panel.php" );
 
@@ -99,10 +119,7 @@ function get_plugin_url() {
  * Default install gold cart kept to preserve backwards compatibility
  */
 function gold_shpcrt_install() {
-	global $wpdb, $user_level, $wp_rewrite;
-	
-	wp_redirect(admin_url('index.php?page=wpsc-upgrades'));
-	exit();
+	global $wpdb, $user_level, $wp_rewrite, $pagenow;
 }
 
 // Load Languages
