@@ -80,7 +80,6 @@ function _wpsc_gc_init() {
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
 	add_action( 'init', 'wpsc_gc_view_mode' );
 	add_action( 'init', 'wpsc_gold_cart_load_textdomain' );
-	add_action( 'wp_loaded', 'gc_remove_nag' );
 	add_filter( 'wpsc_merchants_modules','gold_shpcrt_add_gateways' );
 	add_action( 'widgets_init', 'wpsc_gc_setup_widgets' );
 
@@ -97,11 +96,6 @@ function _wpsc_gc_init() {
 	// Ajax on init
 	add_action( 'init', 'wpsc_gold_shpcrt_ajax' );
 
-	/**
-	 * We only want to do this if they have not already ignored the message
-	 */
-	if ( ! get_option('gc_anet_ignore') )
-		add_action( 'admin_notices', 'update_auth_net_message' );
 }
 
 /**
@@ -126,36 +120,6 @@ function gold_shpcrt_install() {
 function wpsc_gold_cart_load_textdomain() {
 	//load text domain
 	load_plugin_textdomain( 'wpsc_gold_cart', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-}
-
-/**
- * Tell people to configure the new auth net gateway that we are including with version 2.9.2
- */
-function update_auth_net_message(){
-	$selected_gateways = get_option( 'custom_gateway_options' );
-	if ( in_array( 'wpsc_merchant_authorize', $selected_gateways ) ) { ?>
-		<div id="message" class="updated fade">
-			<p>
-				<?php
-				printf( __( '<strong>New Authorize.net Gateway for Gold Cart!</strong><br />We have a new Authorize.net gateway supporting the new AIM/CIM API. We recommend you <a href="%1s">configure the new gateway</a> to take advantage of these new features. <a href="%2s">Click here</a> to ignore and remove this box.', 'wpsc' ),
-					admin_url( 'admin.php?page=wpsc-settings&tab=gateway' ),
-					admin_url( 'admin.php?page=wpsc-settings&wpsc_notices=gc_ignore' )
-				);
-				?>
-			</p>
-		</div> <?php
-	}
-}
-
-/**
- * Remove Notices
- */
-function gc_remove_nag() {
-	if ( isset( $_REQUEST['wpsc_notices'] ) && $_REQUEST['wpsc_notices'] == 'gc_ignore' ) {
-		update_option( 'gc_anet_ignore', true );
-		wp_redirect( remove_query_arg( 'wpsc_notices' ) );
-		exit();
-	}
 }
 
 /**
