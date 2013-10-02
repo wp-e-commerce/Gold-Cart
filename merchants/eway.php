@@ -98,8 +98,11 @@ class wpsc_merchant_eway extends wpsc_merchant {
 			}
 		}
 		if (isset($lblError)) {
-			print $lblError;
-			$_SESSION['wpsc_checkout_misc_error_messages'][] = $lblError;
+		   $error_messages = wpsc_get_customer_meta( 'checkout_misc_error_messages' );
+			if ( ! is_array( $error_messages ) )
+				$error_messages = array();
+			$error_messages[] = '<strong style="color:red">' . parse_error_message_eway($lblError) . ' </strong>';
+			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
 			return false;
 		}
 		$accesscode = $result->AccessCode;

@@ -1,5 +1,4 @@
 <?php
-
 //Gateway Details
 $nzshpcrt_gateways[$num]['name'] 			        = __( 'Payment Express - PX Fusion', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['class_name']              = 'Paymentexpress_PXFusion_Merchant';
@@ -11,7 +10,6 @@ $nzshpcrt_gateways[$num]['has_recurring_billing']   = false;
 $nzshpcrt_gateways[$num]['wp_admin_cannot_cancel']  = false;
 $nzshpcrt_gateways[$num]['payment_type']            = 'credit card';
 $nzshpcrt_gateways[$num]['display_name']            = __( 'Pay with Payment Express - PX Fusion', 'wpsc_gold_cart' );
-
 $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0,
 		 												'extra_modules' => array());
 
@@ -198,31 +196,18 @@ function wpec_paymentexpress_admin_submit(){
 class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
 
     private $options;
-    private $separator;
 
     public function __construct( $purchase_id = null, $is_receiving = false ) {
         wpsc_merchant::__construct($purchase_id , $is_receiving);
 
         $this->options = get_option('wpec_pxfusion');
-
-        if(get_option('permalink_structure') != '')
-            $this->separator ="?";
-        else
-            $this->separator ="&";
-
     }
-
-
-
 
     public function submit(){
 
 
         $pxf = new PxFusion($this->options['username'],$this->options['password']);
 
-        // Work out the probable location of return.php since this sample
-        // code could be anywhere on a development server.
-        //$returnUrl = add_query_arg( 'sessionid', $this->cart_data['session_id'], get_option( 'transact_url' ) );
         $returnUrl =  $this->cart_data['transaction_results_url'];
         // Set some transaction details
         $pxf->set_txn_detail('txnType', 'Purchase');	# required
@@ -237,8 +222,8 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
 
         // Make the request for a transaction id
         $response = $pxf->get_transaction_id();
-
-        if ( ! $response->GetTransactionIdResult->success)
+		
+		if ( ! $response->GetTransactionIdResult->success)
         {
             wp_die( __( 'Error! There was a problem getting a transaction id from DPS, please contact the server administrator.', 'wpsc_gold_cart' ) );
         }
@@ -284,7 +269,7 @@ class Paymentexpress_PXFusion_Merchant extends wpsc_merchant{
         $this->set_transaction_details($transaction_id,2);
         // ok Im going to save the PX fusion session id in the Auth Code field, then check for this in the
         // wpsc_transaction_theme() function
-
+		
         global $wpdb;
         $purchase_log = new WPSC_Purchase_Log( $this->purchase_id );
         $purchase_log->set( 'authcode', $PXsession_id );
@@ -326,6 +311,11 @@ function wpec_pxfusion_return(){
         wp_die('Session id error');
     }
 
+	if(get_option('permalink_structure') != '')
+		$separator ="?";
+	else
+		$separator ="&";
+	
     global $wpdb;
     $query = "SELECT `transactid`,`sessionid` FROM  `" .WPSC_TABLE_PURCHASE_LOGS. "` WHERE  `authcode` ='" . $PXsessionid . "'";
     $results = $wpdb->get_results($query,'ARRAY_A');
@@ -381,7 +371,9 @@ function wpec_pxfusion_return(){
                 'notes' => 'PX Fusion Status: "' . $transaction_details['responseText']. '"',
             ) );
             $purchase_log->save();
-    		transaction_results($sessionid,true);
+			header("Location: ".get_option('transact_url').$separator."sessionid=".$sessionid);
+			exit();
+    		//transaction_results($sessionid,true);
             break;
         case 'Failed': // if it fails...
             $purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );

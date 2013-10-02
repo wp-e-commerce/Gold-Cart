@@ -17,20 +17,21 @@ if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
 
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
 <tr>
-<td> ".__( 'Credit Card Number *', 'wpsc_gold_cart' )." </td>
-<td>
-<input type='text' size='4' value='' maxlength='4' name='card_number1' /> - <input type='text' size='4' value='' maxlength='4' name='card_number2' /> - <input type='text' size='4' value='' maxlength='4' name='card_number3' /> - <input type='text' size='4' value='' maxlength='4' name='card_number4' />
-</td>
+	<td> ".__( 'Credit Card Number *', 'wpsc_gold_cart' )." </td>
+	<td>
+		<input type='text' value='' name='card_number' />
+	</td>
 </tr>
 <tr>
-<td> ".__( 'Credit Card Expiration *', 'wpsc_gold_cart' )." </td>
-<td>
-<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
-</td>
+	<td> ".__( 'Credit Card Expiration *', 'wpsc_gold_cart' )." </td>
+	<td>
+		<input type='text' size='2' value='' maxlength='' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
+	</td>
 </tr>
-<td> ".__( 'CVV Code *', 'wpsc_gold_cart' )." </td>
-<td>
-<input type='text' size='4' value='' maxlength='4' name='cvmvalue' /></td>
+	<td> ".__( 'CVV Code *', 'wpsc_gold_cart' )." </td>
+	<td>
+		<input type='text' size='4' value='' maxlength='4' name='cvmvalue' />
+	</td>
 </tr>
 ";
 }
@@ -154,7 +155,7 @@ function gateway_linkpoint($seperator, $sessionid) {
 	//	# CREDIT CARD INFO
 	//if (get_option('linkpoint_test')=='0') {
 		$myorder["ordertype"] = "SALE";
-		$myorder["cardnumber"] = $_POST['card_number1']."-".$_POST['card_number2']."-".$_POST['card_number3']."-".$_POST['card_number4'];
+		$myorder["cardnumber"] = $_POST['card_number'];
 /* see note below ( submit_linkpoint() )on using the linkpoint test account this way
 	} else {
 		$myorder["result"] = "GOOD";
