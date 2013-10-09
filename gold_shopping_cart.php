@@ -127,12 +127,13 @@ function wpsc_gold_cart_load_textdomain() {
  */
 function wpsc_gc_view_mode() {
 	global $wpsc_gc_view_mode;
-
-	$wpsc_gc_view_mode = wpsc_get_customer_meta( 'display_type' );
-	if ( empty( $wpsc_gc_view_mode ) )
-		$wpsc_gc_view_mode =  wpsc_check_display_type();
+	$wpsc_gc_view_mode = wpsc_check_display_type();
 
 	if ( get_option( 'show_search' ) && get_option( 'show_advanced_search' ) ) {
+		$meta = wpsc_get_customer_meta( 'display_type' );
+		if ( ! empty( $meta ) )
+			$wpsc_gc_view_mode = $meta;
+
 		if ( ! empty( $_REQUEST['view_type'] ) && in_array( $_REQUEST['view_type'], array( 'list', 'grid', 'default' ) ) ) {
 			$wpsc_gc_view_mode = $_REQUEST['view_type'];
 			wpsc_update_customer_meta( 'display_type', $wpsc_gc_view_mode );
@@ -406,12 +407,17 @@ function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 			$output .= "<div class='wpcart_gallery'>";
 			$args = array(
 				'post_type'      => 'attachment',
-				'post_parent'    => $product_id,
 				'post_mime_type' => 'image',
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
 				'numberposts'    => -1
 			);
+
+			if ( version_compare( WPSC_VERSION, '3.8.12', '<=' ) )
+				$args['post_parent'] = $product_id;
+			else
+				$args['post__in'] = get_post_meta( $product_id, '_wpsc_product_gallery', true );
+
 			$attachments = get_posts( $args );
 			$featured_img = get_post_meta($product_id, '_thumbnail_id');
 			$thumbnails = array();
