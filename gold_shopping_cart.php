@@ -44,7 +44,7 @@ function gold_check_plugin_version( $plugin ) {
 		}
 	}
 }
-add_action( 'after_plugin_row', 'gold_check_plugin_version' );	
+add_action( 'after_plugin_row', 'gold_check_plugin_version' );
 //
 
 /**
@@ -73,8 +73,25 @@ require( dirname( __FILE__ ) . "/upgrade_panel.php" );
 if ( $gold_shpcrt_active !== 'true' )
 	return;
 
+function _wpsc_action_gc_theme_engine_v2_notices() {
+	?>
+	<div class="error">
+		<p><?php esc_html_e( 'Gold Cart is deactivated because it is not currently compatible with Theme engine V2.', 'wpsc' ); ?></p>
+	</div>
+	<?php
+}
+
 add_action( 'wpsc_pre_init', '_wpsc_gc_init', 10 );
 function _wpsc_gc_init() {
+	// Don't do anything if theme engine v2 is activated
+	if ( function_exists( '_wpsc_te2_register_component' ) ) {
+		add_action( 'admin_notices', '_wpsc_action_gc_theme_engine_v2_notices' );
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		unset( $_GET['activate'] );
+		deactivate_plugins( array( __FILE__ ) );
+		return;
+	}
+
 	// Add actions
 	add_action( 'wp_enqueue_scripts', 'wpsc_gold_cart_scripts' );
 	add_action( 'wp_print_styles', 'wpsc_gold_cart_styles' );
