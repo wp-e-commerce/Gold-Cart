@@ -14,26 +14,54 @@ $nzshpcrt_gateways[$num]['submit_function'] = "submit_linkpoint";
 $nzshpcrt_gateways[$num]['payment_type'] = "credit_card";
 
 if(in_array('linkpoint',(array)get_option('custom_gateway_options'))) {
+  $curryear = date( 'Y' );
+  $curryear_2 = date( 'y' );
+
+  //generate year options
+  $years = '';
+
+  for ( $i = 0; $i < 10; $i++ ) {
+    $years .= "<option value='" . $curryear_2 . "'>" . $curryear . "</option>\r\n";
+    $curryear++;
+    $curryear_2++;
+  }
 
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
-<tr>
-	<td> ".__( 'Credit Card Number *', 'wpsc_gold_cart' )." </td>
-	<td>
-		<input type='text' value='' name='card_number' />
-	</td>
-</tr>
-<tr>
-	<td> ".__( 'Credit Card Expiration *', 'wpsc_gold_cart' )." </td>
-	<td>
-		<input type='text' size='2' value='' maxlength='' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
-	</td>
-</tr>
-	<td> ".__( 'CVV Code *', 'wpsc_gold_cart' )." </td>
-	<td>
-		<input type='text' size='4' value='' maxlength='4' name='cvmvalue' />
-	</td>
-</tr>
-";
+	<tr>
+	   <td>".__( 'Card Number *', 'wpsc_gold_cart' )."</td>
+		<td>
+			<input type='text' value='' name='card_number' id='CardNumber' maxlength='16' />
+		</td>
+	</tr>
+
+	<tr>
+		<td>".__( 'Expiration Date (mm/yy)*', 'wpsc_gold_cart' )."</td>
+		<td>
+		  <select name='ExpiryMonth' id='ExpiryMonth'>
+		  <option value='01'>01</option>
+		  <option value='02'>02</option>
+		  <option value='03'>03</option>
+		  <option value='04'>04</option>
+		  <option value='05'>05</option>
+		  <option value='06'>06</option>
+		  <option value='07'>07</option>
+		  <option value='08'>08</option>
+		  <option value='09'>09</option>
+		  <option value='10'>10</option>
+		  <option value='11'>11</option>
+		  <option value='12'>12</option>
+		  </select>
+		  <select name='ExpiryYear'>
+		  " . $years . "
+		  </select>
+		</td>
+	</tr>
+	<tr>
+		<td>".__( 'CVV Code *', 'wpsc_gold_cart' )."</td>
+		<td>
+			<input type='text' size='4' value='' maxlength='4' name='cvmvalue' id='Cvc2' />
+		</td>
+	</tr>";
 }
 
 function gateway_linkpoint($seperator, $sessionid) {
@@ -165,8 +193,8 @@ function gateway_linkpoint($seperator, $sessionid) {
 		$myorder["cvmvalue"] = "111";
 	}
 */
-	$myorder["cardexpmonth"] = $_POST['expiry']['month'];
-	$myorder["cardexpyear"] = $_POST['expiry']['year'];
+	$myorder["cardexpmonth"] = $_POST['ExpiryMonth'];
+	$myorder["cardexpyear"] = $_POST['ExpiryYear'];
 	$myorder["cvmvalue"] = $_POST['cvmvalue'];
 
 //	# BILLING INFO
