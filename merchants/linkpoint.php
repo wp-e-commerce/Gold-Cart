@@ -263,7 +263,12 @@ function form_linkpoint() {
 
 	$linkpoint_test1 = ( isset( $linkpoint_test1 ) ) ? $linkpoint_test1 : '';
 	$linkpoint_test2 = ( isset( $linkpoint_test2 ) ) ? $linkpoint_test2 : '';
-
+	$store = get_option('linkpoint_store_number');
+	$pemfile = WPSC_GOLD_FILE_PATH.'/merchants/linkpointpem/'.$store.'.pem';
+	if ( !file_exists( $pemfile ) ) {
+		$message = "Please install the PEM file for the gateway to work. <a href='http://docs.getshopped.org/documentation/linkpoint-first-data/' target='_blank'>Documentation</a>";
+	}
+	
 	return "
 		<tr>
 			<td>
@@ -281,7 +286,13 @@ function form_linkpoint() {
 				<input type='radio' $linkpoint_test1 value='1' name='linkpoint_test' /> " . __( 'Yes', 'wpsc_gold_cart' ) . "
 				<input type='radio' $linkpoint_test2 value='0' name='linkpoint_test' /> " . __( 'No', 'wpsc_gold_cart' ) . "
 			</td>
-		</tr>";
+		</tr>
+		<tr>
+		  <td colspan='2'>
+			<strong style='color:red'>".$message."</strong>
+		  </td>
+		</tr>
+	";
 }
 
 
