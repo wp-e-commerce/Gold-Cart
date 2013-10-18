@@ -432,15 +432,26 @@ function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 				'post_mime_type' => 'image',
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
-				'numberposts'    => -1
+				'numberposts'    => -1,
+				'post_parent'    => $product_id,
 			);
 
-			if ( version_compare( WPSC_VERSION, '3.8.12', '<=' ) )
-				$args['post_parent'] = $product_id;
-			else
-				$args['post__in'] = get_post_meta( $product_id, '_wpsc_product_gallery', true );
-
 			$attachments = get_posts( $args );
+
+			if ( version_compare( WPSC_VERSION, '3.8.12', '>' ) ) {
+				$gallery = get_post_meta( $product_id, '_wpsc_product_gallery', true );
+				if ( ! empty( $gallery ) && is_array( $gallery ) ) {
+					$gallery_args = array(
+						'post_type'      => 'attachment',
+						'post_mime_type' => 'image',
+						'numberposts'    => -1,
+						'post__in'       => $gallery
+					);
+
+					$attachments = array_merge( $attachments, get_posts( $gallery_args ) );
+				}
+			}
+
 			$featured_img = get_post_meta($product_id, '_thumbnail_id');
 			$thumbnails = array();
 			if ( count( $attachments ) > 1 ) {
