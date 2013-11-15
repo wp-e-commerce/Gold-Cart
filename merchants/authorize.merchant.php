@@ -32,8 +32,8 @@ $nzshpcrt_gateways[$num] = array(
 	'internalname' => 'wpsc_merchant_authorize',
 
 	// All array members below here are legacy, and use the code in paypal_multiple.php
-	'form' => "form_authorize",
-	'submit_function' => "submit_authorize",
+	'form' => "form_authorize_merchant",
+	'submit_function' => "submit_authorize_merchant",
 	'payment_type' => "credit_card",
 	'supported_currencies' => array(
 	'currency_list' => array('USD')
@@ -41,6 +41,71 @@ $nzshpcrt_gateways[$num] = array(
 	)
 );
 
+/**
+ * Form Express Returns the Settings Form Fields
+ * @access public
+ *
+ * @since 3.8
+ * @return $output string containing Form Fields
+ */
+function form_authorize_merchant() {
+	$authorize_testmode = get_option( 'authorize_testmode' );
+	$authorize_testmode1 = "";
+	$authorize_testmode2 = "";
+	switch( $authorize_testmode ) {
+		case 0:
+			$authorize_testmode2 = "checked='checked'";
+			break;
+
+		case 1:
+			$authorize_testmode1 = "checked='checked'";
+			break;
+	}
+
+	$output = "
+	<tr>
+		<td>
+			".__( 'Authorize API Login ID', 'wpsc_gold_cart' )."
+		</td>
+		<td>
+			<input type='text' size='40' value='".get_option('authorize_login')."' name='authorize_login' />
+		</td>
+	</tr>
+	<tr>
+		<td>
+			".__( 'Authorize Transaction Key', 'wpsc_gold_cart' )."
+		</td>
+		<td>
+			<input type='text' size='40' value='".get_option('authorize_password')."' name='authorize_password' />
+		</td>
+	</tr>
+	<tr>
+		<td>
+			".__( 'Test Mode', 'wpsc_gold_cart' )."
+		</td>
+		<td>
+			<input type='radio' value='1' name='authorize_testmode' id='authorize_testmode1' " . $authorize_testmode1 . " />" . __( 'Yes', 'wpsc_gold_cart' ) . "&nbsp;
+			<input type='radio' value='0' name='authorize_testmode' id='authorize_testmode2' " . $authorize_testmode2 . " />" . __( 'No', 'wpsc_gold_cart' ) . "
+		</td>
+	</tr>";
+
+	return $output;
+}
+
+function submit_authorize_merchant() {
+	if ( isset ( $_POST['authorize_login'] ) ) {
+		update_option( 'authorize_login', $_POST['authorize_login'] );
+	}
+
+	if ( isset ( $_POST['authorize_password'] ) ) {
+		update_option( 'authorize_password', $_POST['authorize_password'] );
+	}
+
+	if ( isset ( $_POST['authorize_testmode'] ) ) {
+		update_option( 'authorize_testmode', $_POST['authorize_testmode'] );
+	}
+	return true;
+}
 
 if(in_array('wpsc_merchant_authorize',(array)get_option('custom_gateway_options'))) {
 	$gateway_checkout_form_fields[$nzshpcrt_gateways[$num]['internalname']] = "
@@ -51,7 +116,7 @@ if(in_array('wpsc_merchant_authorize',(array)get_option('custom_gateway_options'
 		</td>
 	</tr>
 	<tr>
-		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
+		<td>".__( 'Credit Card Expiry MM/YY*', 'wpsc_gold_cart' )."</td>
 		<td>
 			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
 		</td>
