@@ -47,8 +47,8 @@ class wpsc_merchant_eway extends wpsc_merchant {
 		//Send card data
 		$this->credit_card_details = array(
 			'card_number' => $_POST['card_number'],
-			'expiry_month' => $_POST['expiry']['month'],
-			'expiry_year' => $_POST['expiry']['year'],
+			'expiry_month' => $_POST['expiry_month'],
+			'expiry_year' => $_POST['expiry_year'],
 			'card_code' => $_POST['card_code']
 		);
 		
@@ -194,7 +194,7 @@ if(in_array('wpsc_merchant_eway',(array)get_option('custom_gateway_options'))) {
 	<tr>
 		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
 		<td>
-			<input type='text' size='2' value='' maxlength='2' name='expiry[month]' />/<input type='text' size='2'  maxlength='2' value='' name='expiry[year]' />
+			<input type='text' size='2' value='' maxlength='2' name='expiry_month' />/<input type='text' size='2'  maxlength='2' value='' name='expiry_year' />
 		</td>
 	</tr>
 	<tr>
