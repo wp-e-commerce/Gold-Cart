@@ -34,6 +34,7 @@ class wpec_auth_net extends wpsc_merchant {
 		if(!defined('AUTHORIZENET_TRANSACTION_KEY')) define('AUTHORIZENET_TRANSACTION_KEY', $this->conf['key']);
 		if(isset($this->conf['testmode']) && $this->conf['testmode'] == 'checked'){
 			$this->validationMode = "testMode";
+			define("AUTHORIZENET_SANDBOX", true);
 			if(!defined('AUTH_NET_TRANSID_URL'))
 				define('AUTH_NET_TRANSID_URL', 'https://sandbox.authorize.net/UI/themes/sandbox/transaction/transactiondetail.aspx?menukey=CustomerProfile&transID=');
 		}else{
@@ -681,48 +682,28 @@ EOF;
 		);
 
 		$output = <<<EOF
-				<div id='checkorcc_select'>
-				<script>
-EOF;
-		if(isset($this->conf['eCheck']) && $this->conf['eCheck'] == 'checked'){
-		$output .= <<<EOF
-					var shown = 'none';
-					jQuery(document).ready( function() {
-						jQuery('.paymentType').hide();
-						jQuery("select.paymentTypes").change(function() {
-						jQuery('.paymentType').hide();
-						shown = jQuery(this).children("option:selected").val();
-						jQuery('#'+shown).show();
-						jQuery('#payType').val(shown);
-						});
-						jQuery('.authNetPreSelect').change( function(){
-							if( jQuery('.authNetPreSelect').is(':checked')){
-							jQuery('.authNetPaymentInput').attr('disabled',true);
-							jQuery('#payType').val('preset');
-							}else{
-							jQuery('.authNetPaymentInput').attr('disabled',false);
-							jQuery('#payType').val(shown);
-							}
-						});
-					});
-				</script>
-EOF;
-	}else{
-		$output .= <<<EOF
-					var shown = 'creditCardForms';
-					jQuery(document).ready( function() {
-						jQuery('.paymentType').hide();
-							jQuery('.paymentType').hide();
-							jQuery('#'+shown).show();
-							jQuery('#payType').val(shown);
-
-					});
-				</script>
-EOF;
-	}
-
-		if(isset($this->conf['eCheck']) && $this->conf['eCheck'] == 'checked'){
-			$output .= <<<EOF
+		<div id='checkorcc_select'>
+		<script>
+			var shown = 'none';
+			jQuery(document).ready( function() {
+			    jQuery('.paymentType').hide();
+			    jQuery("select.paymentTypes").change(function() {
+				jQuery('.paymentType').hide();
+				shown = jQuery(this).children("option:selected").val();
+				jQuery('#'+shown).show();
+				jQuery('#payType').val(shown);
+			    });
+			    jQuery('.authNetPreSelect').change( function(){
+				    if( jQuery('.authNetPreSelect').is(':checked')){
+					jQuery('.authNetPaymentInput').attr('disabled',true);
+					jQuery('#payType').val('preset');
+				    }else{
+					jQuery('.authNetPaymentInput').attr('disabled',false);
+					jQuery('#payType').val(shown);
+				    }
+			    });
+			});
+		</script>
 		<input type='hidden' name='payType' id='payType'>
 		<select name='paymentTypes' class="paymentTypes">
 			<option value='NONE'>{$paymentTypesText['select-payment-type-text']}</option>
@@ -730,11 +711,6 @@ EOF;
 			<option value='checkForms'>{$paymentTypesText['e-check-text']}</option>
 		</select>
 EOF;
-		}else{
-			$output .= <<<EOF
-			<input type='hidden' name='payType' id='payType' value='creditCardForms'>
-EOF;
-		}
 		$output .= $this->showCheckForm();
 		$output .= $this->showCCForm();
 		$output .= '</div>';
@@ -1106,11 +1082,11 @@ EOF;
 
 }
 
-function form_auth_net(){
-	if(get_option('wpec_auth_net') != false){
+function form_auth_net() {
+	if(get_option('wpec_auth_net') != false) {
 		$auth_net = get_option('wpec_auth_net');
 	}else{
-		$auth_net = array('login'=>'', 'key'=>'', 'testmode'=>'checked', 'cimon'=>'checked', 'verifyFirst' => '', 'eCheck'=>'');
+		$auth_net = array('login'=>'', 'key'=>'', 'testmode'=>'checked', 'cimon'=>'checked', 'verifyFirst' => '');
 	}
 
 	$authFormText = array(
@@ -1118,8 +1094,7 @@ function form_auth_net(){
 		'transaction-key-text' 						=> __( 'Transaction Key', 'wpsc_gold_cart' ),
 		'test-mode-text' 									=> __( 'Test Mode', 'wpsc_gold_cart' ),
 		'enable-cim-text' 								=> sprintf( __( 'Enable %1$sCIM%2$s', 'wpsc_gold_cart' ), '<a href="http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/">', '</a>' ),
-		'verify-first-capture-later-text' => __( 'Verify First, Capture Later', 'wpsc_gold_cart' ),
-		'echeck-mode-text'	=> __( 'Enable E-check', 'wpsc_gold_cart' )
+		'verify-first-capture-later-text' => __( 'Verify First, Capture Later', 'wpsc_gold_cart' )
 	);
 	$output =<<<EOF
 	<tr>
@@ -1144,15 +1119,6 @@ function form_auth_net(){
 		  </td>
 		  <td>
 			<input type='checkbox' name='wpec_auth_net[testmode]' value='true' {$auth_net['testmode']}>
-		  </td>
-		</tr>
-		</tr>
-		<tr>
-		  <td>
-			{$authFormText['echeck-mode-text']}
-		  </td>
-		  <td>
-			<input type='checkbox' name='wpec_auth_net[eCheck]' value='true' {$auth_net['eCheck']}>
 		  </td>
 		</tr>
 		<tr>
@@ -1185,9 +1151,6 @@ function submit_auth_net(){
 		}
 		if(isset($_REQUEST['wpec_auth_net']['verifyFirst']) && $_REQUEST['wpec_auth_net']['verifyFirst'] == 'true'){
 			$_REQUEST['wpec_auth_net']['verifyFirst'] = 'checked';
-		}
-		if(isset($_REQUEST['wpec_auth_net']['eCheck']) && $_REQUEST['wpec_auth_net']['eCheck'] == 'true'){
-			$_REQUEST['wpec_auth_net']['eCheck'] = 'checked';
 		}
 		if(get_option('wpec_auth_net') === false){
 			add_option('wpec_auth_net',$_REQUEST['wpec_auth_net'], '', 'no');
