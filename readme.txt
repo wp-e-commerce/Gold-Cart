@@ -2,9 +2,9 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.7-dev
-Requires at least: 3.5
-Tested up to: 3.6
+Version: 2.9.7.7
+Requires at least: 3.7
+Tested up to: 3.8
 Requires: Wp e-Commerce: 3.8.12.1
 
 == Description ==
@@ -104,3 +104,8 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 * Vmerchant checkout ammount larger than 1000 fix
 * Gold Cart Registration API updates
 * Added nag screen for not registered plugin
+
+2.9.7.7
+* Duplicate Thumbnails Fix
+* Linkopoint .PEM file check
+* Compatibility with WPEC 3.8.13 media UI
