@@ -36,7 +36,7 @@ function gold_check_plugin_version( $plugin ) {
 			if( (version_compare(strval($theVersion), strval($version), '>') == 1) ) {
 			echo '
 				<td colspan="5" class="plugin-update" style="line-height:1.2em; font-size:11px; padding:1px;">
-					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "gold").' <a href="'.$theMessage.'" target="_blank">View version '.$theVersion.' details</a>.</div	>
+					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "gold").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a>.</div	>
 				</td>';
 			} else {
 			return;
