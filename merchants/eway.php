@@ -612,7 +612,7 @@ class CreateAccessCodeRequest {
 
         $this->Customer = new Customer();
         $this->ShippingAddress = new ShippingAddress();
-        $this->Payment = new Payment();
+        $this->Payment = new WPSC_GC_eWay_Payment();
         $this->CustomerIP = $_SERVER["SERVER_NAME"];
     }
 
@@ -686,7 +686,7 @@ class Option {
 
 }
 
-class Payment {
+class WPSC_GC_eWay_Payment {
 
     public $TotalAmount;
     /// <summary>The merchant's invoice number</summary>
