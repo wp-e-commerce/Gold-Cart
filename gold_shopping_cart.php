@@ -16,7 +16,7 @@
 $gold_shpcrt_active = get_option( 'activation_state' );
 
 // Define Constants
-define( 'WPSC_GOLD_MODULE_PRESENT', true);
+define( 'WPSC_GOLD_MODULE_PRESENT', true );
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
