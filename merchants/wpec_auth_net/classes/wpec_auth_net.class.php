@@ -533,8 +533,8 @@ EOF;
 		$this->collate_data();
 		$this->collate_cart();
 
-                if(isset($this->cart_data['is_subscription']) && (int)$this->cart_data['is_subscription'] > 0){
-                        //This is subscription based, use the ARB api
+		if(isset($this->cart_data['is_subscription']) && (int)$this->cart_data['is_subscription'] > 0) {
+            //This is subscription based, use the ARB api
 			if($subRes = $this->setSubscription()){
 				$callAim = false;
 				//Check if their is anything else in the cart that needs to be processed.
@@ -544,8 +544,9 @@ EOF;
 						$callAim = true;
 					}
 				}
-				if($callAim) $result = $this->processAIMTransaction();
-				else{
+				if($callAim) {
+					$result = $this->processAIMTransaction();
+				 } else {
 					if($subRes == true){
 						$this->set_transaction_details($this->response->transaction_id,$this->process_status);
 						$this->set_authcode($this->response->authorization_code);
@@ -559,16 +560,15 @@ EOF;
 						return false;
 					}
 				}
-			}else{
+			} else {
 				$result = false;
 			}
-
-                }else if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' && $this->payType == 'preset'
-                && isset($_REQUEST['auth_net']['payment_preset'])){
-                        $result = $this->processCIMTransaction();
-                }else{
-                        $result = $this->processAIMTransaction();
-                }
+		} else if(isset($this->conf['cimon']) && $this->conf['cimon'] == 'checked' && $this->payType == 'preset' && isset($_REQUEST['auth_net']['payment_preset'])) {
+			$result = $this->processCIMTransaction();
+        } else {
+			$result = $this->processAIMTransaction();
+        }
+		
 		do_action('submit_payment_response',$this);
 		$this->setOrderMeta();
 		if ($result == true) {
@@ -577,8 +577,10 @@ EOF;
 			if(isset($_REQUEST['auth_net']['SaveCreditCard']) && $_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon'])
 				&& $this->conf['cimon'] == 'checked' && $this->payType == 'creditCardForms' && isset($_REQUEST['auth_net']['creditCard']) ){
 				//Ok, We Should Save This Credit Card
-				$creditCard = $_REQUEST['auth_net']['creditCard'];
-				$this->addPaymentProfile(array('type'=>'CC', 'card_number'=>$creditCard['card_number'], 'expire'=>$creditCard['expiry']));
+				if ( is_user_logged_in() ) {
+					$creditCard = $_REQUEST['auth_net']['creditCard'];
+					$this->addPaymentProfile(array('type'=>'CC', 'card_number'=>$creditCard['card_number'], 'expire'=>$creditCard['expiry']));
+				}
 			}
 			//Now For the Bank account
 			if(isset($_REQUEST['auth_net']['SaveBankAccount']) &&$_REQUEST['auth_net']['SaveCreditCard'] == 'Keep On File' && isset($this->conf['cimon'])
@@ -749,7 +751,7 @@ EOF;
 			if($creditcards){
 				$output .= "<div><span class='head2'>".__('Use Credit Card on file.','wpsc_gold_cart')."</span>\n";
 				$output .= $creditcards;
-				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Card','wpsc_gold_cart')."</span>\n";
+				$output .= "</div>\n<span class='head2'> ".__('Or Enter a New Card','wpsc_gold_cart')."</span>\n</br>";
 			}
 			$output .= "<span id='saveCreditCard'><input type='checkbox' name='auth_net[SaveCreditCard]' value='Keep On File'>".__('Save Payment Info (You Can Save Up To 10 accounts).','wpsc_gold_cart')."</span>\n";
 		}

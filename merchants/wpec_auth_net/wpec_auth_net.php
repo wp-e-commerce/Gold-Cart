@@ -97,8 +97,20 @@ class wpec_auth_net_setup{
 		}
 	}
 
-	function wpec_auth_net_load(){
+	function wpec_auth_net_load() {
 		global $nzshpcrt_gateways, $gateway_checkout_form_fields, $num;
+		if ( in_array( WPECAUTHNET_PLUGIN_NAME, (array)get_option( 'custom_gateway_options' ) ) ) {
+			$this->myGateway = new wpec_auth_net();
+			$checkOrCC = $this->myGateway->CheckOrCC();
+			$gateway_checkout_form_fields[WPECAUTHNET_PLUGIN_NAME] = "
+			<tr><td colspan='2'>
+			{$checkOrCC}
+			</td>
+			</tr>
+			";
+		}		
+		
+		/*
 		//Hook into the My Account so the user can manage their saved credit cards and bank accounts
 		if ( is_user_logged_in() ) {
 			if ( in_array( WPECAUTHNET_PLUGIN_NAME, (array)get_option( 'custom_gateway_options' ) ) ) {
@@ -125,7 +137,9 @@ class wpec_auth_net_setup{
 				";
 			}
 		}
+		*/
 	}
+
 
 
 	function capture_preauth(){

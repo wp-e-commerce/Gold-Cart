@@ -2,7 +2,7 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.7
+Version: 2.9.7.8-dev
 Requires at least: 3.7
 Tested up to: 3.8
 Requires: Wp e-Commerce: 3.8.12.1
@@ -60,8 +60,6 @@ If you have any problems with Gold Cart or require more information here are you
 General help: http://getshopped.org/resources/docs/
 
 Gold Cart Installation: http://getshopped.org/resources/docs/installation/gold-files/
-
-Support Forum: http://www.getshopped.org/forums/
 
 Premium Support Forum: http://getshopped.org/resources/premium-support/
 

@@ -72,6 +72,9 @@ if ( is_user_logged_in() ) {
 		if ( class_exists('WPSC_Subscription') )
 			$subs = new WPSC_Subscription();
 		?>
+		
+		
+		
 		<div id='wpec_auth_net_user_profile_manager'>
 		<h2><?php _e( 'Saved Credit Card, Bank and Shipping Information', 'wpsc_gold_cart' );?></h2>
 		<?php if( isGood( $auth_net_message ) ){ ?>
