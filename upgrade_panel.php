@@ -119,12 +119,12 @@ function wpsc_gold_activation_form() {
 		</p>
 		<?php if ( ! function_exists( 'curl_init' ) ) : ?>
 			<p style='color: red; font-size:8pt; line-height:10pt;'>
-				<?php _e( 'In order to register your API information your server requires cURL which is not installed on this server. We will attempt to use fsockopen as an alternate method to register Gold Cart. ', 'wpsc' ); ?>
+				<?php _e( 'In order to register your API information your server requires cURL which is not installed on this server. We will attempt to use fsockopen as an alternate method to register Gold Cart. ', 'wpsc_gold_cart' ); ?>
 			</p>
 		<?php endif; ?>
 		<?php if ( ! function_exists( 'fsockopen' ) && ! function_exists( 'curl_init' )) : ?>
 			<p style='color: red; font-size:8pt; line-height:10pt;'>
-				<?php _e( 'In order to register your API information your server requires cURL or the fscockopen extension which are not installed on this server, you may need to contact your web hosting provider to get them set up. ', 'wpsc' ); ?>
+				<?php _e( 'In order to register your API information your server requires cURL or the fscockopen extension which are not installed on this server, you may need to contact your web hosting provider to get them set up. ', 'wpsc_gold_cart' ); ?>
 			</p>
 		<?php endif; ?>	
 		<?php

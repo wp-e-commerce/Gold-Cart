@@ -36,7 +36,7 @@ function gold_check_plugin_version( $plugin ) {
 			if( (version_compare(strval($theVersion), strval($version), '>') == 1) ) {
 			echo '
 				<td colspan="5" class="plugin-update" style="line-height:1.2em; font-size:11px; padding:1px;">
-					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "gold").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a>.</div	>
+					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "wpsc_gold_cart").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a>.</div	>
 				</td>';
 			} else {
 			return;
@@ -62,7 +62,7 @@ function update_gc_reg_message() {
 			<div id="message" class="error">
 				<p>
 					<?php
-					printf( __( '<strong>Gold Cart is activated but has not been Registered!</strong><br />Take advantage of all the new features by <a href="%1s">registering Gold Cart plugin now</a>. (This text will go away upon registration of the plugin)', 'wpsc' ),
+					printf( __( '<strong>Gold Cart is activated but has not been Registered!</strong><br />Take advantage of all the new features by <a href="%1s">registering Gold Cart plugin now</a>. (This text will go away upon registration of the plugin)', 'wpsc_gold_cart' ),
 						admin_url( 'index.php?page=wpsc-upgrades' )
 					);
 					?>
@@ -81,7 +81,7 @@ if ( $gold_shpcrt_active !== 'true' )
 function _wpsc_action_gc_theme_engine_v2_notices() {
 	?>
 	<div class="error">
-		<p><?php esc_html_e( 'Gold Cart is deactivated because it is not currently compatible with Theme engine V2.', 'wpsc' ); ?></p>
+		<p><?php esc_html_e( 'Gold Cart is deactivated because it is not currently compatible with Theme engine V2.', 'wpsc_gold_cart' ); ?></p>
 	</div>
 	<?php
 }
@@ -354,7 +354,7 @@ function wpsc_gold_shpcrt_ajax( $id ) {
 	if ( isset( $_POST['affiliate'] ) && $_POST['affiliate'] == true ) {
 		if ( ! function_exists('affiliate_text') ) {
 			function affiliate_text( $id, $user ) {
-				$output = "<a target='_blank' title='".__( 'Your Shopping Cart', 'wpsc')."' href='".get_option( 'siteurl' )."/?action=affiliate&p=$id&user_id=".$user."&height=400&width=600' class='thickbox'><img src='".WPSC_URL."/".$images_dir."/buynow.jpg'></a>";
+				$output = "<a target='_blank' title='".__( 'Your Shopping Cart', 'wpsc_gold_cart')."' href='".get_option( 'siteurl' )."/?action=affiliate&p=$id&user_id=".$user."&height=400&width=600' class='thickbox'><img src='".WPSC_URL."/".$images_dir."/buynow.jpg'></a>";
 				return $output;
 			}
 		}
@@ -409,7 +409,7 @@ function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 						$output .= "<a href='".$thickbox_link."' class='thickbox hidden_gallery_link'  rel='".str_replace(array(" ", '"',"'", '&quot;','&#039;'), array("_", "", "", "",''), $product['name'])."' rev='$image_link'>&nbsp;</a>";
 					}
 				} else {
-					$output .= "<h2 class='prodtitles'>".__( 'Gallery', 'wpsc' )."</h2>";
+					$output .= "<h2 class='prodtitles'>".__( 'Gallery', 'wpsc_gold_cart' )."</h2>";
 					$output .= "<div class='wpcart_gallery'>";
 					if ( $images != null ) {
 						foreach($images as $image) {
@@ -543,10 +543,10 @@ function gold_shpcrt_search_form(){
 	$customer_view = $wpsc_gc_view_mode;
 	$order = empty( $_GET['product_order'] ) ? '' : $_GET['product_order'];
 	$item_per_page_options = array(
-		'10' 	=> esc_html__( '10 per page', 'wpsc' ),
-		'20' 	=> esc_html__( '20 per page', 'wpsc' ),
-		'50' 	=> esc_html__( '50 per page', 'wpsc' ),
-		'all' => esc_html__( 'Show All', 'wpsc' ),
+		'10' 	=> esc_html__( '10 per page', 'wpsc_gold_cart' ),
+		'20' 	=> esc_html__( '20 per page', 'wpsc_gold_cart' ),
+		'50' 	=> esc_html__( '50 per page', 'wpsc_gold_cart' ),
+		'all' => esc_html__( 'Show All', 'wpsc_gold_cart' ),
 	);
 	$selected_item_per_page = empty( $_GET['items_per_page'] ) ? '' : $_GET['items_per_page'];
 	$product_search = isset( $_GET['product_search'] ) ? $_GET['product_search'] : '';
@@ -568,23 +568,23 @@ function gold_shpcrt_search_form(){
 			<div class="wpsc-products-view-mode">
 				<input type='hidden' id='view_type' name='view_type' value='<?php echo esc_attr( $customer_view ); ?>'>
 				<?php if ( $show_advanced_search ) : ?>
-					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'default' ) ); ?>" class="default<?php echo $customer_view == 'default' ? ' active' : ''; ?>" title="<?php _e( 'Default View', 'wpsc' ); ?>"><?php _e( 'Default', 'wpsc' ); ?></a>
-					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'list' ) ); ?>" class="list<?php echo $customer_view == 'list' ? ' active' : ''; ?>" title="<?php _e( 'List View', 'wpsc' ); ?>"><?php _e( 'List', 'wpsc' ); ?></a>
-					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'grid' ) ); ?>" class="grid<?php echo $customer_view == 'grid' ? ' active' : ''; ?>" title="<?php _e( 'Grid View', 'wpsc' ); ?>"><?php _e( 'Grid', 'wpsc' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'default' ) ); ?>" class="default<?php echo $customer_view == 'default' ? ' active' : ''; ?>" title="<?php _e( 'Default View', 'wpsc_gold_cart' ); ?>"><?php _e( 'Default', 'wpsc_gold_cart' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'list' ) ); ?>" class="list<?php echo $customer_view == 'list' ? ' active' : ''; ?>" title="<?php _e( 'List View', 'wpsc_gold_cart' ); ?>"><?php _e( 'List', 'wpsc_gold_cart' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'view_type', 'grid' ) ); ?>" class="grid<?php echo $customer_view == 'grid' ? ' active' : ''; ?>" title="<?php _e( 'Grid View', 'wpsc_gold_cart' ); ?>"><?php _e( 'Grid', 'wpsc_gold_cart' ); ?></a>
 				<?php endif ?>
 			</div>
 			<div class="wpsc-products-sort">
-				<span><?php _e( 'Sort:', 'wpsc' ); ?></span>
+				<span><?php _e( 'Sort:', 'wpsc_gold_cart' ); ?></span>
 				<select name="product_order">
-					<option value=""><?php _e( 'Select', 'wpsc' ); ?></option>
-					<option value="ASC"<?php echo $order == 'ASC' ? ' selected="selected"' : ''; ?>><?php _e( 'Ascending', 'wpsc' ); ?></option>
-					<option value="DESC"<?php echo $order == 'DESC' ? ' selected="selected"' : ''; ?>><?php _e( 'Descending', 'wpsc' ); ?></option>
+					<option value=""><?php _e( 'Select', 'wpsc_gold_cart' ); ?></option>
+					<option value="ASC"<?php echo $order == 'ASC' ? ' selected="selected"' : ''; ?>><?php _e( 'Ascending', 'wpsc_gold_cart' ); ?></option>
+					<option value="DESC"<?php echo $order == 'DESC' ? ' selected="selected"' : ''; ?>><?php _e( 'Descending', 'wpsc_gold_cart' ); ?></option>
 				</select>
 			</div>
 			<div class="wpsc-products-per-page">
-				<span><?php _e( 'Show:', 'wpsc' ); ?></span>
+				<span><?php _e( 'Show:', 'wpsc_gold_cart' ); ?></span>
 				<select name="items_per_page">
-					<option value=""><?php _e( 'Select', 'wpsc' ); ?></option>
+					<option value=""><?php _e( 'Select', 'wpsc_gold_cart' ); ?></option>
 					<?php
 					foreach ( $item_per_page_options as $value => $title ) {
 						$selected = $selected_item_per_page == $value ? ' selected="selected"' : '';

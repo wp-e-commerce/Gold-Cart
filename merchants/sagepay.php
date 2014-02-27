@@ -15,7 +15,7 @@ $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0
 function wpec_sagepay_admin_form(){
     // construct the default email message, this message is
     //included toward the top of the customer confirmation e-mails.
-    $emailmsg = sprintf ( __( 'Thanks for purchasing at %s', 'wspc' ), get_bloginfo( 'name' ) );
+    $emailmsg = sprintf ( __( 'Thanks for purchasing at %s', 'wpsc_gold_cart' ), get_bloginfo( 'name' ) );
     if ( get_bloginfo('admin_email') ) {
         $shopEmail = get_bloginfo('admin_email');
     } else {
