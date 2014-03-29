@@ -277,9 +277,9 @@ class RapidAPI {
         if ($this->APIConfig['Request:Method'] != "SOAP")
             if ($this->APIConfig['Request:Format'] == "XML")
                 if ($this->APIConfig['Request:Method'] != "RPC")
-                    $request = Parser::Obj2XML($request);
+                    $request = WPSC_GC_Parser::Obj2XML($request);
                 else
-                    $request = Parser::Obj2RPCXML("CreateAccessCode", $request);
+                    $request = WPSC_GC_Parser::Obj2RPCXML("CreateAccessCode", $request);
             else {
                 $i = 0;
                 $tempClass = new stdClass;
@@ -296,12 +296,12 @@ class RapidAPI {
                 }
                 $request->Items = $tempClass->Items;
                 if ($this->APIConfig['Request:Method'] != "RPC")
-                    $request = Parser::Obj2JSON($request);
+                    $request = WPSC_GC_Parser::Obj2JSON($request);
                 else
-                    $request = Parser::Obj2JSONRPC("CreateAccessCode", $request);
+                    $request = WPSC_GC_Parser::Obj2JSONRPC("CreateAccessCode", $request);
             }
         else
-            $request = Parser::Obj2ARRAY($request);
+            $request = WPSC_GC_Parser::Obj2ARRAY($request);
 
         $method = 'CreateAccessCode' . $this->APIConfig['Request:Method'];
 
@@ -311,14 +311,14 @@ class RapidAPI {
         if ($this->APIConfig['Request:Method'] != "SOAP")
             if ($this->APIConfig['Request:Format'] == "XML")
                 if ($this->APIConfig['Request:Method'] != "RPC")
-                    $result = Parser::XML2Obj($response);
+                    $result = WPSC_GC_Parser::XML2Obj($response);
                 else
-                    $result = Parser::RPCXML2Obj($response);
+                    $result = WPSC_GC_Parser::RPCXML2Obj($response);
             else
             if ($this->APIConfig['Request:Method'] != "RPC")
-                $result = Parser::JSON2Obj($response);
+                $result = WPSC_GC_Parser::JSON2Obj($response);
             else
-                $result = Parser::JSONRPC2Obj($response);
+                $result = WPSC_GC_Parser::JSONRPC2Obj($response);
         else
             $result = $response;
 
@@ -341,16 +341,16 @@ class RapidAPI {
         if ($this->APIConfig['Request:Method'] != "SOAP")
             if ($this->APIConfig['Request:Format'] == "XML")
                 if ($this->APIConfig['Request:Method'] != "RPC")
-                    $request = Parser::Obj2XML($request);
+                    $request = WPSC_GC_Parser::Obj2XML($request);
                 else
-                    $request = Parser::Obj2RPCXML("GetAccessCodeResult", $request);
+                    $request = WPSC_GC_Parser::Obj2RPCXML("GetAccessCodeResult", $request);
             else
             if ($this->APIConfig['Request:Method'] != "RPC")
-                $request = Parser::Obj2JSON($request);
+                $request = WPSC_GC_Parser::Obj2JSON($request);
             else
-                $request = Parser::Obj2JSONRPC("GetAccessCodeResult", $request);
+                $request = WPSC_GC_Parser::Obj2JSONRPC("GetAccessCodeResult", $request);
         else
-            $request = Parser::Obj2ARRAY($request);
+            $request = WPSC_GC_Parser::Obj2ARRAY($request);
 
         //Build method name
         $method = 'GetAccessCodeResult' . $this->APIConfig['Request:Method'];
@@ -374,9 +374,9 @@ class RapidAPI {
         if ($this->APIConfig['Request:Method'] != "SOAP")
             if ($this->APIConfig['Request:Format'] == "XML")
                 if ($this->APIConfig['Request:Method'] != "RPC")
-                    $result = Parser::XML2Obj($response);
+                    $result = WPSC_GC_Parser::XML2Obj($response);
                 else {
-                    $result = Parser::RPCXML2Obj($response);
+                    $result = WPSC_GC_Parser::RPCXML2Obj($response);
 
                     //Tweak the Options Obj to $obj->Options->Option[$i]->Value instead of $obj->Options[$i]->Value
                     if (isset($result->Options)) {
@@ -390,9 +390,9 @@ class RapidAPI {
                     }
                 } else {
                 if ($this->APIConfig['Request:Method'] == "RPC")
-                    $result = Parser::JSONRPC2Obj($response);
+                    $result = WPSC_GC_Parser::JSONRPC2Obj($response);
                 else
-                    $result = Parser::JSON2Obj($response);
+                    $result = WPSC_GC_Parser::JSON2Obj($response);
 
                 //Tweak the Options Obj to $obj->Options->Option[$i]->Value instead of $obj->Options[$i]->Value
                 if (isset($result->Options)) {
@@ -612,7 +612,7 @@ class CreateAccessCodeRequest {
 
         $this->Customer = new Customer();
         $this->ShippingAddress = new ShippingAddress();
-        $this->Payment = new WPSC_GC_eWay_Payment();
+        $this->Payment = new Payment();
         $this->CustomerIP = $_SERVER["SERVER_NAME"];
     }
 
@@ -686,7 +686,7 @@ class Option {
 
 }
 
-class WPSC_GC_eWay_Payment {
+class Payment {
 
     public $TotalAmount;
     /// <summary>The merchant's invoice number</summary>
@@ -710,7 +710,7 @@ class GetAccessCodeResultRequest {
  * Description A Class for conversion between different formats
  */
 
-class Parser {
+class WPSC_GC_Parser {
 
     public static function Obj2JSON($obj) {
 
