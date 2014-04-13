@@ -3,8 +3,8 @@
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
 Version: 2.9.7.8-dev
-Requires at least: 3.7
-Tested up to: 3.8
+Requires at least: 3.8
+Tested up to: 3.8.2
 Requires: Wp e-Commerce: 3.8.12.1
 
 == Description ==
