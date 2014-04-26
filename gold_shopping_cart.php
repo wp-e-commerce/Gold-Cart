@@ -170,6 +170,25 @@ function wpsc_gc_view_mode() {
 }
 
 /**
+ * Allows us to properly display the list or grid template when being run in a shortcode.
+ * among other contexts.
+ * 
+ * @param  string $display_type The current display type being passed.
+ * @since 2.9.7.8
+ * 
+ * @return void
+ */
+function wpsc_gc_grid_view_override( $display_type ) {
+
+    if ( 'grid' === $display_type ) {
+        add_action( 'wpsc_top_of_products_page', 'wpsc_grid_custom_styles' );
+        wp_enqueue_style( 'wpsc-gold-cart-grid-view' );
+    }
+}
+
+add_action( 'wpsc_display_products_page', 'wpsc_gc_grid_view_override' );
+
+/**
  * Grid custom styles
  */
 function wpsc_grid_custom_styles() {
