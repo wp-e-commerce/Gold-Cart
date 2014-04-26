@@ -216,30 +216,38 @@ class Sagepay_merchant extends wpsc_merchant {
         // helper vars to populate the following temporary vars
         $billInfo = $this->cart_data['billing_address'];
         $shipInfo = $this->cart_data['shipping_address'];
+		
         // temporary vars that will be added to the $strPost string in url format
-        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
-        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
-        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], CLEAN_INPUT_FILTER_TEXT);
-        $strBillingCity        = $this->cleanInput( $billInfo['city'], CLEAN_INPUT_FILTER_TEXT);
-        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
-        $strBillingCountry     = $this->cleanInput( $billInfo['country'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingCity        = $this->cleanInput( $billInfo['city'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingCountry     = $this->cleanInput( $billInfo['country'], 'CLEAN_INPUT_FILTER_TEXT');
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
-        $strBillingState       = $this->cleanInput( $billInfo['state'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingState       = $this->cleanInput( $billInfo['state'], 'CLEAN_INPUT_FILTER_TEXT');
+		
+		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
+			$strBillingPhone = $this->cleanInput( $billInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
+		}
+		
         // no state required if not in the US
         if($strBillingCountry != 'US') $strBillingState = '';
-        $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliveryState      = $this->cleanInput( $shipInfo['state'], CLEAN_INPUT_FILTER_TEXT);
-        $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], CLEAN_INPUT_FILTER_TEXT);
+        $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliveryState      = $this->cleanInput( $shipInfo['state'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], 'CLEAN_INPUT_FILTER_TEXT');
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
-			$strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
+			$strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT');
 
-
+		if ( isset ( $shipInfo['phone'] ) && $shipInfo['phone'] != '' ) {
+			$strDeliveryPhone = $this->cleanInput( $shipInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
+		}
 
         // begin to populate the $strPost, witch will be sent
         // First we need to generate a unique VendorTxCode for this transaction **
@@ -372,6 +380,7 @@ class Sagepay_merchant extends wpsc_merchant {
         }
 
         $strPost .= "&Basket=" . $cartString;
+
         return $strPost;
     }
     public function submit() {
@@ -419,26 +428,26 @@ class Sagepay_merchant extends wpsc_merchant {
         $strCleaned = "";
         $filterType = strtolower($filterType); //ensures filterType matches constant values
 
-        if ($filterType == CLEAN_INPUT_FILTER_TEXT){
+        if ($filterType == 'clean_input_filter_text'){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&£$=%~*+\"\n\r";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, TRUE);
         }
-        elseif ($filterType == CLEAN_INPUT_FILTER_NUMERIC){
+        elseif ($filterType == 'clean_input_filter_numeric'){
 
             $strAllowableChars = "0123456789 .,";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, FALSE);
         }
-        elseif ($filterType == CLEAN_INPUT_FILTER_ALPHABETIC || $filterType == CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED){
+        elseif ($filterType == 'clean_input_filter_alphabetic' || $filterType == 'clean_input_filter_alphabetic_and_accented'){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz";
-            if ($filterType == CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
+            if ($filterType == clean_input_filter_alphabetic_and_accented) $blnAllowAccentedChars = TRUE;
                 $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
-        elseif ($filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC || $filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED){
+        elseif ($filterType == 'clean_input_filter_alphanumeric' || $filterType == 'clean_input_filter_alphanumeric_and_accented'){
 
             $strAllowableChars = "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            if ($filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
+            if ($filterType == 'clean_input_filter_alphanumeric_and_accented') $blnAllowAccentedChars = TRUE;
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
         else{ // Widest Allowable Character Range
