@@ -218,13 +218,14 @@ function wpsc_grid_custom_styles() {
  * Enqueue Gold Cart Styles
  */
 function wpsc_gold_cart_styles() {
-	global $wpsc_gc_view_mode;
+    global $wpsc_gc_view_mode;
 
-	wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/css/gold_cart.css' );
+    wp_enqueue_style( 'wpsc-gold-cart', get_plugin_url() . '/css/gold_cart.css' );
+    wp_register_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/css/grid_view.css', array( 'wpsc-gold-cart' ) );
 
-	if ( $wpsc_gc_view_mode == 'grid' ) {
-		wp_enqueue_style( 'wpsc-gold-cart-grid-view', get_plugin_url() . '/css/grid_view.css', array( 'wpsc-gold-cart' ) );
-	}
+    if ( $wpsc_gc_view_mode == 'grid' ) {
+        wp_enqueue_style( 'wpsc-gold-cart-grid-view' );
+    }
 }
 
 /**
