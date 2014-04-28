@@ -290,7 +290,7 @@ function wpsc_gold_cart_scripts() {
  */
 function wpsc_gc_start_search_query() {
 	global $wp_query, $wpsc_query;
-	$product_page_id = wpec_get_the_post_id_by_shortcode('[productspage]');
+	$product_page_id = wpsc_get_the_post_id_by_shortcode('[productspage]');
 	$post = get_post( $product_page_id );
 	$wp_query = new WP_Query( array( 'pagename' => $post->post_name ) );
 	add_action( 'pre_get_posts', 'wpsc_gc_live_search_pre_get_posts' );
