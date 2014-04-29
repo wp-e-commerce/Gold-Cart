@@ -674,7 +674,7 @@ class LineItem {
 
 }
 
-class Options {
+class eWay_Options {
 
     public $Option = array();
 
