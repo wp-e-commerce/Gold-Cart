@@ -351,8 +351,12 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 			case 3: /// case 3 is error state
 			default: /// default is http or unknown error state
 			if($parsed_response['response_description'] == '') { // If there is no error message it means there was some sort of HTTP connection failure, use the following error message
-			  $parsed_response['response_description'] = __("There was an error contacting the payment gateway, please try again later.", 'wpsc_gold_cart');
+				$parsed_response['response_description'] = __("There was an error contacting the payment gateway, please try again later.", 'wpsc_gold_cart');
+			} else {		
+				$response_message = $parsed_response['response_description'] . ' ' . $parsed_response['response_reason_code'];			
 			}
+			
+			$this->set_error_message($response_message);
 			$this->set_error_message($parsed_response['response_description']);
 			$this->return_to_checkout();
 			break;
