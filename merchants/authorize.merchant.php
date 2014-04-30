@@ -357,7 +357,6 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 			}
 			
 			$this->set_error_message($response_message);
-			$this->set_error_message($parsed_response['response_description']);
 			$this->return_to_checkout();
 			break;
 		}
