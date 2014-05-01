@@ -2,10 +2,10 @@
 
 Contributors: GetShopped.org
 Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.8-dev
+Version: 2.9.7.8
 Requires at least: 3.8
-Tested up to: 3.8.2
-Requires: Wp e-Commerce: 3.8.12.1
+Tested up to: 3.9
+Requires: Wp e-Commerce: 3.8.13
 
 == Description ==
 
@@ -23,14 +23,6 @@ Download WP e-commerce: http://getshopped.org
 If your WP-e-Commerce is series 3.7 and above (recommended)
 
 1. Upload the 'gold_cart_files_plugin' directory within this archive to the '/wp-content/plugins/' directory
-
-==== If your WP e-Commerce is series 3.6 ====
-
-1. Upload the folder 'gold_cart_files' to the '/wp-content/uploads/wpsc/upgrades/' directory
-
-2. Activate 'Gold Cart files' through the 'Plugins' menu in WordPress
-
-3. Activate your premium upgrade with your API key and name (can be found on your purchase receipt) by going to Dashboard >> Store Upgrades (This is the main Dashboard link in your WordPress admin area)
 
 ==== Moving your Gold Cart to another site ====
 
