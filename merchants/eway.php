@@ -76,7 +76,7 @@ class wpsc_merchant_eway extends wpsc_merchant {
 			$i++;
 		}
 		//Options
-		$opt = new Option();
+		$opt = new eWay_Option();
 		$opt->Value = $this->cart_data['session_id'];
 		$request->Options->Option[0]= $opt;
 		
@@ -680,7 +680,7 @@ class eWay_Options {
 
 }
 
-class Option {
+class eWay_Option {
 
     public $Value;
 
