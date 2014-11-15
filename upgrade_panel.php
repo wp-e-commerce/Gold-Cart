@@ -29,7 +29,7 @@ function wpsc_activate_gold_module() {
 		$siteurl = urlencode( get_option( 'siteurl' ) );
 		$request = '';
 		$http_request  = "GET /wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action HTTP/1.0\r\n";
-		$http_request .= "Host: getshopped.org\r\n";
+		$http_request .= "Host: wpecommerce.org\r\n";
 		$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=".get_option( 'blog_charset' )."\r\n";
 		$http_request .= "Content-Length: ".strlen( $request )."\r\n";
 		$http_request .= "User-Agent: $useragent\r\n";
@@ -44,7 +44,7 @@ function wpsc_activate_gold_module() {
 			$ch = curl_init();
 			curl_setopt_array($ch, array(
 				CURLOPT_RETURNTRANSFER => 1,
-				CURLOPT_URL => "getshopped.org/wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action",
+				CURLOPT_URL => "wpecommerce.org/wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action",
 				CURLOPT_USERAGENT => $useragent,
 				CURLOPT_SSL_VERIFYPEER => false,
 				CURLOPT_SSL_VERIFYHOST => false
@@ -52,7 +52,7 @@ function wpsc_activate_gold_module() {
 			$returned_value = curl_exec($ch);
 			curl_close($ch);
 		} else {
-			$fs = @fsockopen( 'getshopped.org',80,$errno,$errstr,10 );
+			$fs = @fsockopen( 'wpecommerce.org',80,$errno,$errstr,10 );
 			fwrite( $fs,$http_request );
 			while ( !feof( $fs ) ){
 				$response .= fgets( $fs,1160 ); // One TCP-IP packet
