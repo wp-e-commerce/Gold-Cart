@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Gold Cart for WP e-Commerce
- * Plugin URI: http://www.getshopped.org
- * Description: Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://getshopped.org" target="_blank">GetShopped.org</a> | <a href="http://getshopped.org/resources/premium-support/" target="_blank">Premium Support</a> | <a href="http://getshopped.org/resources/docs/" target="_blank">Documentation</a>
- * Version: 2.9.7.8
- * Author: GetShopped.org
- * Author URI: http://www.getshopped.org
+ * Plugin Name: Gold Cart for WP eCommerce
+ * Plugin URI: http://wpecommerce.org
+ * Description: Gold Cart extends your WP eCommerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wpecommerce.org/premium-support/" target="_blank">Premium Support</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
+ * Version: 2.9.8
+ * Author: WP eCommerce
+ * Author URI: https://wpecommerce.org/store/premium-plugins/gold-cart/
  */
 
 /**
@@ -20,13 +20,13 @@ define( 'WPSC_GOLD_MODULE_PRESENT', true );
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
-define( 'WPSC_GOLD_VERSION', '2.9.7.8' );
+define( 'WPSC_GOLD_VERSION', '2.9.8' );
 
 
 //check if newer version is available
 function gold_check_plugin_version( $plugin ) {
 	if( strpos( WPSC_GOLD_DIR_NAME.'/'.__FILE__, $plugin ) !== false ) {
-		$checkfile = "http://getshopped.org/wp-content/uploads/wpsc/updates/wpsc_goldcart.chk";
+		$checkfile = "https://wpecommerce.org/wp-content/uploads/plugin_updates/wpsc_goldcart.ver";
 		$vcheck = wp_remote_fopen($checkfile);
 		if( $vcheck ) {
 			$version = WPSC_GOLD_VERSION;
@@ -36,7 +36,7 @@ function gold_check_plugin_version( $plugin ) {
 			if( (version_compare(strval($theVersion), strval($version), '>') == 1) ) {
 			echo '
 				<td colspan="5" class="plugin-update" style="line-height:1.2em; font-size:11px; padding:1px;">
-					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart for WP e-Commerce available.", "wpsc_gold_cart").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a>.</div	>
+					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart available.", "wpsc_gold_cart").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a></div>
 				</td>';
 			} else {
 			return;

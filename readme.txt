@@ -1,37 +1,35 @@
-=== WP e-Commerce Gold Cart Plugin ===
+=== WP eCommerce Gold Cart Plugin ===
 
-Contributors: GetShopped.org
-Tags: e-commerce, shop, cart, goldcart
-Version: 2.9.7.8
-Requires at least: 3.8
-Tested up to: 3.9
-Requires: Wp e-Commerce: 3.8.13
+Contributors: WPeCommerce.org
+Tags: eCommerce, shop, cart, goldcart
+Version: 2.9.8
+Requires at least: 3.9
+Tested up to: 4.1
+Requires: WP eCommerce: 3.9
 
 == Description ==
 
-This Plugin upgrades your WP-e-Commerce shop, allowing you access to extra features and options such as product searching, multiple product image upload, extra payment gateways and Grid view.
-
-See http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/
+This Plugin upgrades your WP eCommerce shop, allowing you access to extra features and options such as product searching, multiple product image upload, extra payment gateways and Grid view.
 
 == Installation ==
 
-Note: The WP e-Commerce plugin must be installed and activated before Gold Cart will work.
-Download WP e-commerce: http://getshopped.org
+Note: The WP eCommerce plugin must be installed and activated before Gold Cart will work.
+Download WP eCommerce: http://wpecommerce.org/
 
 ==== First Time Install with new API Key ====
 
-If your WP-e-Commerce is series 3.7 and above (recommended)
+If your WP eCommerce is series 3.8 and above (recommended)
 
-1. Upload the 'gold_cart_files_plugin' directory within this archive to the '/wp-content/plugins/' directory
+1. Upload the Golc Cart plugin directory within this archive to the '/wp-content/plugins/' directory
 
 ==== Moving your Gold Cart to another site ====
 
 If you are moving your Gold Cart to another site and are going to activate it with the same key you must first deactivate it from your old site.
-To do this go to Store >> Upgrades ensure your Gold Cart is currently active and 'click reset API Key' you can now Install / Activate Gold Cart on your new site.
+To do this go to Store >> Upgrades ensure your Gold Cart is currently active and click 'Reset API Key'. You can now Install / Activate Gold Cart on your new site.
 
-==== Upgrading Gold Cart from WP e-commerce 3.6 series to 3.7+ series ====
+==== Upgrading Gold Cart from WP eCommerce 3.6 series to 3.7+ series ====
 
-1. Remove ALL 'gold_cart_files' files from the ï/wp-content/uploads/wpsc/upgrades/Í directory, This must be done first as it causes conflicts with the new files.
+1. Remove ALL 'gold_cart_files' files from the '/wp-content/uploads/wpsc/upgrades/' directory, This must be done first as it causes conflicts with the new files.
 
 2. Upload the 'gold_cart_files_plugin' to the '/wp-content/plugins/' directory
 
@@ -39,21 +37,19 @@ To do this go to Store >> Upgrades ensure your Gold Cart is currently active and
 
 ==== Downloading a new version ====
 
-Since version 2.4, Gold Cart has automatic plugin notification, however any premium upgrades purchased from GetShopped.org can be downloaded at:
+Since version 2.4, Gold Cart has automatic plugin notification, however any premium upgrades purchased from your account at WPeCommerce.org:
 
-http://getshopped.org/extend/premium-upgrades-files/
-
-You will be required to enter your Session ID (this can be found with your API key on your purchase receipt)
+https://wpecommerce.org/store/your-account/
 
 == Support ==
 
 If you have any problems with Gold Cart or require more information here are you options
 
-General help: http://getshopped.org/resources/docs/
+General help: http://docs.wpecommerce.org/
 
-Gold Cart Installation: http://getshopped.org/resources/docs/installation/gold-files/
+Gold Cart Installation: http://docs.wpecommerce.org/gold-cart-installation-and-activation/
 
-Premium Support Forum: http://getshopped.org/resources/premium-support/
+Premium Support Forum: https://wpecommerce.org/premium-support/
 
 == Changelog ==
 2.9.1
@@ -99,3 +95,10 @@ Premium Support Forum: http://getshopped.org/resources/premium-support/
 * Duplicate Thumbnails Fix
 * Linkopoint .PEM file check
 * Compatibility with WPEC 3.8.13 media UI
+
+2.9.7.8
+* Various Fixes
+
+2.9.8
+* Add: BluePay to send cart items in the comments field.
+* Change: Various gateways fixes

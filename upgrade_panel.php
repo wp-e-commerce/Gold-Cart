@@ -127,10 +127,6 @@ function wpsc_gold_activation_form() {
 				<?php _e( 'In order to register your API information your server requires cURL or the fscockopen extension which are not installed on this server, you may need to contact your web hosting provider to get them set up. ', 'wpsc_gold_cart' ); ?>
 			</p>
 		<?php endif; ?>	
-		<?php
-		if ( get_option( 'activation_state' ) == "true" ) {
-			echo '<p><strong>'.__( 'Click <a href="http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/" target="_blank">here</a> to learn how to use each Gold Cart feature.', 'wpsc_gold_cart' ).'</strong></p>';
-		} ?>
 	</div>
 	<?php
 }
