@@ -127,6 +127,7 @@ class wpsc_merchant_eway extends wpsc_merchant {
 			</body>
 			</html>';
 		echo $form;
+		exit();
 		}
 }
 
