@@ -43,7 +43,7 @@ class wpsc_merchant_eway extends wpsc_merchant {
   );
   
 	function submit() {
-		require_once('eWAY/lib.php');
+		require_once('eWay/lib.php');
 
 		//Send card data
 		$this->credit_card_details = array(
