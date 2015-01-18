@@ -182,16 +182,14 @@ function eway_enqueue_js() {
 	echo "<script src='https://secure.ewaypayments.com/scripts/eCrypt.js'></script>";
 	echo "
 	<script type='text/javascript'>
-	jQuery(document).ready(function(){
-		jQuery('.make_purchase.wpsc_buy_button', this).click(function(){
-			var card_num = eCrypt.encryptValue(jQuery('input[name=eway_card_number]').val(), '".get_option('eway_encryption_key')."');
-			var card_cvv = eCrypt.encryptValue(jQuery('input[name=eway_card_code]').val(), '".get_option('eway_encryption_key')."');
-			
-			jQuery('input[name=eway_card_number]').val(card_num);
-			jQuery('input[name=eway_card_code]').val(card_cvv);
-			jQuery('.make_purchase.wpsc_buy_button').val('Please Wait');
+	(function($){
+		var el = $('.make_purchase.wpsc_buy_button');
+		el.on('click',function(){
+			jQuery('input[name=eway_card_number]').val( eCrypt.encryptValue(jQuery('input[name=eway_card_number]').val(), '".get_option('eway_encryption_key')."') );
+			jQuery('input[name=eway_card_code]').val( eCrypt.encryptValue(jQuery('input[name=eway_card_code]').val(), '".get_option('eway_encryption_key')."') );
+			el.val('Please Wait');
 		});
-	});
+	})(jQuery);
 	</script>";
 }
 
