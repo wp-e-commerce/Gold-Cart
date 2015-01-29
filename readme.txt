@@ -100,5 +100,6 @@ Premium Support Forum: https://wpecommerce.org/premium-support/
 * Various Fixes
 
 2.9.8
-* Add: BluePay to send cart items in the comments field.
-* Change: Various gateways fixes
+* Update: BluePay to send cart items in the comments field.
+* Update: SagePay gateway updated to protocol 3.00 ( Effective July 31st 2015 )
+* Update: eWay now uses Direct Connection and client side encryption of card fields. No need for PCI Compliance
