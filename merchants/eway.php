@@ -194,8 +194,6 @@ function eway_enqueue_js() {
 
 			$( window ).load( eWayScript );
 			$( 'input:radio[name=\"custom_gateway\"]' ).change( eWayScript );
-
-<<<<<<< HEAD
 			$( window ).load( function() {
 				var check_btn = $('.make_purchase.wpsc_buy_button');
 				check_btn.click( function(event) {
@@ -204,9 +202,6 @@ function eway_enqueue_js() {
 					return(true);
 				});
 			});
-			
-=======
->>>>>>> fd6f5d8dc41c8518a6afe5fda2bfa9a1610a8c5a
 			})(jQuery);
 		</script>";
 }
