@@ -232,7 +232,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		'x_last_name' => $this->cart_data['billing_address']['last_name'],
 		'x_address' => $this->cart_data['billing_address']['address'],
 		'x_city' => $this->cart_data['billing_address']['city'],
-		//'x_state' => $this->cart_data['billing_address'][''],
+		'x_state' => $this->cart_data['billing_address']['state'],
 		'x_zip' => $this->cart_data['billing_address']['post_code'],
 		'x_country' => $this->cart_data['billing_address']['country'],
 		
@@ -241,7 +241,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		'x_ship_to_last_name' => $this->cart_data['shipping_address']['last_name'],
 		'x_ship_to_address' => $this->cart_data['shipping_address']['address'],
 		'x_ship_to_city' => $this->cart_data['shipping_address']['city'],
-		//'x_ship_to_state' => $this->cart_data['shipping_address'][''],
+		'x_ship_to_state' => $this->cart_data['shipping_address']['state'],
 		'x_ship_to_zip' => $this->cart_data['shipping_address']['post_code'],
 		'x_ship_to_country' => $this->cart_data['shipping_address']['country'],
 		
