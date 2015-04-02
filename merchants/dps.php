@@ -64,30 +64,37 @@ function submit_dps() {
 }
 
 function decrypt_dps_response(){
-  global $wpdb;
-  $PxAccess_Url  = get_option('access_url');
-  $PxAccess_Userid = get_option('access_userid');
-  $PxAccess_Key  = get_option('access_key');
-  $Mac_Key = get_option('mac_key');
 
-  $pxaccess = new PxAccess($PxAccess_Url, $PxAccess_Userid, $PxAccess_Key, $Mac_Key);
-  $curgateway = get_option('payment_gateway');
-  $sessionid = $_GET['sessionid'];
-  $enc_hex = $_GET["result"];
-  if($enc_hex != null) {
-	$rsp = $pxaccess->getResponse($enc_hex);
-	$siteurl = get_option('siteurl');
-	$total_weight = 0;
-	if(($rsp->getResponseText() == 'APPROVED')){
-    	$sessionid = $rsp->getMerchantReference();
-    	$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
-		if( ! $purchase_log->is_transaction_completed() ) {
-			$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
-			$purchase_log->save();
+	$PxAccess_Url  = get_option('access_url');
+	$PxAccess_Userid = get_option('access_userid');
+	$PxAccess_Key  = get_option('access_key');
+	$Mac_Key = get_option('mac_key');
+
+	$pxaccess = new PxAccess($PxAccess_Url, $PxAccess_Userid, $PxAccess_Key, $Mac_Key);
+	$curgateway = get_option('payment_gateway');
+
+	$_GET = array();
+	$params = explode('&', $_SERVER['QUERY_STRING']);
+	foreach ($params as $pair) {
+		list($key, $value) = explode('=', $pair);
+		$_GET[urldecode($key)] = urldecode($value);
+	}
+
+	$enc_hex = $_GET['result'];
+	if($enc_hex != null) {
+		$rsp = $pxaccess->getResponse($enc_hex);
+		$siteurl = get_option('siteurl');
+		$total_weight = 0;
+		if(($rsp->getResponseText() == 'APPROVED')) {
+			$sessionid = $rsp->getMerchantReference();
+			$purchase_log = new WPSC_Purchase_Log( $sessionid, 'sessionid' );
+			if( ! $purchase_log->is_transaction_completed() ) {
+				$purchase_log->set( 'processed', WPSC_Purchase_Log::ACCEPTED_PAYMENT );
+				$purchase_log->save();
+			}
 		}
 	}
-  }
-  return $sessionid;
+	return $sessionid;
 }
 
 function form_dps() {
