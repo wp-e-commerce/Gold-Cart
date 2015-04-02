@@ -463,7 +463,7 @@ function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 				$attachments = get_posts( $args );
 			}
 
-			$featured_img = get_post_meta($product_id, '_thumbnail_id');
+			$featured_img = get_post_thumbnail_id( $product_id );
 			$thumbnails = array();
 			if ( count( $attachments ) > 1 ) {
 				foreach ( $attachments as $post ) {
@@ -474,7 +474,7 @@ function gold_shpcrt_display_gallery( $product_id, $invisible = false ) {
 					$link = str_replace( 'a href' , 'a rev="' . $preview_link[0] . '" class="thickbox" rel="' . $product_name . '" href' , $link );
 
 					// always display the featured thumbnail first
-					if ( in_array( $post->ID, $featured_img ) ) {
+					if ( $post->ID == $featured_img ) {
 						array_unshift( $thumbnails, $link );
 					} else {
 						$thumbnails[] = $link;
