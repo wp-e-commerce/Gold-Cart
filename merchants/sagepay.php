@@ -208,7 +208,7 @@ class Sagepay_merchant extends wpsc_merchant {
         //1 construct $strPost string,
         $this->strPost = $this->addContrustinfo($this->strPost);
         $this->strPost = $this->addBasketInfo($this->strPost);
-        $this->strPost = base64_encode(Sagepay_merchant::simpleXor($this->strPost, $this->sagepay_options['encrypt_key']));
+        $this->strPost = Sagepay_merchant::encryptAes($this->strPost, $this->sagepay_options['encrypt_key']);
 
     }
     private function addContrustinfo($strPost){
@@ -275,7 +275,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
         }
         $strPost .= '&Description=' . $description;
-        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
+        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'];
         $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
         $strPost .= '&CustomerName=' . $strBillingFirstnames . ' ' . $strBillingSurname;
         $strPost .= '&CustomerEMail=' . $strCustomerEMail;
@@ -296,7 +296,7 @@ class Sagepay_merchant extends wpsc_merchant {
         $strPost .= "&BillingPostCode=" . $strBillingPostCode;
         $strPost .= "&BillingCountry=" . $strBillingCountry;
         if (strlen($strBillingState) > 0) $strPost .= "&BillingState=" . $strBillingState;
-        if (strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
+        if ( isset( $strBillingPhone ) && strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
 
 
 		// Shipping Details:
@@ -316,13 +316,13 @@ class Sagepay_merchant extends wpsc_merchant {
            }
        }
 
-       if(strlen($strDeliveryPhone) > 0 || strlen($strBillingPhone) > 0){
+       /*if( ( isset( $strBillingPhone ) || isset( $strBillingPhone ) ) && ( strlen($strDeliveryPhone) > 0 || strlen($strBillingPhone) > 0 ) ){
            if(strlen($strDeliveryPhone) > 0){
                $strPost .=  "&DeliveryPhone=" . $strDeliveryPhone;
            } else if(strlen($strBillingPhone) > 0){
                $strPost .=  "&DeliveryPhone=" .$strBillingPhone;
            }
-       }
+       }*/
 
       return $strPost;
     }
@@ -383,6 +383,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
         return $strPost;
     }
+	
     public function submit() {
 
         $servertype = $this->sagepay_options['server_type'];
@@ -400,7 +401,7 @@ class Sagepay_merchant extends wpsc_merchant {
         $output =
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head><title></title></head><body>
         	<form id="sagepay_form" name="sagepay_form" method="post" action="' .$url . '">
-       			<input type="hidden"    name="VPSProtocol"  value ="2.23" ></input>
+       			<input type="hidden"    name="VPSProtocol"  value ="3.00" ></input>
         		<input type="hidden"    name="TxType"       value ="PAYMENT"  ></input>
         		<input type="hidden"    name="Vendor"       value ="'. $this->sagepay_options['name'] . '"  ></input>
         		<input type="hidden"    name="Crypt"        value ="'. $this->strPost . '"  ></input>
@@ -409,6 +410,7 @@ class Sagepay_merchant extends wpsc_merchant {
         </body></html>';
 
         echo $output;
+		exit();
     }
 
     public function parse_gateway_notification() {
@@ -500,46 +502,128 @@ class Sagepay_merchant extends wpsc_merchant {
         return $strCleanedText;
     }
 
-    /*  The SimpleXor encryption algorithm                                                                                **
-    **  NOTE: This is a placeholder really.  Future releases of Form will use AES or TwoFish.  Proper encryption      **
-    **  This simple function and the Base64 will deter script kiddies and prevent the "View Source" type tampering        **
-    **  It won't stop a half decent hacker though, but the most they could do is change the amount field to something     **
-    **  else, so provided the vendor checks the reports and compares amounts, there is no harm done.  It's still          **
-    **  more secure than the other PSPs who don't both encrypting their forms at all                                      */
+    /**
+     * PHP's mcrypt does not have built in PKCS5 Padding, so we use this.
+     *
+     * @param string $input The input string.
+     *
+     * @return string The string with padding.
+     */
+    static protected function addPKCS5Padding($input)
+    {
+        $blockSize = 16;
+        $padd = "";
 
-   public static function simpleXor($InString, $Key) {
-        // Initialise key array
-        $KeyList = array();
-        // Initialise out variable
-        $output = "";
-
-        // Convert $Key into array of ASCII values
-        for($i = 0; $i < strlen($Key); $i++){
-            $KeyList[$i] = ord(substr($Key, $i, 1));
+        // Pad input to an even block size boundary.
+        $length = $blockSize - (strlen($input) % $blockSize);
+        for ($i = 1; $i <= $length; $i++)
+        {
+            $padd .= chr($length);
         }
 
-        // Step through string a character at a time
-        for($i = 0; $i < strlen($InString); $i++) {
-            // Get ASCII code from string, get ASCII code from key (loop through with MOD), XOR the two, get the character from the result
-            // % is MOD (modulus), ^ is XOR
-            $output.= chr(ord(substr($InString, $i, 1)) ^ ($KeyList[$i % strlen($Key)]));
-        }
-
-        // Return the result
-        return $output;
+        return $input . $padd;
     }
+
+    /**
+     * Remove PKCS5 Padding from a string.
+     *
+     * @param string $input The decrypted string.
+     *
+     * @return string String without the padding.
+     * @throws SagepayApiException
+     */
+    static protected function removePKCS5Padding($input)
+    {
+        $blockSize = 16;
+        $padChar = ord($input[strlen($input) - 1]);
+
+        /* Check for PadChar is less then Block size */
+        if ($padChar > $blockSize)
+        {
+            throw new SagepayApiException('Invalid encryption string');
+        }
+        /* Check by padding by character mask */
+        if (strspn($input, chr($padChar), strlen($input) - $padChar) != $padChar)
+        {
+            throw new SagepayApiException('Invalid encryption string');
+        }
+
+        $unpadded = substr($input, 0, (-1) * $padChar);
+        /* Chech result for printable characters */
+        if (preg_match('/[[:^print:]]/', $unpadded))
+        {
+            throw new SagepayApiException('Invalid encryption string');
+        }
+        return $unpadded;
+    }
+
+    /**
+     * Encrypt a string ready to send to SagePay using encryption key.
+     *
+     * @param  string  $string  The unencrypyted string.
+     * @param  string  $key     The encryption key.
+     *
+     * @return string The encrypted string.
+     */
+    static public function encryptAes($string, $key)
+    {
+        // AES encryption, CBC blocking with PKCS5 padding then HEX encoding.
+        // Add PKCS5 padding to the text to be encypted.
+        $string = self::addPKCS5Padding($string);
+
+        // Perform encryption with PHP's MCRYPT module.
+        $crypt = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $string, MCRYPT_MODE_CBC, $key);
+
+        // Perform hex encoding and return.
+        return "@" . strtoupper(bin2hex($crypt));
+    }
+
+    /**
+     * Decode a returned string from SagePay.
+     *
+     * @param string $strIn         The encrypted String.
+     * @param string $password      The encyption password used to encrypt the string.
+     *
+     * @return string The unecrypted string.
+     * @throws SagepayApiException
+     */
+    static public function decryptAes($strIn, $password)
+    {
+        // HEX decoding then AES decryption, CBC blocking with PKCS5 padding.
+        // Use initialization vector (IV) set from $str_encryption_password.
+        $strInitVector = $password;
+
+        // Remove the first char which is @ to flag this is AES encrypted and HEX decoding.
+        $hex = substr($strIn, 1);
+
+        // Throw exception if string is malformed
+        if (!preg_match('/^[0-9a-fA-F]+$/', $hex))
+        {
+            throw new SagepayApiException('Invalid encryption string');
+        }
+        $strIn = pack('H*', $hex);
+
+        // Perform decryption with PHP's MCRYPT module.
+        $string = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $password, $strIn, MCRYPT_MODE_CBC, $strInitVector);
+        return self::removePKCS5Padding($string);
+    }
+
+}
+
+class SagepayApiException extends Exception
+{
 
 }
 
 
 add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_info', 10, 1);
 
-function sagepay_process_gateway_info($sessionid){
+function sagepay_process_gateway_info( $sessionid ){
     // first set up all the vars that we are going to need later
     $sagepay_options =  get_option('wpec_sagepay');
-
-    $crypt = str_replace( " ", "+", $_GET['crypt'] );
-    $uncrypt = Sagepay_merchant::simpleXor( base64_decode( $crypt ), $sagepay_options['encrypt_key'] );
+	
+    $crypt = filter_input(INPUT_GET, 'crypt');
+    $uncrypt = Sagepay_merchant::decryptAes( $crypt , $sagepay_options['encrypt_key'] );
     parse_str( $uncrypt, $unencrypted_values );
 
 
@@ -577,7 +661,6 @@ function sagepay_process_gateway_info($sessionid){
             $purchase_log->set( array(
                 'processed'  => WPSC_Purchase_Log::ACCEPTED_PAYMENT,
                 'transactid' => $unencrypted_values['VPSTxId'],
-                'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
             ) );
             $purchase_log->save();
 

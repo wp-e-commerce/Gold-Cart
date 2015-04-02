@@ -5,6 +5,9 @@ if(!is_callable('get_option')) {
   return;
   exit("Something strange is happening, and \"return\" is not breaking out of a file.");
 }
+
+if (  ! version_compare( phpversion(), '5.3', '>=' ) ) { return; }
+
 global $gateway_checkout_form_fields;
 
 $nzshpcrt_gateways[$num] = array(
@@ -43,13 +46,13 @@ class wpsc_merchant_eway extends wpsc_merchant {
   );
   
 	function submit() {
-		require_once('eWAY/lib.php');
+		require_once('eWay/lib.php');
 
 		//Send card data
 		$this->credit_card_details = array(
 			'card_number' => $_POST['eway_card_number'],
-			'expiry_month' => $_POST['expiry_month'],
-			'expiry_year' => $_POST['expiry_year'],
+			'expiry_month' => $_POST['eway_expiry_month'],
+			'expiry_year' => $_POST['eway_expiry_year'],
 			'card_code' => $_POST['eway_card_code']
 		);
 		
@@ -161,37 +164,50 @@ if(in_array('wpsc_merchant_eway',(array)get_option('custom_gateway_options'))) {
 	<tr>
 		<td>".__( 'Credit Card Number *', 'wpsc_gold_cart' )."</td>
 		<td>
-			<input type='text' value='' name='eway_card_number' />
+			<input type='text' data-eway-encrypt-name='eway_card_number' />
 		</td>
 	</tr>
 	<tr>
 		<td>".__( 'Credit Card Expiry *', 'wpsc_gold_cart' )."</td>
 		<td>
-			<input type='text' size='2' value='' maxlength='2' name='expiry_month' />/<input type='text' size='2'  maxlength='2' value='' name='expiry_year' />
+			<input type='text' size='2' value='' maxlength='2' name='eway_expiry_month' />/<input type='text' size='2'  maxlength='2' value='' name='eway_expiry_year' />
 		</td>
 	</tr>
 	<tr>
 		<td>".__( 'CVV', 'wpsc_gold_cart' )."</td>
-		<td><input type='text' size='4' value='' maxlength='4' name='eway_card_code' /></td>
+		<td><input type='text' size='4' id='eway_card_cvv' data-eway-encrypt-name='eway_card_code' /></td>
 	</tr>
 ";
-	add_action('wpsc_bottom_of_shopping_cart' , 'eway_enqueue_js');
 }
 
 function eway_enqueue_js() {
-	echo "<script src='https://secure.ewaypayments.com/scripts/eCrypt.js'></script>";
 	echo "
-	<script type='text/javascript'>
-	(function($){
-		var el = $('.make_purchase.wpsc_buy_button');
-		el.on('click',function(){
-			jQuery('input[name=eway_card_number]').val( eCrypt.encryptValue(jQuery('input[name=eway_card_number]').val(), '".get_option('eway_encryption_key')."') );
-			jQuery('input[name=eway_card_code]').val( eCrypt.encryptValue(jQuery('input[name=eway_card_code]').val(), '".get_option('eway_encryption_key')."') );
-			el.val('Please Wait');
-		});
-	})(jQuery);
-	</script>";
+		<script type='text/javascript'>
+			(function($){
+				var eWayScript = function() {
+						if ( $( 'input[name=\"custom_gateway\"]' ).val() === 'wpsc_merchant_eway' ) {
+							$('form.wpsc_checkout_forms').attr('data-eway-encrypt-key', '".get_option('eway_encryption_key')."');
+							$.getScript( 'https://secure.ewaypayments.com/scripts/eCrypt.js', function() {
+							});
+						}
+				};
+
+			$( window ).load( eWayScript );
+			$( 'input:radio[name=\"custom_gateway\"]' ).change( eWayScript );
+
+			$( window ).load( function() {
+				var check_btn = $('.make_purchase.wpsc_buy_button');
+				check_btn.click( function(event) {
+					$(this).hide();
+					// do other stuff here
+					return(true);
+				});
+			});
+			
+			})(jQuery);
+		</script>";
 }
+add_action('wpsc_bottom_of_shopping_cart' , 'eway_enqueue_js');
 
 function submit_eway() {
 	$options = array(
