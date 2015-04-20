@@ -557,7 +557,7 @@ function gold_shpcrt_search_form(){
 	$params = array_diff_key( $params, array( 'product_search' => '', 'search' => '' ) );
 	$params = array_intersect_key( $params, array( 'page_number' => '', 'page_id' => '' ) );
 
-	$_SERVER['REQUEST_URI'] = remove_query_arg( 'view_type' );
+	$_SERVER['REQUEST_URI'] = esc_url( remove_query_arg( 'view_type' ) );
 	$show_advanced_search = get_option( 'show_advanced_search' ) == '1';
 	$show_live_search = get_option( 'show_live_search' ) == 1;
 	$customer_view = $wpsc_gc_view_mode;

@@ -86,7 +86,7 @@ class wpec_auth_net extends wpsc_merchant {
 
 			if(!$this->beenCaptured($purchlogitem->purchlogid)){
 				//Give Link to capture payment
-				echo "<a href='".add_query_arg($capture_payment_params)."'>".__('Accept payment', 'wpsc_gold_cart').'</a> | ';
+				echo "<a href='". esc_url( add_query_arg($capture_payment_params) )."'>".__('Accept payment', 'wpsc_gold_cart').'</a> | ';
 			}
 			if( !isset($purchlogitem->extrainfo->transactid) ){
 				//Give Link to capture payment
