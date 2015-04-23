@@ -217,6 +217,9 @@ class Sagepay_merchant extends wpsc_merchant {
         $billInfo = $this->cart_data['billing_address'];
         $shipInfo = $this->cart_data['shipping_address'];
 		
+		
+		$strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], 'CLEAN_INPUT_FILTER_TEXT');
+		
         // temporary vars that will be added to the $strPost string in url format
         $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT');
         $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT');
@@ -226,24 +229,24 @@ class Sagepay_merchant extends wpsc_merchant {
         $strBillingCountry     = $this->cleanInput( $billInfo['country'], 'CLEAN_INPUT_FILTER_TEXT');
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
         $strBillingState       = $this->cleanInput( $billInfo['state'], 'CLEAN_INPUT_FILTER_TEXT');
-		
+        // no state required if not in the US
+        if($strBillingCountry != 'US') $strBillingState = '';		
 		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
 			$strBillingPhone = $this->cleanInput( $billInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
 		}
-		
-        // no state required if not in the US
-        if($strBillingCountry != 'US') $strBillingState = '';
-        $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliveryState      = $this->cleanInput( $shipInfo['state'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], 'CLEAN_INPUT_FILTER_TEXT');
+
+        //Shipping info
+        $strDeliveryFirstnames = isset( $shipInfo['first_name'] )	? $this->cleanInput( $shipInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingFirstnames;
+        $strDeliverySurname    = isset( $shipInfo['last_name'] ) 	? $this->cleanInput( $shipInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingSurname;
+        $strDeliveryAddress1   = isset( $shipInfo['address'] ) 		? $this->cleanInput( $shipInfo['address'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingAddress1;
+        $strDeliveryCity       = isset( $shipInfo['city'] ) 		? $this->cleanInput( $shipInfo['city'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingCity;
+        $strDeliveryState      = isset( $shipInfo['state'] ) 		? $this->cleanInput( $shipInfo['state'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingState;
+        $strDeliveryCountry    = isset( $shipInfo['country'] ) 		? $this->cleanInput( $shipInfo['country'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingCountry;
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
-			$strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT');
+		
+		$strDeliveryPostCode   = isset( $shipInfo['post_code'] )		? $this->cleanInput( $shipInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingPostCode;
 
 		if ( isset ( $shipInfo['phone'] ) && $shipInfo['phone'] != '' ) {
 			$strDeliveryPhone = $this->cleanInput( $shipInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
@@ -299,15 +302,15 @@ class Sagepay_merchant extends wpsc_merchant {
         if ( isset( $strBillingPhone ) && strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
 
 
+		
 		// Shipping Details:
-        // if the shipping info isnt present then assign the billing info
-        (strlen($strDeliveryFirstnames ) > 0)  ? $strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames : $strPost .= "&DeliveryFirstnames=" .  $strBillingFirstnames;
-        (strlen($strDeliverySurname ) > 0)     ? $strPost .= "&DeliverySurname=" . $strDeliverySurname        : $strPost .= "&DeliverySurname=" . $strBillingSurname;
-        (strlen($strDeliveryAddress1) > 0)     ? $strPost .= "&DeliveryAddress1=" . $strDeliveryAddress1      : $strPost .= "&DeliveryAddress1=" . $strBillingAddress1;
-        (strlen($strDeliveryCity) > 0)         ? $strPost .= "&DeliveryCity=" . $strDeliveryCity              : $strPost .= "&DeliveryCity=" . $strBillingCity;
-        (strlen($strDeliveryPostCode) > 0)     ? $strPost .= "&DeliveryPostCode=" . $strDeliveryPostCode      : $strPost .= "&DeliveryPostCode=" . $strBillingPostCode;
-        (strlen($strDeliveryCountry) > 0)      ? $strPost .= "&DeliveryCountry=" . $strDeliveryCountry        : $strPost .= "&DeliveryCountry=" . $strBillingCountry;
-
+		$strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames;
+		$strPost .= "&DeliverySurname=" . $strDeliverySurname;
+		$strPost .= "&DeliveryAddress1=" . $strDeliveryAddress1;
+		$strPost .= "&DeliveryCity=" . $strDeliveryCity;
+		$strPost .= "&DeliveryPostCode=" . $strDeliveryPostCode;
+		$strPost .= "&DeliveryCountry=" . $strDeliveryCountry;
+		
        if (strlen($strDeliveryState) > 0 || strlen($strBillingState) > 0){
            if(strlen($strDeliveryState) > 0){
                $strPost .=  "&DeliveryState=" . $strDeliveryState;
@@ -324,7 +327,7 @@ class Sagepay_merchant extends wpsc_merchant {
            }
        }*/
 
-      return $strPost;
+	   return $strPost;
     }
 
     private function addBasketInfo($strPost){
@@ -396,7 +399,7 @@ class Sagepay_merchant extends wpsc_merchant {
             $url = 'https://live.sagepay.com/gateway/service/vspform-register.vsp';
         }
         //TODO update purchase logs to pending
-        $this->set_purchase_processed_by_purchid(2);
+        //$this->set_purchase_processed_by_purchid(2);
 
         $output =
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head><title></title></head><body>
@@ -608,6 +611,33 @@ class Sagepay_merchant extends wpsc_merchant {
         return self::removePKCS5Padding($string);
     }
 
+    /**
+     * Convert string to data array.
+     *
+     * @param string  $data       Query string
+     * @param string  $delimeter  Delimiter used in query string
+     *
+     * @return array
+     */
+    static public function queryStringToArray($data, $delimeter = "&")
+    {
+        // Explode query by delimiter
+        $pairs = explode($delimeter, $data);
+        $queryArray = array();
+
+        // Explode pairs by "="
+        foreach ($pairs as $pair)
+        {
+            $keyValue = explode('=', $pair);
+
+            // Use first value as key
+            $key = array_shift($keyValue);
+
+            // Implode others as value for $key
+            $queryArray[$key] = implode('=', $keyValue);
+        }
+        return $queryArray;
+    }
 }
 
 class SagepayApiException extends Exception
@@ -621,12 +651,15 @@ add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_in
 function sagepay_process_gateway_info( $sessionid ){
     // first set up all the vars that we are going to need later
     $sagepay_options =  get_option('wpec_sagepay');
-	
     $crypt = filter_input(INPUT_GET, 'crypt');
     $uncrypt = Sagepay_merchant::decryptAes( $crypt , $sagepay_options['encrypt_key'] );
+	$decryptArr = Sagepay_merchant::queryStringToArray($uncrypt);
+	if (!$uncrypt || empty($decryptArr))
+	{
+		return;
+	}
     parse_str( $uncrypt, $unencrypted_values );
-
-
+	
     $success = '';
     switch ( $unencrypted_values['Status'] ) {
         case 'NOTAUTHED':
@@ -692,9 +725,10 @@ function sagepay_process_gateway_info( $sessionid ){
 					wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
 					$checkout_page_url = get_option( 'shopping_cart_url' );
 					if ( $checkout_page_url ) {
-					  header( 'Location: '.$checkout_page_url );
-					  exit();
+						header( 'Location: '.$checkout_page_url );
+						exit();
 					}
+
                     break;
             }
             break;
