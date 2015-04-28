@@ -645,10 +645,18 @@ class SagepayApiException extends Exception
 
 }
 
-
 add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_info', 10, 1);
 
-function sagepay_process_gateway_info( $sessionid ){
+if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
+  // just to make sure that this is a vmerchnat responce
+  //exit("<pre>".print_r($_GET,true)."</pre>");
+  add_action('init', 'sagepay_process_gateway_info');
+}
+
+
+function sagepay_process_gateway_info(){
+	global $sessionid;
+		
     // first set up all the vars that we are going to need later
     $sagepay_options =  get_option('wpec_sagepay');
     $crypt = filter_input(INPUT_GET, 'crypt');
@@ -687,7 +695,7 @@ function sagepay_process_gateway_info( $sessionid ){
         default:
             break;
     }
-    global $sessionid;
+
     switch ( $success ) {
         case 'Completed':
             $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
@@ -728,7 +736,6 @@ function sagepay_process_gateway_info( $sessionid ){
 						header( 'Location: '.$checkout_page_url );
 						exit();
 					}
-
                     break;
             }
             break;
@@ -749,11 +756,10 @@ function sagepay_process_gateway_info( $sessionid ){
 			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
 			$checkout_page_url = get_option( 'shopping_cart_url' );
 			if ( $checkout_page_url ) {
+				
 			  header( 'Location: '.$checkout_page_url );
 			  exit();
 			}
             break;
     }
-
-    return $unencrypted_values['VendorTxCode'];
 }
