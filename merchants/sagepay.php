@@ -645,18 +645,15 @@ class SagepayApiException extends Exception
 
 }
 
-add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_info', 10, 1);
-
-if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
-  // just to make sure that this is a vmerchnat responce
-  //exit("<pre>".print_r($_GET,true)."</pre>");
-  add_action('init', 'sagepay_process_gateway_info');
-}
-
-
-function sagepay_process_gateway_info(){
+function sagepay_process_gateway_info() {
 	global $sessionid;
-		
+
+	if( get_option ('permalink_structure') != '' ) {
+		$separator ="?";
+	} else {
+		$separator ="&";
+	}
+	
     // first set up all the vars that we are going to need later
     $sagepay_options =  get_option('wpec_sagepay');
     $crypt = filter_input(INPUT_GET, 'crypt');
@@ -707,8 +704,8 @@ function sagepay_process_gateway_info(){
 
             // set this global, wonder if this is ok
             $sessionid = $unencrypted_values['VendorTxCode'];
-            transaction_results($sessionid,true);
-
+			header("Location: ".get_option('transact_url').$separator."sessionid=".$sessionid);
+			exit();
             break;
         case 'Failed': // if it fails...
             switch ( $unencrypted_values['Status'] ) {
@@ -762,4 +759,8 @@ function sagepay_process_gateway_info(){
 			}
             break;
     }
+}
+
+if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
+  add_action('init', 'sagepay_process_gateway_info');
 }
