@@ -143,6 +143,7 @@ function wpec_sagepay_admin_form(){
     return $adminFormHTML;
 }
 function wpec_sagepay_submit_form(){
+	
     // a flag to run the update_option function
     $flag = false;
     $sagepay_options = get_option('wpec_sagepay');
@@ -764,3 +765,19 @@ function sagepay_process_gateway_info() {
 if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
   add_action('init', 'sagepay_process_gateway_info');
 }
+
+
+function _wpsc_action_admin_sagepay_suhosin_check() {
+	if( in_array( 'sagepay', get_option( 'custom_gateway_options', array() ) ) ) {
+		if( @ extension_loaded( 'suhosin' ) && @ ini_get( 'suhosin.get.max_value_length' ) < 1000 ) {
+			add_action( 'admin_notices', '_wpsc_action_admin_notices_sagepay_suhosin' );
+		}
+	}
+}
+add_action( 'admin_init', '_wpsc_action_admin_sagepay_suhosin_check' );
+
+function _wpsc_action_admin_notices_sagepay_suhosin() { ?>
+	<div id="message" class="error fade">
+		<p><?php echo __( "We noticed your host has enabled the Suhosin extension on your server.  Unfortunately, it has been misconfigured for compatibility with SagePay. </br> Before you can use SagePay, please contact your hosting provider and ask them to increase the 'suhosin.get.max_value_length' to a value over 1,500.") ?></p>
+	</div>	
+<?php }
