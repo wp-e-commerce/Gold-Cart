@@ -22,6 +22,15 @@ define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
 define( 'WPSC_GOLD_VERSION', '2.9.8' );
 
+//Check PHP version
+if( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+	add_action( 'admin_notices', 'gc_php_version_notice' );
+	function gc_php_version_notice() {
+		echo '<div class="error"><p>' . __( 'Your version of PHP is below the minimum version of PHP required by Gold Cart. Please contact your host and request that your version be upgraded to 5.3 or later.', 'wpsc_gold_cart' ) . '</p></div>';
+	
+		return;
+	}
+}
 
 //check if newer version is available
 function gold_check_plugin_version( $plugin ) {
