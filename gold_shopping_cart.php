@@ -33,6 +33,28 @@ if( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 }
 
 //check if newer version is available
+$license_key = ! empty( get_option( 'activation_key' ) ) ? trim( get_option( 'activation_key' ) ) : false;
+
+if( $license_key ) {
+	// setup the updater
+	require 'plugin-update/plugin-update-checker.php';
+	$MyUpdateChecker = PucFactory::buildUpdateChecker(
+		'http://updates.wpecommerce.org/?action=get_metadata&slug=gold-cart', //Metadata URL.
+		__FILE__
+	);
+
+	//Add the license key to query arguments.
+	$MyUpdateChecker->addQueryArgFilter('gc_filter_update_checks');
+	function gc_filter_update_checks( $queryArgs ) {
+			global $license_key;
+			$license_name = get_option( 'activation_name' );
+			$queryArgs = array( 'activation_key' => $license_key, 'activation_name' => $license_name );
+			
+			return $queryArgs;
+	}
+}
+//
+
 function gold_check_plugin_version( $plugin ) {
 	if( strpos( WPSC_GOLD_DIR_NAME.'/'.__FILE__, $plugin ) !== false ) {
 		$checkfile = "https://wpecommerce.org/wp-content/uploads/plugin_updates/wpsc_goldcart.ver";
