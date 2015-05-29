@@ -56,29 +56,6 @@ if( $license_key ) {
 }
 //
 
-function gold_check_plugin_version( $plugin ) {
-	if( strpos( WPSC_GOLD_DIR_NAME.'/'.__FILE__, $plugin ) !== false ) {
-		$checkfile = "https://wpecommerce.org/wp-content/uploads/plugin_updates/wpsc_goldcart.ver";
-		$vcheck = wp_remote_fopen($checkfile);
-		if( $vcheck ) {
-			$version = WPSC_GOLD_VERSION;
-			$status = explode('@', $vcheck);
-			$theVersion = $status[1];
-			$theMessage = $status[3];
-			if( (version_compare(strval($theVersion), strval($version), '>') == 1) ) {
-			echo '
-				<td colspan="5" class="plugin-update" style="line-height:1.2em; font-size:11px; padding:1px;">
-					<div style="color:#000; font-weight:bold; margin:4px; padding:6px 5px; background-color:#fffbe4; border-color:#dfdfdf; border-width:1px; border-style:solid; -moz-border-radius:5px; -khtml-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;">'.__("There is a new version of Gold Cart available.", "wpsc_gold_cart").' <a href="'.$theMessage.'" target="_blank">Download version '.$theVersion.'</a></div>
-				</td>';
-			} else {
-			return;
-			}
-		}
-	}
-}
-add_action( 'after_plugin_row', 'gold_check_plugin_version' );
-//
-
 /**
  * Tell people to register Gold Cart after activation
  */
