@@ -23,14 +23,30 @@ define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
 define( 'WPSC_GOLD_VERSION', '2.9.9' );
 
 //Check PHP version
-if( version_compare( PHP_VERSION, '5.3', '<' ) ) {
-	add_action( 'admin_notices', 'gc_php_version_notice' );
-	function gc_php_version_notice() {
-		echo '<div class="error"><p>' . __( 'Your version of PHP is below the minimum version of PHP required by Gold Cart. Please contact your host and request that your version be upgraded to 5.3 or later.', 'wpsc_gold_cart' ) . '</p></div>';
-	
-		return;
+if( ! is_minimum_php_version( 5.3 ) ) {
+	load_minimum_required_version_notice();
+}
+
+function load_minimum_required_version_notice() {
+	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
+		}
+		add_action( 'admin_notices', 'gc_php_version_notice' );
 	}
 }
+function is_minimum_php_version( $version ) {
+	return version_compare( $version, PHP_VERSION, '<=' );
+}
+	
+function gc_php_version_notice() {
+	echo '<div class="error">';
+	echo '<p>' . __( 'Your version of PHP is below the minimum version of PHP required by Gold Cart. Please contact your host and request that your version be upgraded to 5.3 or later.', 'wpsc_gold_cart' ) . '</p>';
+	echo '</div>';
+}
+//
 
 //check if newer version is available
 $license_key = get_option( 'activation_key' );
