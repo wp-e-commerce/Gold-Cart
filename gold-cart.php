@@ -23,7 +23,7 @@ define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
 define( 'WPSC_GOLD_VERSION', '2.9.9' );
 
 //Check PHP version
-if( ! gc_is_minimum_php_version( 5.3 ) ) {
+if( ! version_compare( 5.3, PHP_VERSION, '<=' ) ) {
 	gc_load_minimum_required_version_notice();
 }
 
@@ -36,9 +36,6 @@ function gc_load_minimum_required_version_notice() {
 		}
 		add_action( 'admin_notices', 'gc_php_version_notice' );
 	}
-}
-function gc_is_minimum_php_version( $version ) {
-	return version_compare( $version, PHP_VERSION, '<=' );
 }
 	
 function gc_php_version_notice() {
