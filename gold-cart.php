@@ -23,11 +23,11 @@ define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
 define( 'WPSC_GOLD_VERSION', '2.9.9' );
 
 //Check PHP version
-if( ! is_minimum_php_version( 5.3 ) ) {
-	load_minimum_required_version_notice();
+if( ! gc_is_minimum_php_version( 5.3 ) ) {
+	gc_load_minimum_required_version_notice();
 }
 
-function load_minimum_required_version_notice() {
+function gc_load_minimum_required_version_notice() {
 	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		deactivate_plugins( plugin_basename( __FILE__ ) );
@@ -37,7 +37,7 @@ function load_minimum_required_version_notice() {
 		add_action( 'admin_notices', 'gc_php_version_notice' );
 	}
 }
-function is_minimum_php_version( $version ) {
+function gc_is_minimum_php_version( $version ) {
 	return version_compare( $version, PHP_VERSION, '<=' );
 }
 	
