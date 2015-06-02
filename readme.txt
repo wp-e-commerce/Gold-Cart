@@ -46,6 +46,7 @@ If you have any problems with Gold Cart or require more information here are you
 == Changelog ==
 = 2.9.9 = 
 * Automatic plugin updates now available if API key is activated.
+* Update: Authorize.net Certificates Update
 
 = 2.9.8 =
 * Update: BluePay to send cart items in the comments field.
