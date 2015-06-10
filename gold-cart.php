@@ -3,7 +3,7 @@
  * Plugin Name: Gold Cart for WP eCommerce
  * Plugin URI: http://wpecommerce.org
  * Description: Gold Cart extends your WP eCommerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wpecommerce.org/premium-support/" target="_blank">Premium Support</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
- * Version: 2.9.9
+ * Version: 2.9.10-dev
  * Author: WP eCommerce
  * Author URI: https://wpecommerce.org/store/premium-plugins/gold-cart/
  */
@@ -20,7 +20,7 @@ define( 'WPSC_GOLD_MODULE_PRESENT', true );
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
-define( 'WPSC_GOLD_VERSION', '2.9.9' );
+define( 'WPSC_GOLD_VERSION', '2.9.10-dev' );
 
 //Check PHP version
 if( ! version_compare( 5.3, PHP_VERSION, '<=' ) ) {
