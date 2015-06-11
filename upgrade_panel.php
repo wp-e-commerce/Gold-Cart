@@ -23,45 +23,24 @@ function wpsc_activate_gold_module() {
 			update_option( 'activation_key', '');
 		}
 
-		$useragent = 'WP e-Commerce plugin';
-		$activation_name = urlencode( $_POST['activation_name'] );
-		$activation_key = urlencode( $_POST['activation_key'] );
-		$siteurl = urlencode( get_option( 'siteurl' ) );
-		$request = '';
-		$http_request  = "GET /wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action HTTP/1.0\r\n";
-		$http_request .= "Host: wpecommerce.org\r\n";
-		$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=".get_option( 'blog_charset' )."\r\n";
-		$http_request .= "Content-Length: ".strlen( $request )."\r\n";
-		$http_request .= "User-Agent: $useragent\r\n";
-		$http_request .= "\r\n";
-		$http_request .= $request;
-		$response = '';
-
+		$url = "https://wpecommerce.org/wp-goldcart-api/api_register.php";
+		$params = array (
+			'api'		=> 'v2',
+			'name'		=> base64_encode( $_POST['activation_name'] ),
+			'key'		=> base64_encode( $_POST['activation_key'] ),
+			'url'		=> base64_encode( esc_url_raw( site_url() ) ),
+			'action'	=> $action
+		);
+		$url = add_query_arg( $params, $url );
 		
-		//Added cURL activation option. 31.08.2013
-		//Try cURL first
-		if ( function_exists( 'curl_init' ) ) {
-			$ch = curl_init();
-			curl_setopt_array($ch, array(
-				CURLOPT_RETURNTRANSFER => 1,
-				CURLOPT_URL => "wpecommerce.org/wp-goldcart-api/api_register.php?name=$activation_name&key=$activation_key&url=$siteurl&action=$action",
-				CURLOPT_USERAGENT => $useragent,
-				CURLOPT_SSL_VERIFYPEER => false,
-				CURLOPT_SSL_VERIFYHOST => false
-			));			
-			$returned_value = curl_exec($ch);
-			curl_close($ch);
-		} else {
-			$fs = @fsockopen( 'wpecommerce.org',80,$errno,$errstr,10 );
-			fwrite( $fs,$http_request );
-			while ( !feof( $fs ) ){
-				$response .= fgets( $fs,1160 ); // One TCP-IP packet
-			}
-			fclose( $fs );
-			$response = explode( "\r\n\r\n",$response,2 );
-			$returned_value = (int)trim( $response[1] );
-		}
-		//$returned_value = 1;
+		$args = array(
+			'httpversion' => '1.0',
+			'sslverify'	  => false,
+			'timeout'	  => 15,
+			'user-agent'  => 'Gold Cart/' . WPSC_GOLD_VERSION . '; ' . get_bloginfo( 'url' ),	
+		);
+		$returned_value = wp_remote_retrieve_body( wp_remote_get( $url, $args ) );
+
 		if ( $returned_value === 'MQ==' ) {
 			if( get_option( 'activation_state' ) != 'true' ) {
 				update_option( 'activation_state','true' );
