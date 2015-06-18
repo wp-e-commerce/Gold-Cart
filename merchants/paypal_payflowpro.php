@@ -30,7 +30,7 @@ if(in_array('paypal_payflow',(array)get_option('custom_gateway_options'))) {
             ".__( 'CVV*', 'wpsc_gold_cart' )."
          </td>
          <td>
-            <input type='text' value='' name='card_cvv' maxlength='3' size='4'/>
+            <input type='text' value='' name='card_cvv' maxlength='4' size='4'/>
          </td>
       </tr>
       <tr>
