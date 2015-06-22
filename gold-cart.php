@@ -220,18 +220,18 @@ function wpsc_grid_custom_styles() {
 		$percentage = floor( 100 / $items_per_row ) - 7;
 		$percentage = apply_filters( 'wpsc_grid_view_column_width', $percentage, $items_per_row ); // themes can override this calculation
 		?>
-		<!-- Gold Cart Plugin custom styles -->
+		<!-- Gold Cart Plugin custom styles 
 		<style type="text/css">
 			.product_grid_display .product_grid_item {
-				width:<?php echo $percentage; ?>%;
+				width:<?php //echo $percentage; ?>%;
 			}
 			.product_grid_display .item_image a {
 				display: block;
-				height: <?php echo get_option( 'product_image_height' ); ?>px;
-				width: <?php echo get_option( 'product_image_width' ); ?>px;
+				height: <?php //echo get_option( 'product_image_height' ); ?>px;
+				width: <?php //echo get_option( 'product_image_width' ); ?>px;
 			}
 		</style>
-		<!-- / Gold Cart Plugin custom styles -->
+		Gold Cart Plugin custom styles -->
 		<?php
 	}
 }
