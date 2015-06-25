@@ -12,6 +12,15 @@ $nzshpcrt_gateways[$num]['payment_type']            = __( 'credit card', 'wpsc_g
 $nzshpcrt_gateways[$num]['display_name']            = __( 'pay with Sagepay', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0, 'extra_modules' => array() );
 
+// Defines filter types used for a parameter in the cleanInput() function.
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC', 'clean_input_filter_alphabetic' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED', 'clean_input_filter_alphabetic_and_accented' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC', 'clean_input_filter_alphanumeric' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED', 'clean_input_filter_alphanumeric_and_accented' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_NUMERIC', 'clean_input_filter_numeric' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT', 'clean_input_filter_text' );
+define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_WIDEST_ALLOWABLE_CHARACTER_RANGE', 'clean_input_filter_text' );
+
 function wpec_sagepay_admin_form(){
     // construct the default email message, this message is
     //included toward the top of the customer confirmation e-mails.
@@ -232,38 +241,38 @@ class Sagepay_merchant extends wpsc_merchant {
         $shipInfo = $this->cart_data['shipping_address'];
 		
 		
-		$strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], 'CLEAN_INPUT_FILTER_TEXT');
+		$strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
 		
         // temporary vars that will be added to the $strPost string in url format
-        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strBillingCity        = $this->cleanInput( $billInfo['city'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT');
-        $strBillingCountry     = $this->cleanInput( $billInfo['country'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingCity        = $this->cleanInput( $billInfo['city'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingCountry     = $this->cleanInput( $billInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
-        $strBillingState       = $this->cleanInput( $billInfo['state'], 'CLEAN_INPUT_FILTER_TEXT');
+        $strBillingState       = $this->cleanInput( $billInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
         // no state required if not in the US
         if($strBillingCountry != 'US') $strBillingState = '';		
 		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
-			$strBillingPhone = $this->cleanInput( $billInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
+			$strBillingPhone = $this->cleanInput( $billInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
 		}
 
         //Shipping info
-        $strDeliveryFirstnames = isset( $shipInfo['first_name'] )	? $this->cleanInput( $shipInfo['first_name'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingFirstnames;
-        $strDeliverySurname    = isset( $shipInfo['last_name'] ) 	? $this->cleanInput( $shipInfo['last_name'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingSurname;
-        $strDeliveryAddress1   = isset( $shipInfo['address'] ) 		? $this->cleanInput( $shipInfo['address'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingAddress1;
-        $strDeliveryCity       = isset( $shipInfo['city'] ) 		? $this->cleanInput( $shipInfo['city'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingCity;
-        $strDeliveryState      = isset( $shipInfo['state'] ) 		? $this->cleanInput( $shipInfo['state'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingState;
-        $strDeliveryCountry    = isset( $shipInfo['country'] ) 		? $this->cleanInput( $shipInfo['country'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingCountry;
+        $strDeliveryFirstnames = isset( $shipInfo['first_name'] )	? $this->cleanInput( $shipInfo['first_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingFirstnames;
+        $strDeliverySurname    = isset( $shipInfo['last_name'] ) 	? $this->cleanInput( $shipInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingSurname;
+        $strDeliveryAddress1   = isset( $shipInfo['address'] ) 		? $this->cleanInput( $shipInfo['address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingAddress1;
+        $strDeliveryCity       = isset( $shipInfo['city'] ) 		? $this->cleanInput( $shipInfo['city'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCity;
+        $strDeliveryState      = isset( $shipInfo['state'] ) 		? $this->cleanInput( $shipInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingState;
+        $strDeliveryCountry    = isset( $shipInfo['country'] ) 		? $this->cleanInput( $shipInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCountry;
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
 		
-		$strDeliveryPostCode   = isset( $shipInfo['post_code'] )		? $this->cleanInput( $shipInfo['post_code'], 'CLEAN_INPUT_FILTER_TEXT') : $strBillingPostCode;
+		$strDeliveryPostCode   = isset( $shipInfo['post_code'] )		? $this->cleanInput( $shipInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingPostCode;
 
 		if ( isset ( $shipInfo['phone'] ) && $shipInfo['phone'] != '' ) {
-			$strDeliveryPhone = $this->cleanInput( $shipInfo['phone'], 'CLEAN_INPUT_FILTER_TEXT');
+			$strDeliveryPhone = $this->cleanInput( $shipInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
 		}
 
         // begin to populate the $strPost, witch will be sent
@@ -447,26 +456,26 @@ class Sagepay_merchant extends wpsc_merchant {
         $strCleaned = "";
         $filterType = strtolower($filterType); //ensures filterType matches constant values
 
-        if ($filterType == 'clean_input_filter_text'){
+        if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&£$=%~*+\"\n\r";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, TRUE);
         }
-        elseif ($filterType == 'clean_input_filter_numeric'){
+        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_NUMERIC){
 
             $strAllowableChars = "0123456789 .,";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, FALSE);
         }
-        elseif ($filterType == 'clean_input_filter_alphabetic' || $filterType == 'clean_input_filter_alphabetic_and_accented'){
+        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC || $filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz";
-            if ($filterType == clean_input_filter_alphabetic_and_accented) $blnAllowAccentedChars = TRUE;
+            if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
                 $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
-        elseif ($filterType == 'clean_input_filter_alphanumeric' || $filterType == 'clean_input_filter_alphanumeric_and_accented'){
+        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC || $filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED){
 
             $strAllowableChars = "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            if ($filterType == 'clean_input_filter_alphanumeric_and_accented') $blnAllowAccentedChars = TRUE;
+            if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
         else{ // Widest Allowable Character Range
