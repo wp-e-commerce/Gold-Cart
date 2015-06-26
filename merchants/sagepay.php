@@ -139,6 +139,19 @@ function wpec_sagepay_admin_form(){
         ';
     }
 
+	/**
+     * Some servers may not have the PHP Mcrypt module enabled by default.
+     * Show a message in the SagePay settings if this is the case.
+     */
+	if ( ! function_exists( 'mcrypt_encrypt' ) ) {
+		$adminFormHTML .= '
+			<tr>
+				<td colspan="2" style="color: red;">
+					' . sprintf( __( 'The <a %s>mcrypt_encrypt()</a> function which is required to send encrypted data to SagePay does not seem to be available on your server. Please <a %s>install the Mcrypt PHP module</a> or ask your web host to activate this for you.', 'wpsc_gold_cart' ), 'href="http://php.net/manual/en/function.mcrypt-encrypt.php" target="php" style="color: red; text-decoration: underline;"', 'href="http://be2.php.net/manual/en/mcrypt.installation.php" target="php" style="color: red; text-decoration: underline;"' ) . '
+				</td>
+			</tr>
+			';
+	}
 
     return $adminFormHTML;
 }
