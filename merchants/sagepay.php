@@ -92,6 +92,15 @@ function wpec_sagepay_admin_form(){
 			</td>
 		</tr>
 		<tr>
+			<td>' . esc_html__( 'Transaction Type', 'wpsc_gold_cart' ) . '</td>
+			<td>
+				<select name="wpec_sagepay_payment_type">
+					<option value="PAYMENT"' . selected( $option['payment_type'], 'PAYMENT', false ) . '>' . esc_html__( 'PAYMENT', 'wpsc_gold_cart' ) . '</option>
+					<option value="AUTHENTICATE"' . selected( $option['payment_type'], 'AUTHENTICATE', false ) . ' >' . esc_html__( 'AUTHENTICATE', 'wpsc_gold_cart' ) . '</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td>
 				'.__( 'Sagepay Email options', 'wpsc_gold_cart' ) . '
 			</td>
@@ -178,6 +187,10 @@ function wpec_sagepay_submit_form(){
         $sagepay_options['shop_email'] = $_POST['wpec_sagepay_shop_email'];
         $flag = true;
     }
+	if ( isset( $_POST['wpec_sagepay_payment_type'] ) ) {
+		$sagepay_options['payment_type'] = wpec_sagepay_validate_payment_type( $_POST['wpec_sagepay_payment_type'] );
+		$flag = true;
+	}
     if(isset($_POST['wpec_sagepay_email'])){
         $sagepay_options['email'] = $_POST['wpec_sagepay_email'];
         $flag = true;
@@ -424,7 +437,7 @@ class Sagepay_merchant extends wpsc_merchant {
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head><title></title></head><body>
         	<form id="sagepay_form" name="sagepay_form" method="post" action="' .$url . '">
        			<input type="hidden"    name="VPSProtocol"  value ="3.00" ></input>
-        		<input type="hidden"    name="TxType"       value ="PAYMENT"  ></input>
+        		<input type="hidden" name="TxType" value ="' . wpec_sagepay_validate_payment_type( $this->sagepay_options['payment_type'] ) . '"  ></input>
         		<input type="hidden"    name="Vendor"       value ="'. $this->sagepay_options['name'] . '"  ></input>
         		<input type="hidden"    name="Crypt"        value ="'. $this->strPost . '"  ></input>
         	</form>
@@ -700,8 +713,13 @@ function sagepay_process_gateway_info() {
         case 'ABORT':
             $success = 'Failed';
             break;
-        case 'AUTHENTICATED': // Only returned if TxType is AUTHENTICATE
-            $success = 'Pending';
+		case 'AUTHENTICATED': // Only returned if TxType is AUTHENTICATE
+			if ( isset( $sagepay_options['payment_type'] ) && 'AUTHENTICATE' == $sagepay_options['payment_type'] ) {
+				$success = 'Authenticated';
+			} else {
+				$success = 'Pending';	
+			}
+            break;
         case 'REGISTERED': // Only returned if TxType is AUTHENTICATE
             $success = 'Failed';
             break;
@@ -755,6 +773,23 @@ function sagepay_process_gateway_info() {
                     break;
             }
             break;
+
+		case 'Authenticated': // Like "Completed" but only flag as order received
+			$purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
+			$purchase_log->set( array(
+				'processed'  => WPSC_Purchase_Log::ORDER_RECEIVED,
+				'transactid' => $unencrypted_values['VPSTxId'],
+				'date'       => time(),
+				'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
+			) );
+			$purchase_log->save();
+
+			// Redirect to reponse page
+			$sessionid = $unencrypted_values['VendorTxCode'];
+			header( "Location: " . get_option('transact_url') . $separator . "sessionid=" . $sessionid );
+			exit();
+			break;
+
         case 'Pending': // need to wait for "Completed" before processing
             $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
             $purchase_log->set( array(
@@ -784,6 +819,24 @@ if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
   add_action('init', 'sagepay_process_gateway_info');
 }
 
+/**
+ * Checks and returns a valid payment type.
+ *
+ * This will ALWAYS return a valid payment type.
+ * If the requested payment type is not valid it will return a default payment type of "PAYMENT".
+ *
+ * @param   string  $payment_type  Payment type to validate.
+ * @return  string                 Valid payment type.
+ */
+function wpec_sagepay_validate_payment_type( $payment_type ) {
+
+	if ( in_array( $payment_type, array( 'PAYMENT', 'AUTHENTICATE' ) ) ) {
+		return $payment_type;
+	}
+
+	return 'PAYMENT';
+
+}
 
 function _wpsc_action_admin_sagepay_suhosin_check() {
 	if( in_array( 'sagepay', get_option( 'custom_gateway_options', array() ) ) ) {
