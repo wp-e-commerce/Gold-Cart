@@ -64,17 +64,13 @@ function wpec_sagepay_admin_form(){
 
    $adminFormHTML = '
 		<tr>
-			<td>
-				Protx Vendor name:
-			</td>
+			<td>' . esc_html__( 'SagePay Vendor name', 'wpsc_gold_cart' ) . ':</td>
 			<td>
 				<input type="text" size="40" value="'. $option['name'] .'" name="wpec_sagepay_name" />
 			</td>
 		</tr>
 		<tr>
-			<td>
-				Protx Encryption Key:
-			</td>
+			<td>' . esc_html__( 'SagePay Encryption Key', 'wpsc_gold_cart' ) . ':</td>
 			<td>
 				<input type="text" size="20" value="'. $option['encrypt_key'] .'" name="wpec_sagepay_encrypt_key" />
 			</td>
