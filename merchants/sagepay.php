@@ -721,7 +721,7 @@ function sagepay_process_gateway_info() {
 			}
             break;
         case 'REGISTERED': // Only returned if TxType is AUTHENTICATE
-            $success = 'Failed';
+            $success = 'Authenticated';
             break;
         case 'OK':
             $success = 'Completed';
