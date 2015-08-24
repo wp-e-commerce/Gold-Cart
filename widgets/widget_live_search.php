@@ -7,8 +7,8 @@ class WPSC_Live_Search extends WP_Widget {
   /** 
    * Constructor 
    */
-  function WPSC_Live_Search() {
-    parent::WP_Widget( false, $name = __( 'wp-e-commerce Live Search', 'wpsc_gold_cart' ) );	
+  function __construct() {
+    parent::__construct( false, $name = __( 'WP eCommerce Live Search', 'wpsc_gold_cart' ) );
   }
 
   /** 
