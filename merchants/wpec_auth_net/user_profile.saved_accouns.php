@@ -1,8 +1,12 @@
 <?php
 if ( is_user_logged_in() ) {
 	global $separator, $wpec_auth_net_user_profile_url;
-	add_action('wpsc_additional_user_profile_links', 'wpec_auth_net_user_profile_display_links');
+	
+	if ( in_array ( WPECAUTHNET_PLUGIN_NAME, get_option('custom_gateway_options') ) ) {
+		add_action('wpsc_additional_user_profile_links', 'wpec_auth_net_user_profile_display_links');
+	}
 	$wpec_auth_net_user_profile_url = get_option( 'user_account_url' ) . $separator . "wpec_auth_net_user_profile=true";
+
 	function wpec_auth_net_user_profile_display_links($div){
 		global $separator, $wpec_auth_net_user_profile_url;
 		echo "{$div} <a href='{$wpec_auth_net_user_profile_url}'>".__( 'Saved Credit Card, Bank or Shipping Information', 'wpsc_gold_cart' )."</a> ";
