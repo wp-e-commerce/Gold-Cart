@@ -83,7 +83,7 @@ if ( is_admin() ) {
 		function wpec_display_plugin_license_page ( $hooks, $product_page ) {
 			if ( ! in_array( 'plugins_page_wpsc-upgrades', $hooks ) ) {
 				$store_upgrades_cap = apply_filters( 'wpsc_upgrades_cap', 'administrator' );
-				$hooks[] = add_submenu_page( 'plugins.php', __( 'WPeC License', 'wpsc' ), __( 'WPeC Licensing', 'wpsc' ), $store_upgrades_cap, 'wpsc-upgrades', 'wpsc_display_upgrades_page' );				
+				$hooks[] = add_submenu_page( 'index.php', __( 'WPeC License', 'wpsc' ), __( 'WPeC Licensing', 'wpsc' ), $store_upgrades_cap, 'wpsc-upgrades', 'wpsc_display_upgrades_page' );				
 			}
 
 			return $hooks;
