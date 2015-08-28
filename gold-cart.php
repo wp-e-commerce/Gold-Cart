@@ -42,37 +42,56 @@ function gc_php_version_notice() {
 }
 //
 
-//check if newer version is available
-$licenses = get_option( 'wpec_license_active_products', array() );
-if ( ! empty( $licenses ) ) {
-	foreach ( $licenses as $license ) {
-		if ( in_array( '140', $license ) ) {
-			
-			// setup the updater
-			require 'plugin-update/plugin-update-checker.php';
-			$gc_update_checker = PucFactory::buildUpdateChecker(
-				'http://updates.wpecommerce.org/?action=get_metadata&slug=gold-cart', //Metadata URL.
-				__FILE__
-			);
-			//Add the license key to query arguments.
-			$gc_update_checker->addQueryArgFilter('wpec_license_filter_update_checks');
-		}
-	}
-}
-
-if( ! function_exists( 'wpec_license_filter_update_checks' ) ) {
-
-	function wpec_license_filter_update_checks( $queryArgs ) {
-		$licenses = get_option( 'wpec_license_active_products', array() );
+/**
+ * WP eCommerce Product Licensing validations
+ * Will run the plugin update checker if license is registered
+ */
+if ( is_admin() ) {
+	
+	$licenses = get_option( 'wpec_license_active_products', array() );
+	if ( ! empty( $licenses ) ) {
 		foreach ( $licenses as $license ) {
 			if ( in_array( '140', $license ) ) {
-				$queryArgs = array( 'license_key' => $license['license'] );
-			
-				return $queryArgs;
+				
+				// setup the updater
+				require 'plugin-update/plugin-update-checker.php';
+				$gc_update_checker = PucFactory::buildUpdateChecker(
+					'http://updates.wpecommerce.org/?action=get_metadata&slug=gold-cart', //Metadata URL.
+					__FILE__
+				);
+				//Add the license key to query arguments.
+				$gc_update_checker->addQueryArgFilter('wpec_license_filter_update_checks');
 			}
 		}
 	}
+
+	if( ! function_exists( 'wpec_license_filter_update_checks' ) ) {
+
+		function wpec_license_filter_update_checks( $queryArgs ) {
+			$licenses = get_option( 'wpec_license_active_products', array() );
+			foreach ( $licenses as $license ) {
+				if ( in_array( '140', $license ) ) {
+					$queryArgs = array( 'license_key' => $license['license'] );
+				
+					return $queryArgs;
+				}
+			}
+		}
+	}
+
+	if( ! function_exists( 'wpec_display_plugin_license_page' ) ) {
+		function wpec_display_plugin_license_page ( $hooks, $product_page ) {
+			if ( ! in_array( 'plugins_page_wpsc-upgrades', $hooks ) ) {
+				$store_upgrades_cap = apply_filters( 'wpsc_upgrades_cap', 'administrator' );
+				$hooks[] = add_submenu_page( 'plugins.php', __( 'WPeC License', 'wpsc' ), __( 'WPeC Licensing', 'wpsc' ), $store_upgrades_cap, 'wpsc-upgrades', 'wpsc_display_upgrades_page' );				
+			}
+
+			return $hooks;
+		}
+	}
+	add_filter( 'wpsc_additional_pages', 'wpec_display_plugin_license_page', 99, 2 );
 }
+
 
 function _wpsc_action_gc_theme_engine_v2_notices() {
 	?>

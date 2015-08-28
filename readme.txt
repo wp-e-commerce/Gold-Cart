@@ -37,10 +37,12 @@ If you have any problems with Gold Cart or require more information here are you
 
 == Changelog ==
 = 2.9.10 =
-* Automatic plugin updates now available only with License keys.
-* Product License must be registered on your website.
+* Feature: Automatic plugin updates now available only with License keys. Product License must be registered on your website under Plugins menu.
 * Update: SagePay now supports Authenticate payment type
 * Update: Compatibility with WordPress 4.3
+* Fixed: Some grid view forced styles have been removed
+* Update: PayFlow Pro Card CVV length now accepts 4 characters
+* Update: Authorize.net Endpoints and Security Certificate Updates
 
 = 2.9.9 = 
 * Automatic plugin updates now available if API key is activated.
