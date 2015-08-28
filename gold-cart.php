@@ -60,14 +60,14 @@ if ( is_admin() ) {
 					__FILE__
 				);
 				//Add the license key to query arguments.
-				$gc_update_checker->addQueryArgFilter('wpec_license_filter_update_checks');
+				$gc_update_checker->addQueryArgFilter('wpec_gold_cart_filter_update_checks');
 			}
 		}
 	}
 
-	if( ! function_exists( 'wpec_license_filter_update_checks' ) ) {
+	if( ! function_exists( 'wpec_gold_cart_filter_update_checks' ) ) {
 
-		function wpec_license_filter_update_checks( $queryArgs ) {
+		function wpec_gold_cart_filter_update_checks( $queryArgs ) {
 			$licenses = get_option( 'wpec_license_active_products', array() );
 			foreach ( $licenses as $license ) {
 				if ( in_array( '140', $license ) ) {
