@@ -55,26 +55,16 @@ if ( is_admin() ) {
 				
 				// setup the updater
 				require 'plugin-update/plugin-update-checker.php';
-				$gc_update_checker = PucFactory::buildUpdateChecker(
-					'http://updates.wpecommerce.org/?action=get_metadata&slug=gold-cart', //Metadata URL.
-					__FILE__
+				$update_checker = PucFactory::buildUpdateChecker(
+					'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )), //Metadata URL.
+					__FILE__,
+					dirname( plugin_basename( __FILE__ ))
 				);
 				//Add the license key to query arguments.
-				$gc_update_checker->addQueryArgFilter('wpec_gold_cart_filter_update_checks');
-			}
-		}
-	}
-
-	if( ! function_exists( 'wpec_gold_cart_filter_update_checks' ) ) {
-
-		function wpec_gold_cart_filter_update_checks( $queryArgs ) {
-			$licenses = get_option( 'wpec_license_active_products', array() );
-			foreach ( $licenses as $license ) {
-				if ( in_array( '140', $license ) ) {
-					$queryArgs = array( 'license_key' => $license['license'] );
-				
-					return $queryArgs;
-				}
+				$update_checker->addQueryArgFilter(function($args) use ($license) {
+					$args['license_key'] = $license['license'];
+					return $args;
+				});
 			}
 		}
 	}
