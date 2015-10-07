@@ -3,7 +3,7 @@
  * Plugin Name: Gold Cart for WP eCommerce
  * Plugin URI: http://wpecommerce.org
  * Description: Gold Cart extends your WP eCommerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wpecommerce.org/premium-support/" target="_blank">Premium Support</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
- * Version: 2.9.10-dev
+ * Version: 2.9.10
  * Author: WP eCommerce
  * Author URI: https://wpecommerce.org/store/premium-plugins/gold-cart/
  */
@@ -12,15 +12,12 @@
  * This is the file that converts the normal shopping cart to the gold shopping cart
  */
 
-// Check if Gold Cart is active
-$gold_shpcrt_active = get_option( 'activation_state' );
-
 // Define Constants
 define( 'WPSC_GOLD_MODULE_PRESENT', true );
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', get_plugin_url() );
-define( 'WPSC_GOLD_VERSION', '2.9.10-dev' );
+define( 'WPSC_GOLD_VERSION', '2.9.10' );
 
 //Check PHP version
 if( ! version_compare( 5.3, PHP_VERSION, '<=' ) ) {
@@ -37,7 +34,7 @@ function gc_load_minimum_required_version_notice() {
 		add_action( 'admin_notices', 'gc_php_version_notice' );
 	}
 }
-	
+
 function gc_php_version_notice() {
 	echo '<div class="error">';
 	echo '<p>' . __( 'Your version of PHP is below the minimum version of PHP required by Gold Cart. Please contact your host and request that your version be upgraded to 5.3 or later.', 'wpsc_gold_cart' ) . '</p>';
@@ -45,60 +42,34 @@ function gc_php_version_notice() {
 }
 //
 
-//check if newer version is available
-$license_key = get_option( 'activation_key' );
-$license_key = ! empty( $license_key ) ? trim( $license_key ) : false;
-
-if( $license_key ) {
-	// setup the updater
-	require 'plugin-update/plugin-update-checker.php';
-	$MyUpdateChecker = PucFactory::buildUpdateChecker(
-		'http://updates.wpecommerce.org/?action=get_metadata&slug=gold-cart', //Metadata URL.
-		__FILE__
-	);
-
-	//Add the license key to query arguments.
-	$MyUpdateChecker->addQueryArgFilter('gc_filter_update_checks');
-	function gc_filter_update_checks( $queryArgs ) {
-			global $license_key;
-			$license_name = get_option( 'activation_name' );
-			$queryArgs = array( 'activation_key' => $license_key, 'activation_name' => $license_name );
-			
-			return $queryArgs;
-	}
-}
-//
-
 /**
- * Tell people to register Gold Cart after activation
+ * WP eCommerce Product Licensing validations
+ * Will run the plugin update checker if license is registered
  */
-if ( $gold_shpcrt_active == 'false' ) {
-        add_action( 'admin_notices', 'update_gc_reg_message' );
-}
+if ( is_admin() ) {
 
-
-function update_gc_reg_message() {
-	if ( current_user_can( 'manage_options' ) ) {
-		if ( get_option( 'activation_state' ) == 'false' ) {
-		?>
-			<div id="message" class="error">
-				<p>
-					<?php
-					printf( __( '<strong>Gold Cart is activated but has not been Registered!</strong><br />Take advantage of all the new features by <a href="%1s">registering Gold Cart plugin now</a>. (This text will go away upon registration of the plugin)', 'wpsc_gold_cart' ),
-						admin_url( 'index.php?page=wpsc-upgrades' )
-					);
-					?>
-				</p>
-			</div><?php
+	$licenses = get_option( 'wpec_license_active_products', array() );
+	if ( ! empty( $licenses ) ) {
+		foreach ( $licenses as $license ) {
+			if ( in_array( '140', $license ) ) {
+				
+				// setup the updater
+				require 'plugin-update/plugin-update-checker.php';
+				$update_checker = PucFactory::buildUpdateChecker(
+					'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )), //Metadata URL.
+					__FILE__,
+					dirname( plugin_basename( __FILE__ ))
+				);
+				//Add the license key to query arguments.
+				$update_checker->addQueryArgFilter(function($args) use ($license) {
+					$args['license_key'] = $license['license'];
+					return $args;
+				});
+			}
 		}
 	}
 }
 
-// Require Upgrade Files
-require( dirname( __FILE__ ) . "/upgrade_panel.php" );
-
-if ( $gold_shpcrt_active !== 'true' )
-	return;
 
 function _wpsc_action_gc_theme_engine_v2_notices() {
 	?>

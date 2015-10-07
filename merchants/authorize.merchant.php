@@ -288,13 +288,13 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		$options['body']['x_relay_response'] = "FALSE";
 		$options['body']['x_delim_data'] = "TRUE";
 
-		$wdsl_url = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
+		$wdsl_url = "https://api2.authorize.net/soap/v1/Service.asmx?WSDL";
 		if((bool)get_option('authorize_testmode') == true) {
 			$authorize_url = "https://test.authorize.net/gateway/transact.dll";
 			$service_url = "https://apitest.authorize.net/soap/v1/Service.asmx";
 		} else {
-			$authorize_url = "https://secure.authorize.net/gateway/transact.dll";
-			$service_url = "https://api.authorize.net/soap/v1/Service.asmx";
+			$authorize_url = "https://secure2.authorize.net/gateway/transact.dll";
+			$service_url = "https://api2.authorize.net/soap/v1/Service.asmx";
 		}
 		
 		$response = wp_remote_post($authorize_url, $options);
@@ -496,11 +496,11 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 	* can use either the built in PHP library, or nusoap
 	*/
 	function do_soap_request($function, $arguments) {
-		$wdsl_url = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
+		$wdsl_url = "https://api2.authorize.net/soap/v1/Service.asmx?WSDL";
 		if((bool)get_option('authorize_testmode') == true) {
 			$service_url = "https://apitest.authorize.net/soap/v1/Service.asmx";
 		} else {
-			$service_url = "https://api.authorize.net/soap/v1/Service.asmx";
+			$service_url = "https://api2.authorize.net/soap/v1/Service.asmx";
 		}
 		
 		$function = (string)$function;
