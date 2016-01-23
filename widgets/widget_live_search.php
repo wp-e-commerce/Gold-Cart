@@ -7,8 +7,8 @@ class WPSC_Live_Search extends WP_Widget {
   /** 
    * Constructor 
    */
-  function __construct() {
-    parent::__construct( false, $name = __( 'WP eCommerce Live Search', 'wpsc_gold_cart' ) );
+  function WPSC_Live_Search() {
+    parent::WP_Widget( false, $name = __( 'WP e-Commerce Live Search', 'wpsc_gold_cart' ) );	
   }
 
   /** 
@@ -74,7 +74,7 @@ function wpsc_live_search() {
 		$autocomplete = '';
   }
 	//get the url to submit the search to
-	$product_page_id = wpsc_get_the_post_id_by_shortcode( '[productspage]' );
+	$product_page_id = wpec_get_the_post_id_by_shortcode( '[productspage]' );
 	$pp_url = get_permalink( $product_page_id );
 	// the js below listens for the enter keypress and redirects to the product page with a get var of the search term
   ?>

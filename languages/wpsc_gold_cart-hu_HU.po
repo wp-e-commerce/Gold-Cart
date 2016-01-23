@@ -1,1328 +1,1187 @@
+# Translation of Gold Cart Plugin in Hungarian
+# This file is distributed under the same license as the Gold Cart Plugin package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gold Cart for WP e-Commerce v2.9.7.8-dev\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-02-27 20:52:50+0000\n"
-"Last-Translator: michelle <michelle@instinct.co.nz>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2012-09-25 15:50+1200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: GlotPress/0.1\n"
-"X-Poedit-Language: \n"
-"X-Poedit-Country: \n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
-"X-Poedit-Basepath: \n"
-"X-Poedit-Bookmarks: \n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Textdomain-Support: yes"
+"Project-Id-Version: Gold Cart Plugin\n"
+"POT-Creation-Date: \n"
+"Last-Translator: michelle <michelle@instinct.co.nz>\n"
+"Language-Team: \n"
 
-#: gold_shopping_cart.php:573
-#@ wpsc_gold_cart
+#: gold_options.php:9
+msgid "WP e-Commerce Modules"
+msgstr "WP e-Commerce Modul"
+
+#: gold_options.php:10
+msgid "Add more functionality to your e-Commerce site"
+msgstr "Adjon több funkciót az e-Commerce oldalához"
+
+#: gold_options.php:10
+msgid "Go to Shop"
+msgstr "Ugrás a Bolthoz"
+
+#: gold_options.php:14
+msgid "Pure Gold"
+msgstr "Tiszta Arany"
+
+#: gold_options.php:15
+msgid "Add Products search &amp; additional payment gateways to your e-Commerce install"
+msgstr "Adjon termékkeresőt és újabb fizetési módokat az e-Commerce oldalához"
+
+#: gold_options.php:20
+msgid "DropShop"
+msgstr "DropShop"
+
+#: gold_options.php:21
+msgid "Impress your customers with a sliding DropShop"
+msgstr "Nyűgözd le a vásárlóidat a görgethető DropShoppal"
+
+#: gold_options.php:26
+#: gold_shopping_cart.php:537
 msgid "Grid View"
 msgstr "Rácsos Nézet"
 
-#: gold_shopping_cart.php:357
-#@ wpsc_gold_cart
+#: gold_options.php:27
+msgid "Change the layout of your shop with this 960 inspired grid view."
+msgstr "Változtassa meg boltja külsejét ezzel a 960 inspirált rácsos nézettel."
+
+#: gold_options.php:32
+msgid "MP3 Player"
+msgstr "MP3 lejátszó"
+
+#: gold_options.php:33
+msgid "Selling music? Then this is the module for you!"
+msgstr "Zenét árul? Akkor ez az Önnek megfelelő modul!"
+
+#: gold_options.php:38
+msgid "Members Only Module"
+msgstr "Csak Tagok Részére Modul"
+
+#: gold_options.php:39
+msgid "Private Articles and Images are your business? Sell them with ease using this module."
+msgstr "Magáncikkeket és fényképeket árul? Ezzel a modullal könnyen eladja majd őket."
+
+#: gold_options.php:44
+msgid "Product Slider"
+msgstr "Termék Mozgató"
+
+#: gold_options.php:45
+msgid "Display your products in a new and fancy way using the \"Product Slider\" module."
+msgstr "Jelenítse meg termékei divatos módon a \"Termék Mozgató\" segítségével!"
+
+#: gold_options.php:50
+msgid "NextGen Gallery Buy Now Buttons"
+msgstr "NextGen Galéria Megvesyem gombok"
+
+#: gold_options.php:51
+msgid "Make your Online photo gallery into an e-Commerce solution."
+msgstr "Változtasd webshoppá az online galériádat"
+
+#: gold_options.php:64
+#: upgrade_panel.php:72
+msgid "The gold cart is currently activated."
+msgstr "GoldCart aktiválva."
+
+#: gold_options.php:69
+#: upgrade_panel.php:77
+msgid "The gold cart is currently deactivated."
+msgstr "A Gold Cart ki van kapcsolva"
+
+#: gold_shopping_cart.php:31
+msgid "Gold Cart"
+msgstr "Arany Kosár"
+
+#: gold_shopping_cart.php:84
+msgid "<strong>New Authorize.net Gateway for Gold Cart!</strong><br />We have a new Authorize.net gateway supporting the new AIM/CIM API. We recommend you <a href=\"%1s\">configure the new gateway</a> to take advantage of these new features. <a href=\"%2s\">Click here</a> to ignore and remove this box."
+msgstr "<strong>Új Authorize.net Gateway a Gold Cart-hoz</strong><br />Új Authorize.net gateway-ünk támogatja az új AIM/CIM API-t. Javasoljuk <a href=\"%1s\">hogy állitsd be úgy a gateway-t</a> hogy használhasd az új funkcióit. <a href=\"%2s\">Kattints ide</a> hogy eltávolitsd ezt az üzenetet."
+
+#: gold_shopping_cart.php:328
 msgid "Your Shopping Cart"
 msgstr "Az Ön Kosara"
 
-#: gold_shopping_cart.php:412
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:383
 msgid "Gallery"
 msgstr "Galéria"
 
-#: gold_shopping_cart.php:571
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:535
 msgid "Default View"
 msgstr "Alapértelmezett nézet"
 
-#: gold_shopping_cart.php:571
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:535
 msgid "Default"
 msgstr "Alapértelmezés"
 
-#: gold_shopping_cart.php:572
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:536
 msgid "List View"
 msgstr "Lista nézet"
 
-#: gold_shopping_cart.php:572
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:536
 msgid "List"
 msgstr "Lista"
 
-#: gold_shopping_cart.php:573
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:537
 msgid "Grid"
 msgstr "Rács"
 
-#: gold_shopping_cart.php:577
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:541
 msgid "Sort:"
 msgstr "Rendezés:"
 
-#: gold_shopping_cart.php:579
-#: gold_shopping_cart.php:587
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:543
+#: gold_shopping_cart.php:551
 msgid "Select"
 msgstr "Válasszon"
 
-#: gold_shopping_cart.php:580
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:544
 msgid "Ascending"
 msgstr "Növekvő"
 
-#: gold_shopping_cart.php:581
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:545
 msgid "Descending"
 msgstr "Csökkenő"
 
-#: gold_shopping_cart.php:585
-#@ wpsc_gold_cart
+#: gold_shopping_cart.php:549
 msgid "Show:"
 msgstr "Mutat:"
 
-#: upgrade_panel.php:73
-#@ wpsc_gold_cart
+#: upgrade_panel.php:48
 msgid "Thanks! The Gold Cart upgrade has been activated."
 msgstr "Köszönjük! Az Arany Kosár frissítése sikeresen megtörtént."
 
-#: upgrade_panel.php:74
-#, php-format
-#@ wpsc_gold_cart
+#: upgrade_panel.php:49
 msgid "New options have been added to %s, and your payment gateway list has been extended."
 msgstr "A fizetési módok listája új opciókkal bővült."
 
-#: upgrade_panel.php:74
-#@ wpsc_gold_cart
+#: upgrade_panel.php:49
 msgid "Settings -> Presentation"
 msgstr "Beállítások -> Előadás"
 
-#: upgrade_panel.php:108
-#@ wpsc_gold_cart
+#: upgrade_panel.php:55
+msgid "Sorry, the API key was incorrect."
+msgstr "Elnézést, az API kód helytelen."
+
+#: upgrade_panel.php:68
+msgid "Gold Cart Activation"
+msgstr "Arany Kosár Aktiválás"
+
+#: upgrade_panel.php:81
 msgid "Name "
 msgstr "Név"
 
-#: upgrade_panel.php:112
-#@ wpsc_gold_cart
+#: upgrade_panel.php:85
 msgid "API Key "
 msgstr "API Kód"
 
-#: upgrade_panel.php:117
-#@ wpsc_gold_cart
+#: upgrade_panel.php:90
 msgid "Submit"
 msgstr "Küldés"
 
-#: upgrade_panel.php:118
-#@ wpsc_gold_cart
+#: upgrade_panel.php:91
 msgid "Reset API Key"
 msgstr "API Kód visszaállítása"
 
-#: upgrade_panel.php:132
-#@ wpsc_gold_cart
+#: upgrade_panel.php:95
 msgid "Click <a href=\"http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/\" target=\"_blank\">here</a> to learn how to use each Gold Cart feature."
 msgstr "Kattints <a href=\"http://docs.getshopped.org/category/extending-your-store/premium-plugins/gold-cart/\" target=\"_blank\">ide</a> hogy megtanuld használni a Gold Cart-ot."
 
 #: merchants/authorize.merchant.php:19
-#@ wpsc_gold_cart
 msgid "Authorize.net 2.0"
 msgstr "Authorize.net 2.0"
 
-#: merchants/authorize.merchant.php:113
+#: merchants/authorize.merchant.php:48
+#: merchants/authorize.php:23
 #: merchants/bluepay.php:22
-#: merchants/eway.php:189
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:842
-#@ wpsc_gold_cart
+#: merchants/eway.php:19
+#: merchants/linkpoint.php:20
 msgid "Credit Card Number *"
 msgstr "Hitelkártya szám"
 
+#: merchants/authorize.merchant.php:54
+#: merchants/authorize.php:30
 #: merchants/bluepay.php:30
-#: merchants/eway.php:195
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:843
-#@ wpsc_gold_cart
+#: merchants/eway.php:25
 msgid "Credit Card Expiry *"
 msgstr "Kártya lejárati dátuma"
 
-#: merchants/authorize.merchant.php:125
-#: merchants/eway.php:201
-#@ wpsc_gold_cart
+#: merchants/authorize.merchant.php:60
+#: merchants/authorize.php:37
 msgid "CVV"
 msgstr "Kártyán található biztonsági kód"
 
-#: merchants/authorize.merchant.php:354
-#@ wpsc_gold_cart
+#: merchants/authorize.merchant.php:289
 msgid "There was an error contacting the payment gateway, please try again later."
 msgstr "Hiba történt a feldolgozás közben, kérem próbálja újra később."
 
-#: merchants/authorize.merchant.php:68
-#@ wpsc_gold_cart
+#: merchants/authorize.php:349
+msgid "There is a new Authorize.net Gateway!"
+msgstr "Itt az új Authorize.net gateway!"
+
+#: merchants/authorize.php:349
+msgid "This one will not be supported with Gold Cart for much longer. Please configure the new Authorize.net AIM/CIM gateway."
+msgstr "Ez már nem támogatott, kérem használja az új Authorize.net gatewayt"
+
+#: merchants/authorize.php:352
 msgid "Authorize API Login ID"
 msgstr "Authorize API Bejelentkező ID:"
 
-#: merchants/authorize.merchant.php:76
-#@ wpsc_gold_cart
+#: merchants/authorize.php:360
 msgid "Authorize Transaction Key"
 msgstr "Authorize Tranzakciós kulcs"
 
-#: merchants/authorize.merchant.php:84
-#: merchants/bluepay.php:212
-#: merchants/eway.php:244
-#: merchants/vmerchant.php:114
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1097
-#@ wpsc_gold_cart
+#: merchants/authorize.php:368
+#: merchants/bluepay.php:213
 msgid "Test Mode"
 msgstr "Teszt üzemmód"
 
-#: merchants/ideal.php:158
-#: merchants/paypal_payflowpro.php:369
-#@ wpsc_gold_cart
+#: merchants/authorize.php:393
+msgid "Please note that country and state fields are generated automatically."
+msgstr "Az ország és állam mezők automatikusan generálódnak"
+
+#: merchants/authorize.php:398
+#: merchants/ideal.php:160
+#: merchants/paypal_payflowpro.php:367
 msgid "Forms Sent to Gateway"
 msgstr "Elküldve a Gatewaynek"
 
-#: merchants/bluepay.php:240
-#: merchants/ideal.php:162
-#: merchants/paypal_payflowpro.php:373
-#@ wpsc_gold_cart
+#: merchants/authorize.php:404
+msgid "Description"
+msgstr "Leírás"
+
+#: merchants/authorize.php:414
+msgid "Bill To Info:"
+msgstr "Számlázási adatok:"
+
+#: merchants/authorize.php:420
+#: merchants/authorize.php:495
+#: merchants/bluepay.php:241
+#: merchants/eway.php:393
+#: merchants/ideal.php:164
+#: merchants/paypal_payflowpro.php:371
 msgid "First Name Field"
 msgstr "Keresztnév"
 
-#: merchants/bluepay.php:250
-#: merchants/ideal.php:172
-#: merchants/paypal_payflowpro.php:383
-#@ wpsc_gold_cart
+#: merchants/authorize.php:430
+#: merchants/authorize.php:505
+#: merchants/bluepay.php:251
+#: merchants/eway.php:401
+#: merchants/ideal.php:174
+#: merchants/paypal_payflowpro.php:381
 msgid "Last Name Field"
 msgstr "Vezetéknév"
 
-#: merchants/bluepay.php:260
-#: merchants/ideal.php:192
-#: merchants/paypal_payflowpro.php:393
-#@ wpsc_gold_cart
+#: merchants/authorize.php:440
+#: merchants/authorize.php:515
+#: merchants/bluepay.php:261
+#: merchants/eway.php:409
+#: merchants/ideal.php:194
+#: merchants/paypal_payflowpro.php:391
 msgid "Address Field"
 msgstr "Cím"
 
-#: merchants/bluepay.php:270
-#: merchants/ideal.php:202
-#: merchants/paypal_payflowpro.php:403
-#@ wpsc_gold_cart
+#: merchants/authorize.php:450
+#: merchants/authorize.php:525
+#: merchants/bluepay.php:271
+#: merchants/eway.php:417
+#: merchants/ideal.php:204
+#: merchants/paypal_payflowpro.php:401
 msgid "City Field"
 msgstr "Város"
 
-#: merchants/ideal.php:222
-#: merchants/paypal_payflowpro.php:423
-#@ wpsc_gold_cart
+#: merchants/authorize.php:460
+#: merchants/authorize.php:535
+#: merchants/eway.php:433
+#: merchants/ideal.php:224
+#: merchants/paypal_payflowpro.php:421
 msgid "Postal code/Zip code Field"
 msgstr "Irányítószám"
 
-#: merchants/bluepay.php:312
-#: merchants/ideal.php:182
-#@ wpsc_gold_cart
+#: merchants/authorize.php:470
+#: merchants/bluepay.php:313
+#: merchants/eway.php:449
+#: merchants/ideal.php:184
 msgid "Email Field"
 msgstr "Email"
 
+#: merchants/authorize.php:480
+msgid "Phone Number Field"
+msgstr "Telefonszám"
+
+#: merchants/authorize.php:490
+msgid "Ship To Info:"
+msgstr "Postázási adatok:"
+
 #: merchants/auth_net.php:7
-#@ wpsc_gold_cart
 msgid "Authorize.net AIM/CIM/ARB"
 msgstr ""
 
 #: merchants/auth_net.php:14
-#@ wpsc_gold_cart
 msgid "Authorize.Net"
 msgstr ""
 
 #: merchants/bluepay.php:9
-#@ wpsc_gold_cart
 msgid "Bluepay"
 msgstr ""
 
 #: merchants/bluepay.php:38
-#@ wpsc_gold_cart
 msgid "Credit Card Code *"
 msgstr "Hitelkártya kód"
 
-#: merchants/bluepay.php:196
-#@ wpsc_gold_cart
+#: merchants/bluepay.php:197
 msgid "Account ID:"
 msgstr ""
 
-#: merchants/bluepay.php:233
-#@ wpsc_gold_cart
+#: merchants/bluepay.php:205
+msgid "Secrete Key:"
+msgstr ""
+
+#: merchants/bluepay.php:234
 msgid "Select the form fields below to send your customers details to BluePay These are the values that corospond with your WP-e-Commerce checkout form, If you leave these options blank then only the purchase amount will be sent to your BluePay account."
 msgstr ""
 
-#: merchants/bluepay.php:280
-#: merchants/ideal.php:212
-#: merchants/paypal_payflowpro.php:413
-#@ wpsc_gold_cart
+#: merchants/bluepay.php:281
+#: merchants/eway.php:425
+#: merchants/ideal.php:214
+#: merchants/paypal_payflowpro.php:411
 msgid "State Field"
 msgstr "Állam"
 
-#: merchants/bluepay.php:290
-#@ wpsc_gold_cart
+#: merchants/bluepay.php:291
 msgid "Country:"
 msgstr "Ország"
 
-#: merchants/bluepay.php:301
-#@ wpsc_gold_cart
+#: merchants/bluepay.php:302
 msgid "Postal / Zip code Field"
 msgstr "Irányítószám"
 
-#: merchants/dps.php:102
-#@ wpsc_gold_cart
+#: merchants/dps.php:2
+msgid "DPS / Payment Express - PX Post"
+msgstr ""
+
+#: merchants/dps.php:107
 msgid "Access URL"
 msgstr ""
 
-#: merchants/dps.php:110
-#@ wpsc_gold_cart
+#: merchants/dps.php:115
 msgid "Access User Id"
 msgstr "Hozzáférési azonositó"
 
-#: merchants/dps.php:118
-#@ wpsc_gold_cart
+#: merchants/dps.php:123
 msgid "Access Key"
 msgstr "Hozzáférési kulcs"
 
-#: merchants/dps.php:126
-#@ wpsc_gold_cart
+#: merchants/dps.php:131
 msgid "Mac Key"
 msgstr "Mac kulcs"
 
-#: merchants/dps.php:135
-#@ wpsc_gold_cart
+#: merchants/dps.php:140
 msgid "Note: DPS will give you a 64 character key / password. The first 48 characters of this go into the \"Access Key\" field and the last 16 characters go into the \"Mac Key\" field."
 msgstr "info: DPS-től 64 karakteres kulcs / jelsyo kombinaciot kapunk. Az első 48 karakter a Hozzáférési Kulcs az utolsó 16 karakter a Mac kulcs"
 
-#: merchants/dps.php:141
-#@ wpsc_gold_cart
+#: merchants/dps.php:146
 msgid "United States Dollar"
 msgstr "Amerikai dollár"
 
-#: merchants/dps.php:142
-#: merchants/paypal_payflowpro.php:283
-#@ wpsc_gold_cart
+#: merchants/dps.php:147
+#: merchants/paypal_payflowpro.php:281
 msgid "Canadian Dollar"
 msgstr "Kanadai dollár"
 
-#: merchants/dps.php:143
-#@ wpsc_gold_cart
+#: merchants/dps.php:148
 msgid "Swiss Franc"
 msgstr "Svájci frank"
 
-#: merchants/dps.php:144
-#: merchants/paypal_payflowpro.php:285
-#@ wpsc_gold_cart
+#: merchants/dps.php:149
+#: merchants/paypal_payflowpro.php:283
 msgid "Euro"
 msgstr "euro"
 
-#: merchants/dps.php:145
-#@ wpsc_gold_cart
+#: merchants/dps.php:150
 msgid "French Franc"
 msgstr "Francia frank"
 
-#: merchants/dps.php:146
-#@ wpsc_gold_cart
+#: merchants/dps.php:151
 msgid "United Kingdom Pound"
 msgstr "Angol font"
 
-#: merchants/dps.php:147
-#@ wpsc_gold_cart
+#: merchants/dps.php:152
 msgid "Hong Kong Dollar"
 msgstr "Hong Kong-i dollár"
 
-#: merchants/dps.php:148
-#: merchants/paypal_payflowpro.php:287
-#@ wpsc_gold_cart
+#: merchants/dps.php:153
+#: merchants/paypal_payflowpro.php:285
 msgid "Japanese Yen"
 msgstr "Japán jen"
 
-#: merchants/dps.php:149
-#@ wpsc_gold_cart
+#: merchants/dps.php:154
 msgid "New Zealand Dollar"
 msgstr "Új-Zélandi dollár"
 
-#: merchants/dps.php:150
-#@ wpsc_gold_cart
+#: merchants/dps.php:155
 msgid "Singapore Dollar"
 msgstr "Szingapúri dollár"
 
-#: merchants/dps.php:151
-#@ wpsc_gold_cart
+#: merchants/dps.php:156
 msgid "Rand"
 msgstr "Rand"
 
-#: merchants/dps.php:152
-#: merchants/paypal_payflowpro.php:284
-#@ wpsc_gold_cart
+#: merchants/dps.php:157
+#: merchants/paypal_payflowpro.php:282
 msgid "Australian Dollar"
 msgstr "Ausztrál dollár"
 
-#: merchants/dps.php:153
-#@ wpsc_gold_cart
+#: merchants/dps.php:158
 msgid "Samoan Tala"
 msgstr "Samoan Tala"
 
-#: merchants/dps.php:154
-#@ wpsc_gold_cart
+#: merchants/dps.php:159
 msgid "Vanuatu Vatu"
 msgstr "Vanuatu Vatu"
 
-#: merchants/dps.php:155
-#@ wpsc_gold_cart
+#: merchants/dps.php:160
 msgid "Tongan Pa'anga"
 msgstr "Tongan Pa'anga"
 
-#: merchants/dps.php:156
-#@ wpsc_gold_cart
+#: merchants/dps.php:161
 msgid "Solomon Islands Dollar"
 msgstr "Salomon Szigeteki Dollár"
 
-#: merchants/dps.php:157
-#@ wpsc_gold_cart
+#: merchants/dps.php:162
 msgid "Papua New Guinea Kina"
 msgstr "Papua New Guinea Kina"
 
-#: merchants/dps.php:158
-#@ wpsc_gold_cart
+#: merchants/dps.php:163
 msgid "Malaysian Ringgit"
 msgstr "Malaysian Ringgit"
 
-#: merchants/dps.php:159
-#@ wpsc_gold_cart
+#: merchants/dps.php:164
 msgid "Kuwaiti Dinar"
 msgstr "Kuwaiti Dinar"
 
-#: merchants/dps.php:160
-#@ wpsc_gold_cart
+#: merchants/dps.php:165
 msgid "Fiji Dollar"
 msgstr "Fiji Dollar"
 
-#: merchants/dps.php:166
-#@ wpsc_gold_cart
+#: merchants/dps.php:171
 msgid "Currency sent to DPS"
 msgstr "Pénznem a DPS felé"
 
-#: merchants/dps.php:180
-#@ wpsc_gold_cart
+#: merchants/dps.php:185
 msgid "Note: Because DPS does not support questionmarks in the URL you must use permalinks - currently only date and name based permalinks have been fully tested with DPS."
 msgstr "info: DPS nem támogatja a kérdőjeleket ay URL-ben, ezért Permalinkeket kell használj. Jelenelg csak a dátum és név permalinkek lettek teljesen tesztelve"
 
-#: merchants/eway.php:11
-#@ wpsc_gold_cart
+#: merchants/eway.php:9
 msgid "eWay"
 msgstr "eWay"
 
-#: merchants/linkpoint.php:230
-#@ wpsc_gold_cart
+#: merchants/eway.php:33
+msgid "CVN"
+msgstr "CVN"
+
+#: merchants/eway.php:223
+msgid "An Error has occured >"
+msgstr "Hiba történt"
+
+#: merchants/eway.php:226
+msgid "Rebill Gateway failed: "
+msgstr "Újraszámlázó Gateway hiba:"
+
+#: merchants/eway.php:274
+#: merchants/linkpoint.php:200
 msgid "Please Check the Payment Results"
 msgstr "Kérjük ellenőrizze a fizetés eredményét"
 
-#: merchants/linkpoint.php:231
-#@ wpsc_gold_cart
+#: merchants/eway.php:275
+#: merchants/linkpoint.php:201
 msgid "Your transaction was not successful."
 msgstr "A tranzakció sikertelen."
 
-#: merchants/ideal.php:232
-#: merchants/paypal_payflowpro.php:433
-#@ wpsc_gold_cart
+#: merchants/eway.php:277
+msgid "Click here to go back to checkout page."
+msgstr "A kijelentkezéshez való visszatéréshez kérem klikkeljen ide."
+
+#: merchants/eway.php:284
+msgid "Your transaction was successful."
+msgstr "A tranzakció sikeres."
+
+#: merchants/eway.php:367
+msgid "eWay Customer id"
+msgstr "eWay Felhasználói azonosito"
+
+#: merchants/eway.php:375
+msgid "Use Testing enviroment"
+msgstr "Teszt környezet használata"
+
+#: merchants/eway.php:384
+msgid "Use CVN Security"
+msgstr "CVN Security használata"
+
+#: merchants/eway.php:441
+#: merchants/ideal.php:234
+#: merchants/paypal_payflowpro.php:431
 msgid "Country Field"
 msgstr "Ország"
 
 #: merchants/ideal.php:2
-#@ wpsc_gold_cart
 msgid "iDeal"
 msgstr "iDeal"
 
-#: merchants/ideal.php:103
-#@ wpsc_gold_cart
+#: merchants/ideal.php:105
 msgid "English"
 msgstr "Angol"
 
-#: merchants/ideal.php:104
-#@ wpsc_gold_cart
+#: merchants/ideal.php:106
 msgid "Dutch"
 msgstr "Holland"
 
-#: merchants/ideal.php:121
-#@ wpsc_gold_cart
+#: merchants/ideal.php:107
+msgid "French"
+msgstr "Francia"
+
+#: merchants/ideal.php:123
 msgid "iDeal PSPID"
 msgstr "iDeal PSPID"
 
-#: merchants/ideal.php:129
-#@ wpsc_gold_cart
+#: merchants/ideal.php:131
 msgid "iDeal Currency"
 msgstr "iDeal pénznem"
 
-#: merchants/ideal.php:144
-#@ wpsc_gold_cart
+#: merchants/ideal.php:146
 msgid "iDeal Language"
 msgstr "iDeal nyelv"
 
 #: merchants/linkpoint.php:9
-#@ wpsc_gold_cart
 msgid "LinkPoint"
 msgstr "LinkPoint"
 
-#: merchants/linkpoint.php:60
-#@ wpsc_gold_cart
+#: merchants/linkpoint.php:26
+msgid "Credit Card Expiration *"
+msgstr "Kártya lejárati dátuma"
+
+#: merchants/linkpoint.php:31
 msgid "CVV Code *"
 msgstr "Kártyán található biztonsági kód"
 
-#: merchants/linkpoint.php:275
-#@ wpsc_gold_cart
+#: merchants/linkpoint.php:236
 msgid "Store Number"
 msgstr "Bolt azonosito"
 
-#: merchants/linkpoint.php:283
-#@ wpsc_gold_cart
+#: merchants/linkpoint.php:244
 msgid "Test Environment"
 msgstr "Teszt környezet"
 
-#: merchants/authorize.merchant.php:87
-#: merchants/linkpoint.php:286
-#@ wpsc_gold_cart
+#: merchants/linkpoint.php:247
 msgid "Yes"
 msgstr "Igen"
 
-#: merchants/authorize.merchant.php:88
-#: merchants/linkpoint.php:287
-#@ wpsc_gold_cart
+#: merchants/linkpoint.php:248
 msgid "No"
 msgstr "Nem"
 
-#: merchants/paymentexpress.php:3
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:4
 msgid "Payment Express - PX Fusion"
 msgstr "Payment Express - PX Fusion"
 
-#: merchants/paymentexpress.php:12
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:13
 msgid "Pay with Payment Express - PX Fusion"
 msgstr "Fizetés Payment Express - PX Fusion használatával"
 
-#: merchants/paymentexpress.php:31
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:33
 msgid "Credit cards Details"
 msgstr "Hitelkártya adatai"
 
-#: merchants/paymentexpress.php:37
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:39
 msgid "Card holder name"
 msgstr "Kártyatulajdonos neve"
 
-#: merchants/paymentexpress.php:45
-#: merchants/vmerchant.php:27
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:47
 msgid "Card Number"
 msgstr "Kártyaszám"
 
-#: merchants/paymentexpress.php:52
-#: merchants/vmerchant.php:34
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:54
 msgid "Cvc2"
 msgstr "Cvc2"
 
-#: merchants/paymentexpress.php:58
-#: merchants/vmerchant.php:40
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:60
 msgid "Expiry"
 msgstr "Lejárat"
 
-#: merchants/paymentexpress.php:109
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:111
 msgid "Username :"
 msgstr "Felhasználó név:"
 
-#: merchants/paymentexpress.php:117
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:119
 msgid "Password :"
 msgstr "Jelszó:"
 
-#: merchants/paymentexpress.php:124
-#, php-format
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:126
 msgid "You can login to Payment Manager %s to see your transactions."
 msgstr "Jelentkezz be a Fizetési Menedzserbe %s hogy lásd a korábbi tranzakcióidat."
 
-#: merchants/paymentexpress.php:162
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:146
+msgid ""
+"Your Selected Currency is not supported by Sagepay, \n"
+"            \t\tto use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one \n"
+"            \t\tof the currencies listed on the right."
+msgstr ""
+"A kiválasztott pénznement a Sagepay nem támogatja, \n"
+"            →\t→\tA Sagepay használatához menj a Bolt beállitásokhoz és a  &quot;Pénznem&quot; beállitásoknál \n"
+"            →\t→\tválassz pénznemet a jobb oldalról"
+
+#: merchants/paymentexpress.php:164
 msgid "Your Selected Currency will work with PX Fusion"
 msgstr "A választott pénznemet a PX Fusion támogatja"
 
-#: merchants/paymentexpress.php:171
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:173
 msgid "THIS GATEWAY WILL NOT WORK ON THIS SERVER, ASK YOUR HOST TO INSTALL THE PHP SOAP EXTENSION"
 msgstr "Ez a Gateway nem fog működni a szervereden. Kérdd a szlgáltatód segitségét, hogy installaja a PHP SOAP-ot"
 
-#: merchants/paymentexpress.php:228
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:243
 msgid "Error! There was a problem getting a transaction id from DPS, please contact the server administrator."
 msgstr "Hiba! Nem sikerült lekérdezni a tranzakció azonosítót a DPS-ből, kérlek vedd fel a kapcsolatot a szerver adminisztrátorral."
 
-#: merchants/paymentexpress.php:243
-#: merchants/vmerchant.php:152
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:258
 msgid "Credit Card Number Required"
 msgstr "Hitelkártya szám szükséges"
 
-#: merchants/paymentexpress.php:247
-#: merchants/vmerchant.php:158
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:262
 msgid "Credit Card Expiry Month Required"
 msgstr "Hitelkártya lejáratának hónapja szükséges"
 
-#: merchants/paymentexpress.php:251
-#: merchants/vmerchant.php:164
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:266
 msgid "Credit Card Expiry Year Required"
 msgstr "Hitelkártya lejáratának éve szükséges"
 
-#: merchants/paymentexpress.php:255
-#: merchants/vmerchant.php:170
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:270
 msgid "Credit Card Cvc2 code Required"
 msgstr "Hitelkártya Cvc2 kód szükséges"
 
-#: merchants/paymentexpress.php:259
-#@ wpsc_gold_cart
+#: merchants/paymentexpress.php:274
 msgid "Credit Card Name Required"
 msgstr "Kártyán szereplő név szükséges"
 
 #: merchants/paypal_payflowpro.php:9
-#@ wpsc_gold_cart
 msgid "Paypal - Payflow Pro"
 msgstr "Paypal - Payflow Pro"
 
 #: merchants/paypal_payflowpro.php:19
-#@ wpsc_gold_cart
 msgid "3. Credit Card Information"
 msgstr "Kártyainformáció"
 
 #: merchants/paypal_payflowpro.php:22
-#@ wpsc_gold_cart
 msgid "Credit Card Number* (no dashes or spaces)"
 msgstr "Hitelkártya szám (csak számok szóköz nélkül)"
 
 #: merchants/paypal_payflowpro.php:30
-#@ wpsc_gold_cart
 msgid "CVV*"
 msgstr "CVV*"
 
 #: merchants/paypal_payflowpro.php:38
-#@ wpsc_gold_cart
 msgid "Credit Card Expiry* (MM/YY)"
 msgstr "Lejárati dátum (HH/ÉÉ)"
 
-#: merchants/paypal_payflowpro.php:282
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:280
 msgid "U.S. Dollar"
 msgstr "Amerikai Dollár"
 
-#: merchants/paypal_payflowpro.php:286
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:284
 msgid "Pound Sterling"
 msgstr "Angol Font"
 
-#: merchants/paypal_payflowpro.php:292
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:290
 msgid "Payment Express"
 msgstr "Payment Express"
 
-#: merchants/paypal_payflowpro.php:293
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:291
 msgid "Credit Card Direct Payment"
 msgstr "Fizetés hitelkártyával"
 
-#: merchants/paypal_payflowpro.php:302
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:300
 msgid "PayPal Payflow Pro User"
 msgstr "PayPal Payflow Pro felhasználó"
 
-#: merchants/paypal_payflowpro.php:310
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:308
 msgid "PayPal Payflow Pro Password"
 msgstr "PayPal Payflow Pro jelszó"
 
-#: merchants/paypal_payflowpro.php:318
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:316
 msgid "PayPal Payflow Pro Vendor"
 msgstr "PayPal Payflow Pro Eladó"
 
-#: merchants/paypal_payflowpro.php:325
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:323
 msgid "PayPal Testing Environment"
 msgstr "PayPal Teszt környezet"
 
-#: merchants/paypal_payflowpro.php:328
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:326
 msgid "Enable"
 msgstr "Engedélyez"
 
-#: merchants/paypal_payflowpro.php:335
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:333
 msgid "Payment Method"
 msgstr "Fizetési mód"
 
-#: merchants/paypal_payflowpro.php:346
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:344
 msgid "PayPal Payflow Pro Partner"
 msgstr "PayPal Payflow Pro Partner"
 
-#: merchants/paypal_payflowpro.php:354
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:352
 msgid "PayPal Accepted Currency (e.g. USD, AUD)"
 msgstr "PayPal által elfogadott pénznem"
 
-#: merchants/paypal_payflowpro.php:486
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:484
 msgid "General Error!"
 msgstr "Hiba"
 
-#: merchants/paypal_payflowpro.php:487
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:485
 msgid "Unable to receive response from PayPal server."
 msgstr "Nem kaptunk választ a PayPal szervertől"
 
-#: merchants/paypal_payflowpro.php:488
-#, php-format
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:486
 msgid "Verify host URL of %s and check for firewall/proxy issues."
 msgstr "Ellenőrizd a címet %s és tűzfal / proxy beállításokat."
 
-#: merchants/paypal_payflowpro.php:513
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:511
 msgid "Account configuration issue.  Please verify your login credentials."
 msgstr "Felhasználói profil hiba. Kérlek ellenőrizd a felhasználóneved és jelszót"
 
-#: merchants/paypal_payflowpro.php:521
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:519
 msgid "Your billing (cvv2) information does not match. Please re-enter."
 msgstr "A számlázási (cvv2) adatok eltérnek. Kérlek add meg újra."
 
-#: merchants/paypal_payflowpro.php:536
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:549
 msgid "Your credit card has been declined.  You may press the back button in your browser and check that you've entered your card information correctly, otherwise please contact your credit card issuer."
 msgstr "A hitelkártyát elutasították. Menj vissza a böngésződben és ellenőrizd, hogy helyesen adtad-e meg az adatokat. "
 
-#: merchants/paypal_payflowpro.php:547
-#: merchants/paypal_payflowpro.php:561
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:560
+#: merchants/paypal_payflowpro.php:574
 msgid "Invalid credit card information. Please use the back button in your browser and re-enter if you feel that you have received this message in error"
 msgstr "Hibás hitelkártya adatok. Menj vissza a böngésződben és ellenőrizd, hogy helyesen adtad-e meg az adatokat."
 
-#: merchants/paypal_payflowpro.php:566
 #: merchants/paypal_payflowpro.php:579
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:592
 msgid "Invalid credit card information. Please use the back button in your browser and re-enter. If you feel that you received this message in error."
 msgstr "Hibás hitelkártya adatok. Menj vissza a böngésződben és ellenőrizd, hogy helyesen adtad-e meg az adatokat."
 
-#: merchants/paypal_payflowpro.php:597
-#: merchants/paypal_payflowpro.php:599
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:610
+#: merchants/paypal_payflowpro.php:612
 msgid "Your Transaction is Under Review. We will notify you via e-mail if accepted."
 msgstr "A tranzakciód feldolgozás alatt. Az eredményről e-mailben fogunk értesíteni."
 
-#: merchants/paypal_payflowpro.php:619
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:634
 msgid "Results returned from server:"
 msgstr "Válasz a szervertől:"
 
-#: merchants/paypal_payflowpro.php:625
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:640
 msgid "Error!"
 msgstr "Hiba!"
 
-#: merchants/paypal_payflowpro.php:626
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:641
 msgid "This is a duplicate of your previous order."
 msgstr "Ez egy korábbi rendelésed másolata"
 
-#: merchants/paypal_payflowpro.php:627
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:642
 msgid "Notice that DUPLICATE=1 is returned and the PNREF is the same as the previous one. You can see this in Manager as the Transaction Type will be \"N\"."
 msgstr "Figyeld meg, hogy DUPLICATE=1 visszatért és PNREF megegyezik az előzővel. Kezelőben is látod, mert a tranzakció típusa \"N\""
 
-#: merchants/paypal_payflowpro.php:632
-#: merchants/paypal_payflowpro.php:637
-#: merchants/paypal_payflowpro.php:641
-#: merchants/paypal_payflowpro.php:646
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:647
+#: merchants/paypal_payflowpro.php:652
+#: merchants/paypal_payflowpro.php:656
+#: merchants/paypal_payflowpro.php:661
 msgid "Transaction Completed!"
 msgstr "Sikeres Tranzakció"
 
-#: merchants/paypal_payflowpro.php:634
 #: merchants/paypal_payflowpro.php:649
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:664
 msgid "Note: To simulate a duplicate transaction, refresh this page in your browser. Notice that you will see DUPLICATE=1 returned."
 msgstr "Info: Ahhoz, hogy a dupla tranzakciót szimulálj, frissítsd ezt az oldalt a böngésződben. Figyeld meg, hogy DUPLICATE=1 választ fogsz kapni"
 
-#: merchants/paypal_payflowpro.php:638
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:653
 msgid "The payment is pending because it was made by an eCheck that has not yet cleared."
 msgstr "A fizetés függőben, mert olyan eCheck-el történt, amit még nem érvényesítettek"
 
-#: merchants/paypal_payflowpro.php:642
-#, php-format
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:657
 msgid "The payment is pending due to: %s"
 msgstr "A tranzakció függőben a %s miatt"
 
-#: merchants/paypal_payflowpro.php:643
-#@ wpsc_gold_cart
+#: merchants/paypal_payflowpro.php:658
 msgid "Please login to your PayPal account for more details."
 msgstr "Több információért kérjük lépjen be a PayPal számlájára."
 
 #: merchants/paystation.php:2
-#@ wpsc_gold_cart
 msgid "Paystation"
 msgstr "Paystation"
 
-#: merchants/paystation.php:27
-#@ wpsc_gold_cart
+#: merchants/paystation.php:28
 msgid "Paystation ID"
 msgstr "Paystation azonosito"
 
 #: merchants/sagepay.php:3
-#@ wpsc_gold_cart
 msgid "Sagepay"
 msgstr "Sagepay"
 
 #: merchants/sagepay.php:11
-#@ wpsc_gold_cart
 msgid "credit card"
 msgstr "Hitelkártya"
 
 #: merchants/sagepay.php:12
-#@ wpsc_gold_cart
 msgid "pay with Sagepay"
 msgstr "Sagepay-el fizetek"
 
 #: merchants/sagepay.php:18
-#, php-format
-#@ wpsc_gold_cart
 msgid "Thanks for purchasing at %s"
 msgstr "A %s nevében köszönjük, hogy nálunk vásárolt"
 
 #: merchants/sagepay.php:75
-#@ wpsc_gold_cart
 msgid " Shop Email, an e-mail will be sent to this address when each transaction completes (successfully or otherwise). If this field is blank then no email address will be provided"
 msgstr "Bolt email cím, erre a címre fog email érkezni, ha egy tranzakció befejeződik. Ha üresen hagyjuk akkor nem küld emailt."
 
 #: merchants/sagepay.php:83
-#@ wpsc_gold_cart
 msgid "Email Message. If set then this message is included toward the top of the customer confirmation e-mails."
 msgstr "Email üzenet. Ha engedélyezett, akkor ez az üzenet a vásárlói megerősítő email tetején fog megjelenni."
 
 #: merchants/sagepay.php:91
-#@ wpsc_gold_cart
 msgid "Sagepay Email options"
 msgstr "Sagepay Email opciók"
 
 #: merchants/sagepay.php:95
-#@ wpsc_gold_cart
 msgid "Do not send either customer or vendor e- mails"
 msgstr "Ne küldjön emailt"
 
 #: merchants/sagepay.php:96
-#@ wpsc_gold_cart
 msgid "Send customer and vendor e-mails"
 msgstr "Küldjön emailt"
 
 #: merchants/sagepay.php:97
-#@ wpsc_gold_cart
 msgid "Send vendor e-mail but NOT the customer e-mail"
 msgstr "Küldjön emailt az eladónak de a vásárlónak ne"
 
 #: merchants/sagepay.php:103
-#@ wpsc_gold_cart
 msgid "Server Type:"
 msgstr "Szerver tipus"
 
 #: merchants/sagepay.php:107
-#@ wpsc_gold_cart
 msgid "Test Server"
 msgstr "Teszt szerver"
 
 #: merchants/sagepay.php:108
-#@ wpsc_gold_cart
 msgid "Simulator Server"
 msgstr "Szimulációs szerver"
 
 #: merchants/sagepay.php:109
-#@ wpsc_gold_cart
 msgid "Live Server"
 msgstr "Éles szerver"
 
+#: merchants/sagepay.php:118
+msgid ""
+"Your Selected Currency is not supported by Sageapy, \n"
+"        \t\tto use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one \n"
+"        \t\tof the currencies listed on the right."
+msgstr ""
+"A kiválasztott pénznemet a Sagepay nem támogatja, \n"
+"        →\t→\tA Sagepay használatához menj a Beállításokon belül a &quot;Pénznem&quot; menüponthoz \n"
+"        →\t→\tés válassz pénznemet a jobb oldalról."
+
 #: merchants/sagepay.php:136
-#@ wpsc_gold_cart
 msgid "Your Selected Currency will work with Sagepay"
 msgstr "A kiválasztott pénznemet a Sagepay támogatja"
 
 #: merchants/vmerchant.php:3
-#@ wpsc_gold_cart
 msgid "Virtual Merchant"
 msgstr "Virtuális kereskedő"
 
 #: merchants/vmerchant.php:77
-#@ wpsc_gold_cart
 msgid "Account ID"
 msgstr "Felhasználói azonosító"
 
 #: merchants/vmerchant.php:85
-#@ wpsc_gold_cart
 msgid "User ID"
 msgstr "Felhasználói azonosító"
 
 #: merchants/vmerchant.php:93
-#@ wpsc_gold_cart
 msgid "Merchant Pin"
 msgstr "Kereskedő Pin"
 
 #: merchants/vmerchant.php:101
-#@ wpsc_gold_cart
 msgid "AVS Security"
 msgstr "AVS Security"
 
 #: merchants/vmerchant.php:110
-#@ wpsc_gold_cart
 msgid "Mode"
 msgstr "Mód"
 
-#: merchants/eway.php:243
 #: merchants/vmerchant.php:113
-#@ wpsc_gold_cart
 msgid "Live Mode"
 msgstr "Élő mód"
 
 #: merchants/vmerchant.php:123
-#@ wpsc_gold_cart
 msgid "This Gateway will only work if you change your permalink structure do anything except the default setting. In Settings->Permalinks"
 msgstr "Ez a Gateway csak akkor fog működni, ha a permalinkeket az alapértelmezettől eltérőre állítod."
 
+#: merchants/ewaylib/EwayPaymentLive.php:53
+msgid "Error in XML response from eWAY: "
+msgstr "Hiba az XML válaszban az eWaytől"
+
 #: merchants/wpec_auth_net/user_profile.php:8
 #: merchants/wpec_auth_net/user_profile.saved_accouns.php:8
-#@ wpsc_gold_cart
 msgid "Saved Credit Card, Bank or Shipping Information"
 msgstr "Elmentett hitelkártya, bank vagy postázási információ"
 
 #: merchants/wpec_auth_net/user_profile.php:52
 #: merchants/wpec_auth_net/user_profile.saved_accouns.php:52
-#@ wpsc_gold_cart
 msgid "Saved Payment Details Have Been Deleted."
 msgstr "Elmentett fizetési adatok törölve."
 
 #: merchants/wpec_auth_net/user_profile.php:59
 #: merchants/wpec_auth_net/user_profile.saved_accouns.php:59
-#@ wpsc_gold_cart
 msgid "Saved Shipping Details Have Been Deleted."
 msgstr "Elmentett postázási adatok törölve."
 
-#: merchants/wpec_auth_net/user_profile.php:73
-#: merchants/wpec_auth_net/user_profile.saved_accouns.php:79
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/user_profile.php:72
+#: merchants/wpec_auth_net/user_profile.saved_accouns.php:74
 msgid "Saved Credit Card, Bank and Shipping Information"
 msgstr "Elmentett hitelkártya és postázási adatok"
 
-#: merchants/wpec_auth_net/user_profile.php:82
-#: merchants/wpec_auth_net/user_profile.saved_accouns.php:88
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/user_profile.php:81
+#: merchants/wpec_auth_net/user_profile.saved_accouns.php:83
 msgid "Bank Accounts You've Saved For Easy Checkout."
 msgstr "A gyors kijelentkezés érdekében elmentett bankszámlái."
 
-#: merchants/wpec_auth_net/user_profile.php:92
-#: merchants/wpec_auth_net/user_profile.saved_accouns.php:98
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/user_profile.php:91
+#: merchants/wpec_auth_net/user_profile.saved_accouns.php:93
 msgid "Credit Cards You've Saved For Easy Checkout."
 msgstr "A gyors kijelentkezés érdekében elmentett hitelkártyái."
 
-#: merchants/wpec_auth_net/user_profile.php:102
-#: merchants/wpec_auth_net/user_profile.saved_accouns.php:108
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/user_profile.php:101
+#: merchants/wpec_auth_net/user_profile.saved_accouns.php:103
 msgid "Shipping Addresses You've Saved For Easy Checkout."
 msgstr "A gyors kijelentkezés érdekében elmentett postázási címei: "
 
 #: merchants/wpec_auth_net/wpec_auth_net.php:94
-#@ wpsc_gold_cart
 msgid "Failed to capture payment"
 msgstr "Nem sikerült rögzíteni a fizetést"
 
 #: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:23
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:776
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:773
 msgid "Business Checking"
 msgstr "Üzleti ellenőrzés"
 
 #: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:23
-#@ wpsc_gold_cart
 msgid "Savings Account"
 msgstr "Megtakarítási számla"
 
 #: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:23
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:777
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:774
 msgid "Checking"
 msgstr "Ellenőrzés"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:89
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:88
 msgid "Accept payment"
 msgstr "Tranzakció elfogadása"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:93
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:92
 msgid "Missing Transaction ID in Order"
 msgstr "Hiányzó tranzakciós azonosító a megrendelésben"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:131
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:130
 msgid "Purchase Details"
 msgstr "Vásárlás részletei"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:132
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:131
 msgid "Approved:"
 msgstr "Engedélyezve:"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:133
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:132
 msgid "Declined:"
 msgstr "Elutasítva:"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:134
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:133
 msgid "Auth Code:"
 msgstr "Azonosító kód"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:135
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:134
 msgid "Transaction ID:"
 msgstr "Tranzakciós azonosító"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:136
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:135
 msgid "Type:"
 msgstr "Típus:"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:137
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:136
 msgid "Ammount:"
 msgstr "Összeg:"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:138
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:137
 msgid "Response:"
 msgstr "Válasz:"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:139
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:138
 msgid "MD5 Hash:"
 msgstr "MD5 Hash"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:142
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:141
 msgid "Capture Details"
 msgstr "Részletek mentése"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:159
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:158
 msgid "Purchase Log Details From Authorize.Net"
 msgstr "Vásárlói napló részletek az Authorize.Net-től"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:245
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:244
 msgid "Card Ending in "
 msgstr "-re végződő kártya"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:327
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:326
 msgid "Valid Credit Card Not Given."
 msgstr "A hitelkártya száma nem érvényes."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:332
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:331
 msgid "Valid Credit Card Expiration Not Given."
 msgstr "A hitelkártya lejárati dátuma nem érvényes."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:337
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:336
 msgid "Please Enter The CVV Off The Back of The Card."
 msgstr "Kérem adja meg a kártya hátulján található azonosító kódot."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:347
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:346
 msgid "Please Enter The Bank Name"
 msgstr "Kérem adja meg a bank nevét."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:352
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:351
 msgid "Please Specify The Account Type."
 msgstr "Kérem válassza ki a számlája típusát."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:357
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:356
 msgid "Please Give The Name On The Account."
 msgstr "Kérem írja be a számlatulajdonos nevét."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:362
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:361
 msgid "No Account Number Given."
 msgstr "Hiányzó számlaszám."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:367
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:366
 msgid "No Bank Routing Number Given."
 msgstr "Hiányzó Routing szám."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:681
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:678
 msgid "Select Payment Type"
 msgstr "Válasszon fizetési módot."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:682
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:748
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:679
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:745
 msgid "Credit Card"
 msgstr "Hitelkártya"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:683
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:727
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:680
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:724
 msgid "E-Check"
 msgstr "E-Csekk"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:731
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:728
 msgid "Use Bank Account on file."
 msgstr "Használja a már megadott számlaszámot."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:733
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:730
 msgid "Or Enter a New Bank Account"
 msgstr "Vagy adjon meg új bankszámla számot."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:735
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:756
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:732
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:753
 msgid "Save Payment Info (You Can Save Up To 10 accounts)."
 msgstr "Fizetési mód mentése (10 különböző számlát tud tárolni)."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:752
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:749
 msgid "Use Credit Card on file."
 msgstr "Használja a már megadott hitelkártyát."
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:754
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:751
 msgid "Or Enter a New Card"
 msgstr "Vagy adjon meg egy új kártyát"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:774
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:771
 msgid "Bank Name"
 msgstr "Bank Neve"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:775
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:772
 msgid "Account Type"
 msgstr "Számla Típusa"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:778
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:775
 msgid "Savings"
 msgstr "Takarékszámla"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:779
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:776
 msgid "Name on Account"
 msgstr "Számlatulajdonos Neve"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:780
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:777
 msgid "Routing Number"
 msgstr "Routing Szám"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:781
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:778
 msgid "Account Number"
 msgstr "Számlaszám"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:841
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:838
 msgid "Name as It Appears on Card *"
 msgstr "A kártyán szereplő név"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:844
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:841
 msgid "CVV *"
 msgstr "A kártyán található biztonsági kód"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1053
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1049
 msgid "Failed to Authorize the Subscription"
 msgstr "A feliratkozás nincs engedélyezve"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1095
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1091
 msgid "API Login ID"
 msgstr "API belépő azonosító"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1096
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1092
 msgid "Transaction Key"
 msgstr "Tranzakció Kód "
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1098
-#, php-format
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1094
 msgid "Enable %1$sCIM%2$s"
 msgstr "%1$sCIM%2$s Engedélyezése"
 
-#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1099
-#@ wpsc_gold_cart
+#: merchants/wpec_auth_net/classes/wpec_auth_net.class.php:1095
 msgid "Verify First, Capture Later"
 msgstr "Először ellenőrizzen, majd később mentsen"
 
 #: widgets/widget_live_search.php:11
-#@ wpsc_gold_cart
 msgid "wp-e-commerce Live Search"
 msgstr "wp-e-commerce Élő keresés"
 
 #: widgets/widget_live_search.php:22
-#@ wpsc_gold_cart
 msgid "Live search"
 msgstr "Élő keresés"
 
 #: widgets/widget_live_search.php:53
-#@ wpsc_gold_cart
 msgid "Title:"
 msgstr "Cím"
 
-#: gold_shopping_cart.php:39
-#@ wpsc_gold_cart
-msgid "There is a new version of Gold Cart for WP e-Commerce available."
-msgstr ""
+#: wpec-auto-upgrade/wpec-auto-upgrade.php:103
+msgid "Update URL:"
+msgstr "URL módisítása: "
 
-#: gold_shopping_cart.php:65
-#, php-format
-#@ wpsc_gold_cart
-msgid "<strong>Gold Cart is activated but has not been Registered!</strong><br />Take advantage of all the new features by <a href=\"%1s\">registering Gold Cart plugin now</a>. (This text will go away upon registration of the plugin)"
-msgstr ""
+#: wpec-auto-upgrade/wpec-auto-upgrade.php:107
+msgid "Update"
+msgstr "Frissítés"
 
-#: gold_shopping_cart.php:84
-#@ wpsc_gold_cart
-msgid "Gold Cart is deactivated because it is not currently compatible with Theme engine V2."
-msgstr ""
+#: wpec-auto-upgrade/wpec-auto-upgrade.php:166
+msgid "There is a new version of %s available."
+msgstr "Új %s verzió érhető el"
 
-#: gold_shopping_cart.php:546
-#@ wpsc_gold_cart
-msgid "10 per page"
-msgstr ""
+#: wpec-auto-upgrade/wpec-auto-upgrade.php:176
+msgid "You do not have sufficient permissions to update plugins for this site."
+msgstr "Nincs jogosultsága a bővítmény frissitéséhez"
 
-#: gold_shopping_cart.php:547
-#@ wpsc_gold_cart
-msgid "20 per page"
-msgstr ""
-
-#: gold_shopping_cart.php:548
-#@ wpsc_gold_cart
-msgid "50 per page"
-msgstr ""
-
-#: gold_shopping_cart.php:549
-#@ wpsc_gold_cart
-msgid "Show All"
-msgstr ""
-
-#: merchants/authorize.merchant.php:119
-#@ wpsc_gold_cart
-msgid "Credit Card Expiry MM/YY*"
-msgstr ""
-
-#: merchants/bluepay.php:204
-#@ wpsc_gold_cart
-msgid "Secret Key:"
-msgstr ""
-
-#: merchants/dps.php:2
-#@ wpsc_gold_cart
-msgid "DPS / Payment Express(DPS Hosted) - PxAccess"
-msgstr ""
-
-#: merchants/eway.php:223
-#@ wpsc_gold_cart
-msgid "Api Key"
-msgstr ""
-
-#: merchants/eway.php:231
-#@ wpsc_gold_cart
-msgid "Api Password"
-msgstr ""
-
-#: merchants/eway.php:239
-#@ wpsc_gold_cart
-msgid "Transaction Mode:"
-msgstr ""
-
-#: merchants/ideal.php:105
-#@ wpsc_gold_cart
-msgid "Français"
-msgstr ""
-
-#: merchants/linkpoint.php:31
-#@ wpsc_gold_cart
-msgid "Card Number *"
-msgstr ""
-
-#: merchants/linkpoint.php:38
-#@ wpsc_gold_cart
-msgid "Expiration Date (mm/yy)*"
-msgstr ""
-
-#: merchants/paymentexpress.php:144
-#@ wpsc_gold_cart
-msgid ""
-"Your Selected Currency is not supported by Sagepay,\n"
-"            \t\tto use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one\n"
-"            \t\tof the currencies listed on the right."
-msgstr ""
-
-#: merchants/paystation.php:35
-#@ wpsc_gold_cart
-msgid "Return URL that needs to be provided to Paystation : "
-msgstr ""
-
-#: merchants/sagepay.php:118
-#@ wpsc_gold_cart
-msgid ""
-"Your Selected Currency is not supported by Sageapy,\n"
-"        \t\tto use Sagepay, go the the stores general settings and under &quot;Currency Type&quot; select one\n"
-"        \t\tof the currencies listed on the right."
-msgstr ""
-
-#: upgrade_panel.php:95
-#@ wpsc_gold_cart
-msgid "Gold Cart Registration"
-msgstr ""
-
-#: upgrade_panel.php:98
-#@ wpsc_gold_cart
-msgid "Gold Cart is currently registered."
-msgstr ""
-
-#: upgrade_panel.php:104
-#@ wpsc_gold_cart
-msgid "Gold Cart is currently not registered."
-msgstr ""
-
-#: upgrade_panel.php:122
-#@ wpsc_gold_cart
-msgid "In order to register your API information your server requires cURL which is not installed on this server. We will attempt to use fsockopen as an alternate method to register Gold Cart. "
-msgstr ""
-
-#: upgrade_panel.php:127
-#@ wpsc_gold_cart
-msgid "In order to register your API information your server requires cURL or the fscockopen extension which are not installed on this server, you may need to contact your web hosting provider to get them set up. "
-msgstr ""
+#: wpec-auto-upgrade/wpec-auto-upgrade.php:177
+msgid "Update Plugin"
+msgstr "Plugin frissités"
 

@@ -283,7 +283,6 @@ class Virtual_Merchant extends wpsc_merchant {
       </html>';
 
     echo $form;
-	exit();
   }
 
   private function cleanInput($strRawText){

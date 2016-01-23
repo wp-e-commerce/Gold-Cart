@@ -11,7 +11,7 @@ abstract class AuthorizeNetRequest
     protected $_api_login;
     protected $_transaction_key;
     protected $_post_string; 
-    public $VERIFY_PEER = true; // attempt trust validation of SSL certificates when establishing secure connections.
+    public $VERIFY_PEER = true; // Set to false if getting connection errors.
     protected $_sandbox = true;
     protected $_log_file = false;
     
@@ -41,7 +41,7 @@ abstract class AuthorizeNetRequest
     {
         $this->_api_login = ($api_login_id ? $api_login_id : (defined('AUTHORIZENET_API_LOGIN_ID') ? AUTHORIZENET_API_LOGIN_ID : ""));
         $this->_transaction_key = ($transaction_key ? $transaction_key : (defined('AUTHORIZENET_TRANSACTION_KEY') ? AUTHORIZENET_TRANSACTION_KEY : ""));
-        $this->_sandbox = (defined('AUTHORIZENET_SANDBOX') ? AUTHORIZENET_SANDBOX : true);
+        $this->_sandbox = (defined('AUTHORIZENET_SANDBOX') ? AUTHORIZENET_SANDBOX : false);
         $this->_log_file = (defined('AUTHORIZENET_LOG_FILE') ? AUTHORIZENET_LOG_FILE : false);
     }
     
@@ -90,14 +90,10 @@ abstract class AuthorizeNetRequest
         curl_setopt($curl_request, CURLOPT_TIMEOUT, 45);
         curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl_request, CURLOPT_SSL_VERIFYHOST, 2);
-
         if ($this->VERIFY_PEER) {
             curl_setopt($curl_request, CURLOPT_CAINFO, dirname(dirname(__FILE__)) . '/ssl/cert.pem');
         } else {
-			if ($this->_log_file) {
-				file_put_contents($this->_log_file, "----Request----\nInvalid SSL option\n", FILE_APPEND);
-			}
-			return false;
+            curl_setopt($curl_request, CURLOPT_SSL_VERIFYPEER, false);
         }
         
         if (preg_match('/xml/',$post_url)) {
@@ -112,7 +108,7 @@ abstract class AuthorizeNetRequest
                 file_put_contents($this->_log_file, "----CURL ERROR----\n$curl_error\n\n", FILE_APPEND);
             }
             // Do not log requests that could contain CC info.
-             file_put_contents($this->_log_file, "----Request----\n{$this->_post_string}\n", FILE_APPEND);
+            // file_put_contents($this->_log_file, "----Request----\n{$this->_post_string}\n", FILE_APPEND);
             
             file_put_contents($this->_log_file, "----Response----\n$response\n\n", FILE_APPEND);
         }

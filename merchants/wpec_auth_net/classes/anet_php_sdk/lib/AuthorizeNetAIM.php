@@ -42,14 +42,14 @@
 class AuthorizeNetAIM extends AuthorizeNetRequest
 {
 
-    const LIVE_URL = 'https://secure2.authorize.net/gateway/transact.dll';
+    const LIVE_URL = 'https://secure.authorize.net/gateway/transact.dll';
     const SANDBOX_URL = 'https://test.authorize.net/gateway/transact.dll';
     
     /**
      * Holds all the x_* name/values that will be posted in the request. 
      * Default values are provided for best practice fields.
      */
-    protected $_x_post_fields = array(
+    private $_x_post_fields = array(
         "version" => "3.1", 
         "delim_char" => ",",
         "delim_data" => "TRUE",
@@ -461,7 +461,7 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
             $this->md5_hash             = $this->_response_array[37];
             $this->card_code_response   = $this->_response_array[38];
             $this->cavv_response        = $this->_response_array[39];
-            $this->account_number       = $this->_response_array[50];
+            $this->account_number       = $this->_response_array[40];
             $this->card_type            = $this->_response_array[51];
             $this->split_tender_id      = $this->_response_array[52];
             $this->requested_amount     = $this->_response_array[53];

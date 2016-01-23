@@ -12,19 +12,10 @@ $nzshpcrt_gateways[$num]['payment_type']            = __( 'credit card', 'wpsc_g
 $nzshpcrt_gateways[$num]['display_name']            = __( 'pay with Sagepay', 'wpsc_gold_cart' );
 $nzshpcrt_gateways[$num]['requirements']            = array('php_version' => 5.0, 'extra_modules' => array() );
 
-// Defines filter types used for a parameter in the cleanInput() function.
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC', 'clean_input_filter_alphabetic' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED', 'clean_input_filter_alphabetic_and_accented' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC', 'clean_input_filter_alphanumeric' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED', 'clean_input_filter_alphanumeric_and_accented' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_NUMERIC', 'clean_input_filter_numeric' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT', 'clean_input_filter_text' );
-define( 'WPSC_SAGEPAY_CLEAN_INPUT_FILTER_WIDEST_ALLOWABLE_CHARACTER_RANGE', 'clean_input_filter_text' );
-
 function wpec_sagepay_admin_form(){
     // construct the default email message, this message is
     //included toward the top of the customer confirmation e-mails.
-    $emailmsg = sprintf ( __( 'Thanks for purchasing at %s', 'wpsc_gold_cart' ), get_bloginfo( 'name' ) );
+    $emailmsg = sprintf ( __( 'Thanks for purchasing at %s', 'wspc' ), get_bloginfo( 'name' ) );
     if ( get_bloginfo('admin_email') ) {
         $shopEmail = get_bloginfo('admin_email');
     } else {
@@ -64,13 +55,17 @@ function wpec_sagepay_admin_form(){
 
    $adminFormHTML = '
 		<tr>
-			<td>' . esc_html__( 'SagePay Vendor name', 'wpsc_gold_cart' ) . ':</td>
+			<td>
+				Protx Vendor name:
+			</td>
 			<td>
 				<input type="text" size="40" value="'. $option['name'] .'" name="wpec_sagepay_name" />
 			</td>
 		</tr>
 		<tr>
-			<td>' . esc_html__( 'SagePay Encryption Key', 'wpsc_gold_cart' ) . ':</td>
+			<td>
+				Protx Encryption Key:
+			</td>
 			<td>
 				<input type="text" size="20" value="'. $option['encrypt_key'] .'" name="wpec_sagepay_encrypt_key" />
 			</td>
@@ -89,15 +84,6 @@ function wpec_sagepay_admin_form(){
 			</td>
 			<td>
 				<textarea name="wpec_sagepay_email_msg" rows="10" >'. $option['email_msg'] .'</textarea>
-			</td>
-		</tr>
-		<tr>
-			<td>' . esc_html__( 'Transaction Type', 'wpsc_gold_cart' ) . '</td>
-			<td>
-				<select name="wpec_sagepay_payment_type">
-					<option value="PAYMENT"' . selected( $option['payment_type'], 'PAYMENT', false ) . '>' . esc_html__( 'PAYMENT', 'wpsc_gold_cart' ) . '</option>
-					<option value="AUTHENTICATE"' . selected( $option['payment_type'], 'AUTHENTICATE', false ) . ' >' . esc_html__( 'AUTHENTICATE', 'wpsc_gold_cart' ) . '</option>
-				</select>
 			</td>
 		</tr>
 		<tr>
@@ -153,24 +139,10 @@ function wpec_sagepay_admin_form(){
         ';
     }
 
-	/**
-     * Some servers may not have the PHP Mcrypt module enabled by default.
-     * Show a message in the SagePay settings if this is the case.
-     */
-	if ( ! function_exists( 'mcrypt_encrypt' ) ) {
-		$adminFormHTML .= '
-			<tr>
-				<td colspan="2" style="color: red;">
-					' . sprintf( __( 'The <a %s>mcrypt_encrypt()</a> function which is required to send encrypted data to SagePay does not seem to be available on your server. Please <a %s>install the Mcrypt PHP module</a> or ask your web host to activate this for you.', 'wpsc_gold_cart' ), 'href="http://php.net/manual/en/function.mcrypt-encrypt.php" target="php" style="color: red; text-decoration: underline;"', 'href="http://be2.php.net/manual/en/mcrypt.installation.php" target="php" style="color: red; text-decoration: underline;"' ) . '
-				</td>
-			</tr>
-			';
-	}
 
     return $adminFormHTML;
 }
 function wpec_sagepay_submit_form(){
-	
     // a flag to run the update_option function
     $flag = false;
     $sagepay_options = get_option('wpec_sagepay');
@@ -187,10 +159,6 @@ function wpec_sagepay_submit_form(){
         $sagepay_options['shop_email'] = $_POST['wpec_sagepay_shop_email'];
         $flag = true;
     }
-	if ( isset( $_POST['wpec_sagepay_payment_type'] ) ) {
-		$sagepay_options['payment_type'] = wpec_sagepay_validate_payment_type( $_POST['wpec_sagepay_payment_type'] );
-		$flag = true;
-	}
     if(isset($_POST['wpec_sagepay_email'])){
         $sagepay_options['email'] = $_POST['wpec_sagepay_email'];
         $flag = true;
@@ -240,7 +208,7 @@ class Sagepay_merchant extends wpsc_merchant {
         //1 construct $strPost string,
         $this->strPost = $this->addContrustinfo($this->strPost);
         $this->strPost = $this->addBasketInfo($this->strPost);
-        $this->strPost = Sagepay_merchant::encryptAes($this->strPost, $this->sagepay_options['encrypt_key']);
+        $this->strPost = base64_encode(Sagepay_merchant::simpleXor($this->strPost, $this->sagepay_options['encrypt_key']));
 
     }
     private function addContrustinfo($strPost){
@@ -248,41 +216,30 @@ class Sagepay_merchant extends wpsc_merchant {
         // helper vars to populate the following temporary vars
         $billInfo = $this->cart_data['billing_address'];
         $shipInfo = $this->cart_data['shipping_address'];
-		
-		
-		$strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-		
         // temporary vars that will be added to the $strPost string in url format
-        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-        $strBillingCity        = $this->cleanInput( $billInfo['city'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-        $strBillingCountry     = $this->cleanInput( $billInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingAddress1    = $this->cleanInput( $billInfo['address'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingCity        = $this->cleanInput( $billInfo['city'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
+        $strBillingCountry     = $this->cleanInput( $billInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
-        $strBillingState       = $this->cleanInput( $billInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+        $strBillingState       = $this->cleanInput( $billInfo['state'], CLEAN_INPUT_FILTER_TEXT);
         // no state required if not in the US
-        if($strBillingCountry != 'US') $strBillingState = '';		
-		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
-			$strBillingPhone = $this->cleanInput( $billInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-		}
-
-        //Shipping info
-        $strDeliveryFirstnames = isset( $shipInfo['first_name'] )	? $this->cleanInput( $shipInfo['first_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingFirstnames;
-        $strDeliverySurname    = isset( $shipInfo['last_name'] ) 	? $this->cleanInput( $shipInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingSurname;
-        $strDeliveryAddress1   = isset( $shipInfo['address'] ) 		? $this->cleanInput( $shipInfo['address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingAddress1;
-        $strDeliveryCity       = isset( $shipInfo['city'] ) 		? $this->cleanInput( $shipInfo['city'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCity;
-        $strDeliveryState      = isset( $shipInfo['state'] ) 		? $this->cleanInput( $shipInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingState;
-        $strDeliveryCountry    = isset( $shipInfo['country'] ) 		? $this->cleanInput( $shipInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCountry;
+        if($strBillingCountry != 'US') $strBillingState = '';
+        $strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliveryFirstnames = $this->cleanInput( $shipInfo['first_name'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliverySurname    = $this->cleanInput( $shipInfo['last_name'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliveryAddress1   = $this->cleanInput( $shipInfo['address'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliveryCity       = $this->cleanInput( $shipInfo['city'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliveryState      = $this->cleanInput( $shipInfo['state'], CLEAN_INPUT_FILTER_TEXT);
+        $strDeliveryCountry    = $this->cleanInput( $shipInfo['country'], CLEAN_INPUT_FILTER_TEXT);
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
         // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
-		
-		$strDeliveryPostCode   = isset( $shipInfo['post_code'] )		? $this->cleanInput( $shipInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingPostCode;
+			$strDeliveryPostCode   = $this->cleanInput( $shipInfo['post_code'], CLEAN_INPUT_FILTER_TEXT);
 
-		if ( isset ( $shipInfo['phone'] ) && $shipInfo['phone'] != '' ) {
-			$strDeliveryPhone = $this->cleanInput( $shipInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-		}
+
 
         // begin to populate the $strPost, witch will be sent
         // First we need to generate a unique VendorTxCode for this transaction **
@@ -310,7 +267,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
         }
         $strPost .= '&Description=' . $description;
-        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'];
+        $strPost .= '&SuccessURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
         $strPost .= '&FailureURL=' . $this->cart_data['transaction_results_url'] . $this->seperator;
         $strPost .= '&CustomerName=' . $strBillingFirstnames . ' ' . $strBillingSurname;
         $strPost .= '&CustomerEMail=' . $strCustomerEMail;
@@ -331,18 +288,18 @@ class Sagepay_merchant extends wpsc_merchant {
         $strPost .= "&BillingPostCode=" . $strBillingPostCode;
         $strPost .= "&BillingCountry=" . $strBillingCountry;
         if (strlen($strBillingState) > 0) $strPost .= "&BillingState=" . $strBillingState;
-        if ( isset( $strBillingPhone ) && strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
+        if (strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
 
 
-		
 		// Shipping Details:
-		$strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames;
-		$strPost .= "&DeliverySurname=" . $strDeliverySurname;
-		$strPost .= "&DeliveryAddress1=" . $strDeliveryAddress1;
-		$strPost .= "&DeliveryCity=" . $strDeliveryCity;
-		$strPost .= "&DeliveryPostCode=" . $strDeliveryPostCode;
-		$strPost .= "&DeliveryCountry=" . $strDeliveryCountry;
-		
+        // if the shipping info isnt present then assign the billing info
+        (strlen($strDeliveryFirstnames ) > 0)  ? $strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames : $strPost .= "&DeliveryFirstnames=" .  $strBillingFirstnames;
+        (strlen($strDeliverySurname ) > 0)     ? $strPost .= "&DeliverySurname=" . $strDeliverySurname        : $strPost .= "&DeliverySurname=" . $strBillingSurname;
+        (strlen($strDeliveryAddress1) > 0)     ? $strPost .= "&DeliveryAddress1=" . $strDeliveryAddress1      : $strPost .= "&DeliveryAddress1=" . $strBillingAddress1;
+        (strlen($strDeliveryCity) > 0)         ? $strPost .= "&DeliveryCity=" . $strDeliveryCity              : $strPost .= "&DeliveryCity=" . $strBillingCity;
+        (strlen($strDeliveryPostCode) > 0)     ? $strPost .= "&DeliveryPostCode=" . $strDeliveryPostCode      : $strPost .= "&DeliveryPostCode=" . $strBillingPostCode;
+        (strlen($strDeliveryCountry) > 0)      ? $strPost .= "&DeliveryCountry=" . $strDeliveryCountry        : $strPost .= "&DeliveryCountry=" . $strBillingCountry;
+
        if (strlen($strDeliveryState) > 0 || strlen($strBillingState) > 0){
            if(strlen($strDeliveryState) > 0){
                $strPost .=  "&DeliveryState=" . $strDeliveryState;
@@ -351,15 +308,15 @@ class Sagepay_merchant extends wpsc_merchant {
            }
        }
 
-       /*if( ( isset( $strBillingPhone ) || isset( $strBillingPhone ) ) && ( strlen($strDeliveryPhone) > 0 || strlen($strBillingPhone) > 0 ) ){
+       if(strlen($strDeliveryPhone) > 0 || strlen($strBillingPhone) > 0){
            if(strlen($strDeliveryPhone) > 0){
                $strPost .=  "&DeliveryPhone=" . $strDeliveryPhone;
            } else if(strlen($strBillingPhone) > 0){
                $strPost .=  "&DeliveryPhone=" .$strBillingPhone;
            }
-       }*/
+       }
 
-	   return $strPost;
+      return $strPost;
     }
 
     private function addBasketInfo($strPost){
@@ -415,10 +372,8 @@ class Sagepay_merchant extends wpsc_merchant {
         }
 
         $strPost .= "&Basket=" . $cartString;
-
         return $strPost;
     }
-	
     public function submit() {
 
         $servertype = $this->sagepay_options['server_type'];
@@ -431,13 +386,13 @@ class Sagepay_merchant extends wpsc_merchant {
             $url = 'https://live.sagepay.com/gateway/service/vspform-register.vsp';
         }
         //TODO update purchase logs to pending
-        //$this->set_purchase_processed_by_purchid(2);
+        $this->set_purchase_processed_by_purchid(2);
 
         $output =
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><head><title></title></head><body>
         	<form id="sagepay_form" name="sagepay_form" method="post" action="' .$url . '">
-       			<input type="hidden"    name="VPSProtocol"  value ="3.00" ></input>
-        		<input type="hidden" name="TxType" value ="' . wpec_sagepay_validate_payment_type( $this->sagepay_options['payment_type'] ) . '"  ></input>
+       			<input type="hidden"    name="VPSProtocol"  value ="2.23" ></input>
+        		<input type="hidden"    name="TxType"       value ="PAYMENT"  ></input>
         		<input type="hidden"    name="Vendor"       value ="'. $this->sagepay_options['name'] . '"  ></input>
         		<input type="hidden"    name="Crypt"        value ="'. $this->strPost . '"  ></input>
         	</form>
@@ -445,7 +400,6 @@ class Sagepay_merchant extends wpsc_merchant {
         </body></html>';
 
         echo $output;
-		exit();
     }
 
     public function parse_gateway_notification() {
@@ -465,26 +419,26 @@ class Sagepay_merchant extends wpsc_merchant {
         $strCleaned = "";
         $filterType = strtolower($filterType); //ensures filterType matches constant values
 
-        if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT){
+        if ($filterType == CLEAN_INPUT_FILTER_TEXT){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&£$=%~*+\"\n\r";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, TRUE);
         }
-        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_NUMERIC){
+        elseif ($filterType == CLEAN_INPUT_FILTER_NUMERIC){
 
             $strAllowableChars = "0123456789 .,";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, FALSE);
         }
-        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC || $filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED){
+        elseif ($filterType == CLEAN_INPUT_FILTER_ALPHABETIC || $filterType == CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED){
 
             $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz";
-            if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
+            if ($filterType == CLEAN_INPUT_FILTER_ALPHABETIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
                 $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
-        elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC || $filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED){
+        elseif ($filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC || $filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED){
 
             $strAllowableChars = "0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
+            if ($filterType == CLEAN_INPUT_FILTER_ALPHANUMERIC_AND_ACCENTED) $blnAllowAccentedChars = TRUE;
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, $blnAllowAccentedChars);
         }
         else{ // Widest Allowable Character Range
@@ -537,166 +491,49 @@ class Sagepay_merchant extends wpsc_merchant {
         return $strCleanedText;
     }
 
-    /**
-     * PHP's mcrypt does not have built in PKCS5 Padding, so we use this.
-     *
-     * @param string $input The input string.
-     *
-     * @return string The string with padding.
-     */
-    static protected function addPKCS5Padding($input)
-    {
-        $blockSize = 16;
-        $padd = "";
+    /*  The SimpleXor encryption algorithm                                                                                **
+    **  NOTE: This is a placeholder really.  Future releases of Form will use AES or TwoFish.  Proper encryption      **
+    **  This simple function and the Base64 will deter script kiddies and prevent the "View Source" type tampering        **
+    **  It won't stop a half decent hacker though, but the most they could do is change the amount field to something     **
+    **  else, so provided the vendor checks the reports and compares amounts, there is no harm done.  It's still          **
+    **  more secure than the other PSPs who don't both encrypting their forms at all                                      */
 
-        // Pad input to an even block size boundary.
-        $length = $blockSize - (strlen($input) % $blockSize);
-        for ($i = 1; $i <= $length; $i++)
-        {
-            $padd .= chr($length);
+   public static function simpleXor($InString, $Key) {
+        // Initialise key array
+        $KeyList = array();
+        // Initialise out variable
+        $output = "";
+
+        // Convert $Key into array of ASCII values
+        for($i = 0; $i < strlen($Key); $i++){
+            $KeyList[$i] = ord(substr($Key, $i, 1));
         }
 
-        return $input . $padd;
+        // Step through string a character at a time
+        for($i = 0; $i < strlen($InString); $i++) {
+            // Get ASCII code from string, get ASCII code from key (loop through with MOD), XOR the two, get the character from the result
+            // % is MOD (modulus), ^ is XOR
+            $output.= chr(ord(substr($InString, $i, 1)) ^ ($KeyList[$i % strlen($Key)]));
+        }
+
+        // Return the result
+        return $output;
     }
-
-    /**
-     * Remove PKCS5 Padding from a string.
-     *
-     * @param string $input The decrypted string.
-     *
-     * @return string String without the padding.
-     * @throws SagepayApiException
-     */
-    static protected function removePKCS5Padding($input)
-    {
-        $blockSize = 16;
-        $padChar = ord($input[strlen($input) - 1]);
-
-        /* Check for PadChar is less then Block size */
-        if ($padChar > $blockSize)
-        {
-            throw new SagepayApiException('Invalid encryption string');
-        }
-        /* Check by padding by character mask */
-        if (strspn($input, chr($padChar), strlen($input) - $padChar) != $padChar)
-        {
-            throw new SagepayApiException('Invalid encryption string');
-        }
-
-        $unpadded = substr($input, 0, (-1) * $padChar);
-        /* Chech result for printable characters */
-        if (preg_match('/[[:^print:]]/', $unpadded))
-        {
-            throw new SagepayApiException('Invalid encryption string');
-        }
-        return $unpadded;
-    }
-
-    /**
-     * Encrypt a string ready to send to SagePay using encryption key.
-     *
-     * @param  string  $string  The unencrypyted string.
-     * @param  string  $key     The encryption key.
-     *
-     * @return string The encrypted string.
-     */
-    static public function encryptAes($string, $key)
-    {
-        // AES encryption, CBC blocking with PKCS5 padding then HEX encoding.
-        // Add PKCS5 padding to the text to be encypted.
-        $string = self::addPKCS5Padding($string);
-
-        // Perform encryption with PHP's MCRYPT module.
-        $crypt = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $string, MCRYPT_MODE_CBC, $key);
-
-        // Perform hex encoding and return.
-        return "@" . strtoupper(bin2hex($crypt));
-    }
-
-    /**
-     * Decode a returned string from SagePay.
-     *
-     * @param string $strIn         The encrypted String.
-     * @param string $password      The encyption password used to encrypt the string.
-     *
-     * @return string The unecrypted string.
-     * @throws SagepayApiException
-     */
-    static public function decryptAes($strIn, $password)
-    {
-        // HEX decoding then AES decryption, CBC blocking with PKCS5 padding.
-        // Use initialization vector (IV) set from $str_encryption_password.
-        $strInitVector = $password;
-
-        // Remove the first char which is @ to flag this is AES encrypted and HEX decoding.
-        $hex = substr($strIn, 1);
-
-        // Throw exception if string is malformed
-        if (!preg_match('/^[0-9a-fA-F]+$/', $hex))
-        {
-            throw new SagepayApiException('Invalid encryption string');
-        }
-        $strIn = pack('H*', $hex);
-
-        // Perform decryption with PHP's MCRYPT module.
-        $string = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $password, $strIn, MCRYPT_MODE_CBC, $strInitVector);
-        return self::removePKCS5Padding($string);
-    }
-
-    /**
-     * Convert string to data array.
-     *
-     * @param string  $data       Query string
-     * @param string  $delimeter  Delimiter used in query string
-     *
-     * @return array
-     */
-    static public function queryStringToArray($data, $delimeter = "&")
-    {
-        // Explode query by delimiter
-        $pairs = explode($delimeter, $data);
-        $queryArray = array();
-
-        // Explode pairs by "="
-        foreach ($pairs as $pair)
-        {
-            $keyValue = explode('=', $pair);
-
-            // Use first value as key
-            $key = array_shift($keyValue);
-
-            // Implode others as value for $key
-            $queryArray[$key] = implode('=', $keyValue);
-        }
-        return $queryArray;
-    }
-}
-
-class SagepayApiException extends Exception
-{
 
 }
 
-function sagepay_process_gateway_info() {
-	global $sessionid;
 
-	if( get_option ('permalink_structure') != '' ) {
-		$separator ="?";
-	} else {
-		$separator ="&";
-	}
-	
+add_filter('wpsc_previous_selected_gateway_sagepay', 'sagepay_process_gateway_info', 10, 1);
+
+function sagepay_process_gateway_info($sessionid){
     // first set up all the vars that we are going to need later
     $sagepay_options =  get_option('wpec_sagepay');
-    $crypt = filter_input(INPUT_GET, 'crypt');
-    $uncrypt = Sagepay_merchant::decryptAes( $crypt , $sagepay_options['encrypt_key'] );
-	$decryptArr = Sagepay_merchant::queryStringToArray($uncrypt);
-	if (!$uncrypt || empty($decryptArr))
-	{
-		return;
-	}
+
+    $crypt = str_replace( " ", "+", $_GET['crypt'] );
+    $uncrypt = Sagepay_merchant::simpleXor( base64_decode( $crypt ), $sagepay_options['encrypt_key'] );
     parse_str( $uncrypt, $unencrypted_values );
-	
+
+
     $success = '';
     switch ( $unencrypted_values['Status'] ) {
         case 'NOTAUTHED':
@@ -713,15 +550,10 @@ function sagepay_process_gateway_info() {
         case 'ABORT':
             $success = 'Failed';
             break;
-		case 'AUTHENTICATED': // Only returned if TxType is AUTHENTICATE
-			if ( isset( $sagepay_options['payment_type'] ) && 'AUTHENTICATE' == $sagepay_options['payment_type'] ) {
-				$success = 'Authenticated';
-			} else {
-				$success = 'Pending';	
-			}
-            break;
+        case 'AUTHENTICATED': // Only returned if TxType is AUTHENTICATE
+            $success = 'Pending';
         case 'REGISTERED': // Only returned if TxType is AUTHENTICATE
-            $success = 'Authenticated';
+            $success = 'Failed';
             break;
         case 'OK':
             $success = 'Completed';
@@ -729,20 +561,21 @@ function sagepay_process_gateway_info() {
         default:
             break;
     }
-
+    global $sessionid;
     switch ( $success ) {
         case 'Completed':
             $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
             $purchase_log->set( array(
                 'processed'  => WPSC_Purchase_Log::ACCEPTED_PAYMENT,
                 'transactid' => $unencrypted_values['VPSTxId'],
+                'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
             ) );
             $purchase_log->save();
 
             // set this global, wonder if this is ok
             $sessionid = $unencrypted_values['VendorTxCode'];
-			header("Location: ".get_option('transact_url').$separator."sessionid=".$sessionid);
-			exit();
+            transaction_results($sessionid,true);
+
             break;
         case 'Failed': // if it fails...
             switch ( $unencrypted_values['Status'] ) {
@@ -767,29 +600,12 @@ function sagepay_process_gateway_info() {
 					wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
 					$checkout_page_url = get_option( 'shopping_cart_url' );
 					if ( $checkout_page_url ) {
-						header( 'Location: '.$checkout_page_url );
-						exit();
+					  header( 'Location: '.$checkout_page_url );
+					  exit();
 					}
                     break;
             }
             break;
-
-		case 'Authenticated': // Like "Completed" but only flag as order received
-			$purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
-			$purchase_log->set( array(
-				'processed'  => WPSC_Purchase_Log::ORDER_RECEIVED,
-				'transactid' => $unencrypted_values['VPSTxId'],
-				'date'       => time(),
-				'notes'      => 'SagePay Status: ' . $unencrypted_values['Status'],
-			) );
-			$purchase_log->save();
-
-			// Redirect to reponse page
-			$sessionid = $unencrypted_values['VendorTxCode'];
-			header( "Location: " . get_option('transact_url') . $separator . "sessionid=" . $sessionid );
-			exit();
-			break;
-
         case 'Pending': // need to wait for "Completed" before processing
             $purchase_log = new WPSC_Purchase_Log( $unencrypted_values['VendorTxCode'], 'sessionid' );
             $purchase_log->set( array(
@@ -807,48 +623,11 @@ function sagepay_process_gateway_info() {
 			wpsc_update_customer_meta( 'checkout_misc_error_messages', $error_messages );
 			$checkout_page_url = get_option( 'shopping_cart_url' );
 			if ( $checkout_page_url ) {
-				
 			  header( 'Location: '.$checkout_page_url );
 			  exit();
 			}
             break;
     }
+
+    return $unencrypted_values['VendorTxCode'];
 }
-
-if ( isset( $_GET['crypt'] ) && ( substr( $_GET['crypt'], 0, 1 ) === '@') ) {
-  add_action('init', 'sagepay_process_gateway_info');
-}
-
-/**
- * Checks and returns a valid payment type.
- *
- * This will ALWAYS return a valid payment type.
- * If the requested payment type is not valid it will return a default payment type of "PAYMENT".
- *
- * @param   string  $payment_type  Payment type to validate.
- * @return  string                 Valid payment type.
- */
-function wpec_sagepay_validate_payment_type( $payment_type ) {
-
-	if ( in_array( $payment_type, array( 'PAYMENT', 'AUTHENTICATE' ) ) ) {
-		return $payment_type;
-	}
-
-	return 'PAYMENT';
-
-}
-
-function _wpsc_action_admin_sagepay_suhosin_check() {
-	if( in_array( 'sagepay', get_option( 'custom_gateway_options', array() ) ) ) {
-		if( @ extension_loaded( 'suhosin' ) && @ ini_get( 'suhosin.get.max_value_length' ) < 1000 ) {
-			add_action( 'admin_notices', '_wpsc_action_admin_notices_sagepay_suhosin' );
-		}
-	}
-}
-add_action( 'admin_init', '_wpsc_action_admin_sagepay_suhosin_check' );
-
-function _wpsc_action_admin_notices_sagepay_suhosin() { ?>
-	<div id="message" class="error fade">
-		<p><?php echo __( "We noticed your host has enabled the Suhosin extension on your server.  Unfortunately, it has been misconfigured for compatibility with SagePay. </br> Before you can use SagePay, please contact your hosting provider and ask them to increase the 'suhosin.get.max_value_length' to a value over 1,500.") ?></p>
-	</div>	
-<?php }

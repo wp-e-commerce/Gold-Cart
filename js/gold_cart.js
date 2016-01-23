@@ -31,7 +31,7 @@
 		});
 	}
 	
-	$('.wpsc_live_search_embed').on('keyup', function(){
+	$('.wpsc_live_search_embed').live('keyup', function(){
 		var t = $(this),
 			str = $.trim(t.val()),
 			list = $('.' + WPSC_GoldCart.productListClass);
@@ -92,7 +92,7 @@
 		}
 	});
 	
-	$('#wpsc-main-search select').on('change', function(){
+	$('#wpsc-main-search select').live('change', function(){
 		var t = $(this), qs;
 		if (t.val() !== '') {
 			location.search = $.query.SET(t.attr('name'), t.val());
@@ -102,7 +102,7 @@
 	var widgetCache = {},
 		widgetSearch = false;
 	
-	$('.wpsc_live_search').on('keyup', function(){
+	$('.wpsc_live_search').live('keyup', function(){
 		var t = $(this),
 			str = $.trim(t.val());
 		

@@ -1,8 +1,10 @@
 <?php
 
+require_once 'AuthorizeNet_Test_Config.php';
+
 class AuthorizeNet_SOAP_Test extends PHPUnit_Framework_TestCase
 {
-
+    
     public function testSaveSoapDoc ()
     {
         $filepath = dirname(__FILE__) . "/soap_doc.php";
@@ -10,7 +12,7 @@ class AuthorizeNet_SOAP_Test extends PHPUnit_Framework_TestCase
         $this->assertTrue($client->saveSoapDocumentation($filepath) > 1);
         unlink($filepath);
     }
-
+    
     public function testGetCustomerIds ()
     {
         $client = new AuthorizeNetSOAP;

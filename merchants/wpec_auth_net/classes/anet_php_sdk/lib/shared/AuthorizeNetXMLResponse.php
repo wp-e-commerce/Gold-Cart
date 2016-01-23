@@ -27,14 +27,11 @@ class AuthorizeNetXMLResponse
         $this->response = $response;
         if ($response) {
             $this->xml = @simplexml_load_string($response);
-            
-            // Remove namespaces for use with XPath.
-            $this->xpath_xml = @simplexml_load_string(preg_replace('/ xmlns:xsi[^>]+/','',$response));
         }
     }
     
     /**
-     * Was the transaction successful?
+     * Was the transaction successfull.
      *
      * @return bool
      */
@@ -44,18 +41,7 @@ class AuthorizeNetXMLResponse
     }
     
     /**
-     * Run an xpath query on the cleaned XML response
-     *
-     * @param  string $path
-     * @return array  Returns an array of SimpleXMLElement objects or FALSE in case of an error.
-     */
-    public function xpath($path)
-    {
-        return $this->xpath_xml->xpath($path);
-    }
-    
-    /**
-     * Was there an error?
+     * Was there an error.
      *
      * @return bool
      */
@@ -63,10 +49,7 @@ class AuthorizeNetXMLResponse
     {
         return ($this->getResultCode() == "Error");
     }
-
-    /**
-     * @return string
-     */    
+    
     public function getErrorMessage()
     {
         return "Error: {$this->getResultCode()} 
@@ -74,44 +57,41 @@ class AuthorizeNetXMLResponse
         {$this->getMessageCode()}";    
     }
     
-    /**
-     * @return string
-     */
     public function getRefID()
     {
         return $this->_getElementContents("refId");
     }
     
-    /**
-     * @return string
-     */
     public function getResultCode()
     {
         return $this->_getElementContents("resultCode");
     }
     
-    /**
-     * @return string
-     */
     public function getMessageCode()
     {
         return $this->_getElementContents("code");
     }
     
-    /**
-     * @return string
-     */
     public function getMessageText()
     {
         return $this->_getElementContents("text");
     }
     
-    /**
-     * Grabs the contents of a unique element.
-     *
-     * @param  string
-     * @return string
-     */
+    public function getCustomerAddressId()
+    {
+        return $this->_getElementContents("customerAddressId");
+    }
+    
+    public function getCustomerProfileId()
+    {
+        return $this->_getElementContents("customerProfileId");
+    }
+    
+    public function getPaymentProfileId()
+    {
+        return $this->_getElementContents("customerPaymentProfileId");
+    }
+    
     protected function _getElementContents($elementName) 
     {
         $start = "<$elementName>";

@@ -18,7 +18,7 @@
 class AuthorizeNetCIM extends AuthorizeNetRequest
 {
 
-    const LIVE_URL = "https://api2.authorize.net/xml/v1/request.api";
+    const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
     const SANDBOX_URL = "https://apitest.authorize.net/xml/v1/request.api";
 
     
@@ -113,7 +113,7 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
         $transactionParent = $this->_xml->addChild("transaction");
         $transactionChild = $transactionParent->addChild("profileTrans" . $transactionType);
         $this->_addObject($transactionChild, $transaction);
-        $this->_extraOptions = $extraOptionsString . "x_encap_char=|";
+        $this->_extraOptions = $extraOptionsString;
         return $this->_sendRequest();
     }
     
@@ -225,11 +225,13 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
      *
      * @param int                        $customerProfileId
      * @param AuthorizeNetCustomer       $customerProfile
+     * @param string                     $validationMode
      *
      * @return AuthorizeNetCIM_Response
      */
-    public function updateCustomerProfile($customerProfileId, $customerProfile)
+    public function updateCustomerProfile($customerProfileId, $customerProfile, $validationMode = "none")
     {
+        // $this->_validationMode = $validationMode;
         $this->_constructXml("updateCustomerProfileRequest");
         $customerProfile->customerProfileId = $customerProfileId;
         $profile = $this->_xml->addChild("profile");
@@ -247,9 +249,9 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
      *
      * @return AuthorizeNetCIM_Response
      */
-    public function updateCustomerPaymentProfile($customerProfileId, $customerPaymentProfileId, $paymentProfile, $validationMode = "none")
+    public function updateCustomerPaymentProfile($customerProfileId, $customerPaymentProfileId, $paymentProfile, $validationMode = "testMode")
     {
-        $this->_validationMode = $validationMode;
+      //  $this->_validationMode = $validationMode;
         $this->_constructXml("updateCustomerPaymentProfileRequest");
         $this->_xml->addChild("customerProfileId", $customerProfileId);
         $paymentProfile->customerPaymentProfileId = $customerPaymentProfileId;
@@ -279,19 +281,11 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
     }
     
     /**
-     * Update the status of an existing order that contains multiple transactions with the same splitTenderId.
-     *
-     * @param int                        $splitTenderId
-     * @param string                     $splitTenderStatus
-     *
-     * @return AuthorizeNetCIM_Response
+     * Not yet implemented.
      */
-    public function updateSplitTenderGroup($splitTenderId, $splitTenderStatus)
+    public function updateSplitTenderGroup()
     {
-        $this->_constructXml("updateSplitTenderGroupRequest");
-        $this->_xml->addChild("splitTenderId", $splitTenderId);
-        $this->_xml->addChild("splitTenderStatus", $splitTenderStatus);
-        return $this->_sendRequest();
+    
     }
     
     /**
@@ -313,31 +307,6 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
         $this->_xml->addChild("customerPaymentProfileId",$customerPaymentProfileId);
         $this->_xml->addChild("customerShippingAddressId",$customerShippingAddressId);
         $this->_xml->addChild("cardCode",$cardCode);
-        return $this->_sendRequest();
-    }
-    
-    /**
-     * Get hosted profile page request token
-     *
-     * @param string $customerProfileId
-     * @param mixed  $settings
-     *
-     * @return AuthorizeNetCIM_Response
-     */
-    public function getHostedProfilePageRequest($customerProfileId, $settings=0)
-    {
-        $this->_constructXml("getHostedProfilePageRequest");
-        $this->_xml->addChild("customerProfileId", $customerProfileId);
-
-        if (!empty($settings)) {
-            $hostedSettings = $this->_xml->addChild("hostedProfileSettings");
-            foreach ($settings as $key => $val) {
-                $setting = $hostedSettings->addChild("setting");
-                $setting->addChild("settingName", $key);
-                $setting->addChild("settingValue", $val);
-            }
-        }
-
         return $this->_sendRequest();
     }
     
@@ -366,18 +335,13 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
      */
     protected function _setPostString()
     {
-        ($this->_validationMode != "none" ? $this->_xml->addChild('validationMode',$this->_validationMode) : "");
         $this->_post_string = $this->_xml->asXML();
         
         // Add extraOptions CDATA
         if ($this->_extraOptions) {
             $this->_xml->addChild("extraOptions");
-            $this->_post_string = str_replace(array("<extraOptions></extraOptions>","<extraOptions/>"),'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
-            $this->_extraOptions = false;
+            $this->_post_string = str_replace("<extraOptions></extraOptions>",'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
         }
-        // Blank out our validation mode, so that we don't include it in calls that
-        // don't use it.
-        $this->_validationMode = "none";
     }
     
     /**
@@ -393,6 +357,7 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
         $merchant->addChild('name',$this->_api_login);
         $merchant->addChild('transactionKey',$this->_transaction_key);
         ($this->_refId ? $this->_xml->addChild('refId',$this->_refId) : "");
+        ($this->_validationMode != "none" ? $this->_xml->addChild('validationMode',$this->_validationMode) : "");
     }
     
     /**
@@ -458,28 +423,7 @@ class AuthorizeNetCIM_Response extends AuthorizeNetXMLResponse
      */
     public function getTransactionResponse()
     {
-        return new AuthorizeNetAIM_Response($this->_getElementContents("directResponse"), ",", "|", array());
-    }
-    
-    /**
-     * @return array Array of AuthorizeNetAIM_Response objects for each payment profile.
-     */
-    public function getValidationResponses()
-    {
-        $responses = (array)$this->xml->validationDirectResponseList;
-        $return = array();
-        foreach ((array)$responses["string"] as $response) {
-            $return[] = new AuthorizeNetAIM_Response($response, ",", "", array());
-        }
-        return $return;
-    }
-    
-    /**
-     * @return AuthorizeNetAIM_Response
-     */
-    public function getValidationResponse()
-    {
-        return new AuthorizeNetAIM_Response($this->_getElementContents("validationDirectResponse"), ",", "|", array());
+        return new AuthorizeNetAIM_Response($this->_getElementContents("directResponse"), ",", "", array());
     }
     
     /**
@@ -507,30 +451,6 @@ class AuthorizeNetCIM_Response extends AuthorizeNetXMLResponse
     {
         $ids = (array)$this->xml->customerShippingAddressIdList;
         return $ids["numericString"];
-    }
-    
-    /**
-     * @return string
-     */
-    public function getCustomerAddressId()
-    {
-        return $this->_getElementContents("customerAddressId");
-    }
-    
-    /**
-     * @return string
-     */
-    public function getCustomerProfileId()
-    {
-        return $this->_getElementContents("customerProfileId");
-    }
-    
-    /**
-     * @return string
-     */
-    public function getPaymentProfileId()
-    {
-        return $this->_getElementContents("customerPaymentProfileId");
     }
 
 }

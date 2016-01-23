@@ -1,12 +1,8 @@
 <?php
 if ( is_user_logged_in() ) {
 	global $separator, $wpec_auth_net_user_profile_url;
-	
-	if ( in_array ( WPECAUTHNET_PLUGIN_NAME, get_option('custom_gateway_options') ) ) {
-		add_action('wpsc_additional_user_profile_links', 'wpec_auth_net_user_profile_display_links');
-	}
+	add_action('wpsc_additional_user_profile_links', 'wpec_auth_net_user_profile_display_links');
 	$wpec_auth_net_user_profile_url = get_option( 'user_account_url' ) . $separator . "wpec_auth_net_user_profile=true";
-
 	function wpec_auth_net_user_profile_display_links($div){
 		global $separator, $wpec_auth_net_user_profile_url;
 		echo "{$div} <a href='{$wpec_auth_net_user_profile_url}'>".__( 'Saved Credit Card, Bank or Shipping Information', 'wpsc_gold_cart' )."</a> ";
@@ -76,9 +72,6 @@ if ( is_user_logged_in() ) {
 		if ( class_exists('WPSC_Subscription') )
 			$subs = new WPSC_Subscription();
 		?>
-		
-		
-		
 		<div id='wpec_auth_net_user_profile_manager'>
 		<h2><?php _e( 'Saved Credit Card, Bank and Shipping Information', 'wpsc_gold_cart' );?></h2>
 		<?php if( isGood( $auth_net_message ) ){ ?>
