@@ -7,9 +7,9 @@ class WPSC_Live_Search extends WP_Widget {
   /** 
    * Constructor 
    */
-  function WPSC_Live_Search() {
-    parent::WP_Widget( false, $name = __( 'WP e-Commerce Live Search', 'wpsc_gold_cart' ) );	
-  }
+	function __construct() {
+		parent::__construct( false, $name = __( 'WP eCommerce Live Search', 'wpsc_gold_cart' ) );
+	}
 
   /** 
    * @see WP_Widget::widget 
@@ -68,18 +68,18 @@ register_widget( 'WPSC_Live_Search' );
  * Live Search
  */ 
 function wpsc_live_search() {
-	if ( (float)WPSC_VERSION < 3.8 ) {
+	if ( version_compare( get_option ( 'wpsc_version' ), 3.8, '<' ) ) {
 		$autocomplete = 'onkeyup="autocomplete(event)"';
 	} else {
 		$autocomplete = '';
   }
 	//get the url to submit the search to
-	$product_page_id = wpec_get_the_post_id_by_shortcode( '[productspage]' );
+	$product_page_id = wpsc_get_the_post_id_by_shortcode( '[productspage]' );
 	$pp_url = get_permalink( $product_page_id );
 	// the js below listens for the enter keypress and redirects to the product page with a get var of the search term
   ?>
   <div class="live_search_form">
-		<input name="product_search" id="wpsc_search_autocomplete" <?php echo $autocomplete; ?> class="wpsc_live_search" autocomplete="off" />
+	<input name="product_search" id="wpsc_search_autocomplete" <?php echo $autocomplete; ?> class="wpsc_live_search" autocomplete="off" />
     <script type='text/javascript' > /* <![CDATA[ */
       jQuery('#wpsc_search_autocomplete').keypress( function(e){
         if ( e.keyCode == 13 ) {

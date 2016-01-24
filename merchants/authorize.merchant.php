@@ -93,15 +93,18 @@ function form_authorize_merchant() {
 }
 
 function submit_authorize_merchant() {
-
-	if ( isset ( $_POST['authorize_login'] ) )
+	if ( isset ( $_POST['authorize_login'] ) ) {
 		update_option( 'authorize_login', $_POST['authorize_login'] );
-	if ( isset ( $_POST['authorize_password'] ) )
-		update_option( 'authorize_password', $_POST['authorize_password'] );
-	if ( isset ( $_POST['authorize_testmode'] ) )
-		update_option( 'authorize_testmode', $_POST['authorize_testmode'] );
-	return true;
+	}
 
+	if ( isset ( $_POST['authorize_password'] ) ) {
+		update_option( 'authorize_password', $_POST['authorize_password'] );
+	}
+
+	if ( isset ( $_POST['authorize_testmode'] ) ) {
+		update_option( 'authorize_testmode', $_POST['authorize_testmode'] );
+	}
+	return true;
 }
 
 if(in_array('wpsc_merchant_authorize',(array)get_option('custom_gateway_options'))) {
@@ -229,7 +232,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		'x_last_name' => $this->cart_data['billing_address']['last_name'],
 		'x_address' => $this->cart_data['billing_address']['address'],
 		'x_city' => $this->cart_data['billing_address']['city'],
-		//'x_state' => $this->cart_data['billing_address'][''],
+		'x_state' => $this->cart_data['billing_address']['state'],
 		'x_zip' => $this->cart_data['billing_address']['post_code'],
 		'x_country' => $this->cart_data['billing_address']['country'],
 		
@@ -238,7 +241,7 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		'x_ship_to_last_name' => $this->cart_data['shipping_address']['last_name'],
 		'x_ship_to_address' => $this->cart_data['shipping_address']['address'],
 		'x_ship_to_city' => $this->cart_data['shipping_address']['city'],
-		//'x_ship_to_state' => $this->cart_data['shipping_address'][''],
+		'x_ship_to_state' => $this->cart_data['shipping_address']['state'],
 		'x_ship_to_zip' => $this->cart_data['shipping_address']['post_code'],
 		'x_ship_to_country' => $this->cart_data['shipping_address']['country'],
 		
@@ -285,13 +288,13 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 		$options['body']['x_relay_response'] = "FALSE";
 		$options['body']['x_delim_data'] = "TRUE";
 
-		$wdsl_url = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
+		$wdsl_url = "https://api2.authorize.net/soap/v1/Service.asmx?WSDL";
 		if((bool)get_option('authorize_testmode') == true) {
 			$authorize_url = "https://test.authorize.net/gateway/transact.dll";
 			$service_url = "https://apitest.authorize.net/soap/v1/Service.asmx";
 		} else {
-			$authorize_url = "https://secure.authorize.net/gateway/transact.dll";
-			$service_url = "https://api.authorize.net/soap/v1/Service.asmx";
+			$authorize_url = "https://secure2.authorize.net/gateway/transact.dll";
+			$service_url = "https://api2.authorize.net/soap/v1/Service.asmx";
 		}
 		
 		$response = wp_remote_post($authorize_url, $options);
@@ -348,9 +351,12 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 			case 3: /// case 3 is error state
 			default: /// default is http or unknown error state
 			if($parsed_response['response_description'] == '') { // If there is no error message it means there was some sort of HTTP connection failure, use the following error message
-			  $parsed_response['response_description'] = __("There was an error contacting the payment gateway, please try again later.", 'wpsc_gold_cart');
+				$response_message = __("There was an error contacting the payment gateway, please try again later.", 'wpsc_gold_cart');
+			} else {		
+				$response_message = $parsed_response['response_description'] . ' ' . $parsed_response['response_reason_code'];			
 			}
-			$this->set_error_message($parsed_response['response_description']);
+			
+			$this->set_error_message($response_message);
 			$this->return_to_checkout();
 			break;
 		}
@@ -490,11 +496,11 @@ class wpsc_merchant_authorize extends wpsc_merchant {
 	* can use either the built in PHP library, or nusoap
 	*/
 	function do_soap_request($function, $arguments) {
-		$wdsl_url = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
+		$wdsl_url = "https://api2.authorize.net/soap/v1/Service.asmx?WSDL";
 		if((bool)get_option('authorize_testmode') == true) {
 			$service_url = "https://apitest.authorize.net/soap/v1/Service.asmx";
 		} else {
-			$service_url = "https://api.authorize.net/soap/v1/Service.asmx";
+			$service_url = "https://api2.authorize.net/soap/v1/Service.asmx";
 		}
 		
 		$function = (string)$function;

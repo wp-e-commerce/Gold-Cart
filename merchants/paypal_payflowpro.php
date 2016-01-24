@@ -30,7 +30,7 @@ if(in_array('paypal_payflow',(array)get_option('custom_gateway_options'))) {
             ".__( 'CVV*', 'wpsc_gold_cart' )."
          </td>
          <td>
-            <input type='text' value='' name='card_cvv' maxlength='3' size='4'/>
+            <input type='text' value='' name='card_cvv' maxlength='4' size='4'/>
          </td>
       </tr>
       <tr>
@@ -73,7 +73,6 @@ function gateway_paypal_payflow($seperator, $sessionid) {
    $status = get_product_meta($cart[0]['prodid'],'is_membership',true);
    $is_member = $status;
    $is_perm = $member_subtype;
-   $length=$member_shiptype['length'];
    $custom = $purchase_log[0]['id'];
    if($_POST['collected_data'][get_option('paypal_form_first_name')] != '') {
       $data['first_name'] = urlencode($_POST['collected_data'][get_option('paypal_form_first_name')]);

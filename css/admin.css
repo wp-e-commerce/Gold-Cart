@@ -1,23 +1,5 @@
 /* Dashboard */
 
-#wpsc_gc-premium_support span#publishing-action {
-	text-align:right;
-	float:right;
-	line-height:23px;
-}
-#wpsc_gc-premium_support .input-text-wrap {
-	margin-bottom:0.4em;
-}
-#wpsc_gc-premium_support .input-text-wrap label,
-#wpsc_gc-premium_support .input-text-wrap input {
-	display:block;
-	position:relative;
-}
-#wpsc_gc-premium_support textarea#note {
-	width:100%;
-	font-family:monospace;
-}
-
 #wpsc_gc-right_now p.musub{
 	margin-top:12px;
 	border-top:1px solid #ececec;
@@ -132,31 +114,4 @@ body.dashboard_page_wpsc-gc-about .changelog-list li {
 	list-style-type:none;
 	margin:0;
 	padding:0.4em 0;
-}
-
-/* Store Upgrades */
-
-body.store_page_wpsc-upgrades .postbox {
-	width:100%;
-}
-body.store_page_wpsc-upgrades .postbox p {
-	padding-left:10px;
-}
-body.store_page_wpsc-upgrades .postbox p label {
-	width:80px;
-	float:left;
-}
-body.store_page_wpsc-upgrades img.icon16 {
-	vertical-align:middle;
-}
-body.store_page_wpsc-upgrades #wpsc_gc-registration p.registered,
-body.store_page_wpsc-upgrades #wpsc_gc-registration	p.not_registered {
-	font-weight:bold;
-	line-height:18px;
-}
-body.store_page_wpsc-upgrades #wpsc_gc-registration label {
-	line-height:22px;
-}
-body.store_page_wpsc-upgrades #wpsc_gc-registration input.text {
-	margin:0;
 }
