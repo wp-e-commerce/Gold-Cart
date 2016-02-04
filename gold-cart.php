@@ -31,7 +31,7 @@ if( is_admin() ) {
 				// setup the updater
 				require 'plugin-update-checker.php';
 				$PluginUpdateChecker = new PluginUpdateChecker_3_0 (
-					'http://dev.devsource.co/updates/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )),
+					'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )),
 					__FILE__,
 					dirname( plugin_basename( __FILE__ ))
 				);
