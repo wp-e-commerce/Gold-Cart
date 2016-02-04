@@ -323,21 +323,25 @@ EOF;
 		if($this->payType == 'creditCardForms'){
 			//Using Credit Card
 			$creditCard = $_REQUEST['auth_net']['creditCard'];
-			if(!isset($creditCard['card_number'])){
+			
+			if( ! isset( $creditCard['card_number'] ) ) {
 				$this->set_error_message(__('Valid Credit Card Not Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
-			$this->auth->card_num = $creditCard['card_number'];
+			$this->auth->card_num = esc_attr( $creditCard['card_number'] );
+			
 			if(!isset($creditCard['expiry'])){
 				$this->set_error_message(__('Valid Credit Card Expiration Not Given.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
-			$this->auth->exp_date = $creditCard['expiry']['month'].$creditCard['expiry']['year'];
+			$this->auth->exp_date = esc_attr( $creditCard['expiry']['month'] ) . esc_attr( $creditCard['expiry']['year'] );
+			
 			if(!isset($creditCard['card_code'])){
 				$this->set_error_message(__('Please Enter The CVV Off The Back of The Card.','wpsc_gold_cart'));
 				$this->return_to_checkout();
 			}
-			$this->auth->card_code = $creditCard['card_code'];
+			$this->auth->card_code = esc_attr( $creditCard['card_code'] );
+			
 		}elseif($this->payType == 'checkForms'){
 			$bankAccount = $_REQUEST['auth_net']['bankAccount'];
 			$check = array();
@@ -579,7 +583,12 @@ EOF;
 				//Ok, We Should Save This Credit Card
 				if ( is_user_logged_in() ) {
 					$creditCard = $_REQUEST['auth_net']['creditCard'];
-					$this->addPaymentProfile(array('type'=>'CC', 'card_number'=>$creditCard['card_number'], 'expire'=>$creditCard['expiry']));
+					$this->addPaymentProfile( array(
+						'type' => 'CC',
+						'card_number' => esc_attr( $creditCard['card_number'] ),
+						'expire' => esc_attr( $creditCard['expiry'] )
+						)
+						);
 				}
 			}
 			//Now For the Bank account
@@ -830,8 +839,12 @@ EOF;
 			$years .= "<option value='" . $curryear . "'>" . $curryear . "</option>\r\n";
 			$curryear++;
 		}
-		if(isset($_REQUEST['auth_net']['creditCard'])) $auth_net = $_REQUEST['auth_net']['creditCard'];
-		else $auth_net = array('name_on_card'=>'', 'card_number'=>'', 'expiry'=> array( 'month'=>'', 'year'=>''));
+		if( isset( $_REQUEST['auth_net']['creditCard'] ) ) {
+			$auth_net = $_REQUEST['auth_net']['creditCard'];
+		} else {
+			$auth_net = array('name_on_card'=>'', 'card_number'=>'', 'expiry'=> array( 'month'=>'', 'year'=>'' ) );
+		}
+		
 		if(isset($auth_net['expiry']['month']) && $auth_net['expiry']['month'] > 0){
 			$selected_month = "<option value='{$auth_net['expiry']['month']}' selected>{$auth_net['expiry']['month']}</option>\n";
 			$selected_year  = "<option value='{$auth_net['expiry']['year']}' selected>{$auth_net['expiry']['year']}</option>\n";
@@ -1007,9 +1020,9 @@ EOF;
 
 				if(isGood($_REQUEST['payType']) && $_REQUEST['payType'] = 'creditCardForms'){
 					$ccInfo = $_REQUEST['auth_net']['creditCard'];
-					$subscription->creditCardCardNumber = $ccInfo['card_number'];
-					$subscription->creditCardExpirationDate = $ccInfo['expiry']['year'].'-'.$ccInfo['expiry']['month'];
-					$subscription->creditCardCardCode = $ccInfo['card_code'];
+					$subscription->creditCardCardNumber     = esc_attr( $ccInfo['card_number'] );
+					$subscription->creditCardExpirationDate = esc_attr( $ccInfo['expiry']['year'] ) . '-' . esc_attr( $ccInfo['expiry']['month'] );
+					$subscription->creditCardCardCode       = esc_attr( $ccInfo['card_code'] );
 				}elseif(isGood($_REQUEST['payType']) && $_REQUEST['payType'] = 'checkForms'){
 					$bInfo = $_REQUEST['auth_net']['bankAccount'];
 					$subscription->bankAccountAccountType = $bInfo['account_type'];
