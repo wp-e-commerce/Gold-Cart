@@ -23,27 +23,24 @@ define( 'WPSC_GOLD_VERSION', '3.0' );
 
 if( is_admin() ) {
 	
+	//License check for updates
 	$licenses = get_option( 'wpec_license_active_products', array() );
 	if ( ! empty( $licenses ) ) {
 		foreach ( $licenses as $license ) {
 			if ( in_array( '140', $license ) ) {
-				
 				// setup the updater
-				require 'plugin-update/plugin-update-checker.php';
-				$update_checker = PucFactory::buildUpdateChecker(
-					'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )), //Metadata URL.
+				require 'plugin-update-checker.php';
+				$PluginUpdateChecker = new PluginUpdateChecker_3_0 (
+					'http://dev.devsource.co/updates/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )),
 					__FILE__,
 					dirname( plugin_basename( __FILE__ ))
 				);
 				//Add the license key to query arguments.
-				$update_checker->addQueryArgFilter(function($args) use ($license) {
-					$args['license_key'] = $license['license'];
-					return $args;
-				});
+				$PluginUpdateChecker->license_key = $license['license'];
 			}
 		}
 	}
-
+	
 	/* Start of: WordPress Administration */
 
 	// Redirect to Welcome to Gold Cart screen on Plugin activation/update
