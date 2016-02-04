@@ -43,14 +43,14 @@ if( is_admin() ) {
 		$major_version = WPSC_GOLD_VERSION;
 		$plugin_status = 'installing';
 		$changelog = wpsc_gc_get_changelog();
-		$release_notes = 'http://www.wpecommerce.org/blog/'; ?>
+		$release_notes = 'https://wpecommerce.org/blog/'; ?>
 		<div class="wrap about-wrap">
 
 			<h1><?php printf( __( 'Welcome to Gold Cart %s', 'wpsc_gold_cart' ), $major_version ); ?></h1>
 			<div class="about-text gc-about-text">
-				<p><?php printf( __( '<strong>Thanks for installing</strong>! Gold Cart %s opens up new functionality within your WP e-Commerce store. We hope you enjoy it.', 'wpsc_gold_cart' ), $major_version ); ?></p>
+				<p><?php printf( __( '<strong>Thanks for installing</strong>! Gold Cart %s opens up new functionality within your WP eCommerce store. We hope you enjoy it.', 'wpsc_gold_cart' ), $major_version ); ?></p>
 			</div>
-			<div class="wp-badge wpsc-badge" style="background:url( '<?php echo wpsc_gc_get_plugin_url(); ?>/images/wpsc-badge.png' ) left top no-repeat !important;"><?php printf( __( 'Version %s', 'wpsc_gold_cart' ), $major_version ); ?></div>
+			<div class="wp-badge wpsc-badge" style="background:url( '<?php echo wpsc_gc_get_plugin_url(); ?>/images/gold-cart.png' ) left top no-repeat !important;"><?php printf( __( 'Version %s', 'wpsc_gold_cart' ), $major_version ); ?></div>
 
 			<div class="changelog">
 				<h3><?php printf( __( 'What\'s New in %s', 'wpsc_gold_cart' ), $major_version ); ?></h3>
@@ -64,42 +64,6 @@ if( is_admin() ) {
 		<?php } ?>
 			</div>
 
-			<div class="changelog">
-				<h3><?php _e( 'Under the Hood', 'wpsc_gold_cart' ); ?></h3>
-
-				<div class="feature-section col three-col">
-					<div>
-						<h4><?php _e( 'Payment Overhaul', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-					<div>
-						<h4><?php _e( 'New [...]', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-					<div class="last-feature">
-						<h4><?php _e( 'New [...]', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-				</div>
-				<!-- .feature-section -->
-
-				<div class="feature-section col three-col">
-					<div>
-						<h4><?php _e( 'New [...]', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-						<div>
-						<h4><?php _e( 'New [...]', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-					<div class="last-feature">
-						<h4><?php _e( 'New [...]', 'wpsc_gold_cart' ); ?></h4>
-						<p><?php _e( '[...]', 'wpsc_gold_cart' ); ?></p>
-					</div>
-				</div>
-				<!-- .feature-section -->
-
-			</div>
 			<!-- .changelog -->
 
 			<div class="return-to-dashboard">

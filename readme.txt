@@ -31,7 +31,7 @@ If you have any problems with Gold Cart or require more information here are you
 
 == Changelog ==
 
-= 3.0 January 2016 =
+= 3.0 February 2016 =
 * Added: Welcome screen on Plugin activation
 * Added: legacy.php within /includes/ for deprecated Gold Cart functions
 * Changed: gold_shpcrt_display_gallery() is now wpsc_gc_shpcrt_display_gallery()
