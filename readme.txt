@@ -27,7 +27,7 @@ If you have any problems with Gold Cart or require more information here are you
 
 <a href="http://docs.wpecommerce.org/gold-cart-installation-and-activation/" target="blank">Gold Cart Installation</a>
 
-<a href="https://wpecommerce.org/premium-support/" target="blank">Premium Support</a>
+<a href="https://wpecommerce.org/support/" target="blank">Premium Support</a>
 
 == Changelog ==
 
