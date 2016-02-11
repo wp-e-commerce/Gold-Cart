@@ -49,7 +49,7 @@ if( is_admin() ) {
 			<h1><?php printf( __( 'Welcome to Gold Cart %s', 'wpsc_gold_cart' ), $major_version ); ?></h1>
 			<div class="about-text gc-about-text">
 				<p><?php printf( __( '<strong>Thanks for installing</strong>! Gold Cart %s opens up new functionality within your WP eCommerce store. We hope you enjoy it.', 'wpsc_gold_cart' ), $major_version ); ?></p>
-				<p><?php printf( __( '<strong>Remember,</strong> to take advantage of automatic plugin updates you need to register your License under Dashboard -> WPeC Licensing. Read more on our <a href="%s" target="_blank">blog</a>.', 'wpsc_gold_cart' ), $release_notes ); ?></p>
+				<p><?php printf( __( '<strong>Remember,</strong> to take advantage of automatic plugin updates you need to have an active License and register it under Dashboard -> WPeC Licensing. Read more on our <a href="%s" target="_blank">blog</a>.', 'wpsc_gold_cart' ), $release_notes ); ?></p>
 			</div>
 			<div class="wp-badge wpsc-badge" style="background:url( '<?php echo wpsc_gc_get_plugin_url(); ?>/images/gold-cart.png' ) left top no-repeat !important;"><?php printf( __( 'Version %s', 'wpsc_gold_cart' ), $major_version ); ?></div>
 
