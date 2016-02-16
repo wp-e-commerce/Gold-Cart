@@ -47,6 +47,7 @@ If you have any problems with Gold Cart or require more information here are you
 * Added: admin.css for WP Admin. based styling
 * Changed: Moved all WP Admin. styling to admin.css
 * Added: Right Now in Store widget to WordPress Dashboard
+* Fixed: Live search working again. Yay !
 
 = 2.9.10 =
 * Feature: Automatic plugin updates now available only with License keys. Product License must be registered on your website under Plugins menu.
