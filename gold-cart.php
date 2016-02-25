@@ -139,7 +139,6 @@ if( is_admin() ) {
 	function wpsc_gc_grid_view_override( $display_type ) {
 
 		if ( 'grid' === $display_type ) {
-			add_action( 'wpsc_top_of_products_page', 'wpsc_gc_grid_custom_styles' );
 			wp_enqueue_style( 'wpsc-gold-cart-grid-view' );
 		}
 	}
@@ -752,10 +751,6 @@ function wpsc_gc_view_mode() {
 		} elseif( empty( $wpsc_gc_view_mode ) ) {
 			$wpsc_gc_view_mode = get_option( 'product_view', 'default' );
 		}
-	}
-
-	if ( $wpsc_gc_view_mode == 'grid' ) {
-		add_action( 'wp_head', 'wpsc_gc_grid_custom_styles', 9 );
 	}
 }
 

@@ -151,7 +151,7 @@
 		}		
 
 		if ( WPSC_GoldCart.displayMode == 'grid' ) {
-			adjust_item_width();
+			//adjust_item_width();
 		}
 		
 		if (WPSC_GoldCart.thickboxFix) {
