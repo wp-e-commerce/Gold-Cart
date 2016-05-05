@@ -3,7 +3,7 @@ Contributors: WP eCommerce.org
 Tags: eCommerce, shop, cart, goldcart
 Version: 3.0
 Requires at least: 4.0
-Tested up to: 4.5
+Tested up to: 4.5.1
 Stable tag: 3.0
 Requires: WP eCommerce: 3.11
 
