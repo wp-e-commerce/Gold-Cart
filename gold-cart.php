@@ -19,8 +19,6 @@ define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', wpsc_gc_get_plugin_url() );
 define( 'WPSC_GOLD_VERSION', '3.0' );
 
-
-
 if( is_admin() ) {
 	
 	//License check for updates

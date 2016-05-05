@@ -215,7 +215,7 @@ if( is_admin() ) {
 		<!-- .table-content -->
 
 		<div class="versions">
-			<span id='wp-version-message'><?php printf( __( 'You are using %s.', 'wpsc_gold_cart' ), '<span class="b">WP e-Commerce ' . WPSC_VERSION . '</span>' ); ?></span>
+			<span id='wp-version-message'><?php printf( __( 'You are using %s.', 'wpsc_gold_cart' ), '<span class="b">WP eCommerce ' . WPSC_VERSION . '</span>' ); ?></span>
 			<br class="clear" />
 		</div>
 		<!-- .versions -->
