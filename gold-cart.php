@@ -21,19 +21,21 @@ define( 'WPSC_GOLD_VERSION', '3.0' );
 
 if( is_admin() ) {
 	
-	//License check for updates
+	// setup the updater
+	if( !class_exists( 'PluginUpdateChecker_3_0' ) ) {
+		// load our custom updater
+		include( dirname( __FILE__ ) . '/plugin-update-checker.php' );
+	}
+	$PluginUpdateChecker = new PluginUpdateChecker_3_0 (
+		'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )),
+		__FILE__,
+		dirname( plugin_basename( __FILE__ ))
+	);
+	//Add the license key to query arguments.
 	$licenses = get_option( 'wpec_license_active_products', array() );
 	if ( ! empty( $licenses ) ) {
 		foreach ( $licenses as $license ) {
 			if ( in_array( '140', $license ) ) {
-				// setup the updater
-				require 'plugin-update-checker.php';
-				$PluginUpdateChecker = new PluginUpdateChecker_3_0 (
-					'http://updates.wpecommerce.org/?action=get_metadata&slug='.dirname( plugin_basename( __FILE__ )),
-					__FILE__,
-					dirname( plugin_basename( __FILE__ ))
-				);
-				//Add the license key to query arguments.
 				$PluginUpdateChecker->license_key = $license['license'];
 			}
 		}
