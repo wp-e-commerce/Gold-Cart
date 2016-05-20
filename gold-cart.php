@@ -3,7 +3,7 @@
  * Plugin Name: Gold Cart for WP eCommerce
  * Plugin URI: http://wpecommerce.org
  * Description: Gold Cart extends your WP eCommerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wpecommerce.org/support/" target="_blank">Support</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
- * Version: 0.6
+ * Version: 3.1
  * Author: WP eCommerce
  * Author URI: https://wpecommerce.org/store/premium-plugins/gold-cart/
  */
@@ -17,8 +17,8 @@ define( 'WPSC_GOLD_FILENAME', basename( __FILE__ ) );
 define( 'WPSC_GOLD_FILE_PATH', dirname( __FILE__ ) );
 define( 'WPSC_GOLD_DIR_NAME', basename( WPSC_GOLD_FILE_PATH ) );
 define( 'WPSC_GOLD_FILE_URL', wpsc_gc_get_plugin_url() );
-define( 'WPSC_GOLD_VERSION', '0.6' );
-define( 'WPSC_GOLD_PRODUCT_ID', 299 );
+define( 'WPSC_GOLD_VERSION', '3.1' );
+define( 'WPSC_GOLD_PRODUCT_ID', 140 );
 
 if( is_admin() ) {
 	
@@ -28,11 +28,49 @@ if( is_admin() ) {
 		include( dirname( __FILE__ ) . '/WPEC_Product_Licensing_Updater.php' );
 	}
 	function wpec_gold_cart_plugin_updater() {
+		//Verify legacy licenses
+		$legacy_product = 140;
+		$licenses = get_option( 'wpec_license_active_products', array() );
+		if ( ! empty( $licenses ) ) {
+			foreach ( $licenses as $key => $license ) {
+				if ( in_array( $legacy_product, $license ) ) {
+					$old_key = $license['license'];
+
+					// data to send in our API request
+					$api_params = array(
+						'wpec_lic_action'=> 'check_license',
+						'license' 	=> $old_key,
+						'item_id' 	=> $legacy_product,
+						'url'       => home_url()
+					);
+					// Call the API
+					$response = wp_remote_post(
+						'https://wpecommerce.org',
+						array(
+							'timeout'   => 15,
+							'sslverify' => false,
+							'body'      => $api_params
+						)
+					);
+					// make sure the response came back okay
+					if ( is_wp_error( $response ) ) {
+						return false;
+					}
+					$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+					update_option( 'wpec_product_' . WPSC_GOLD_PRODUCT_ID . '_license_active', $license_data );
+
+					unset( $licenses[$key] );
+					array_values($licenses);
+					update_option( 'wpec_license_active_products', $licenses );
+				}
+			}
+		}
+	
 		// retrieve our license key from the DB
 		$license = get_option( 'wpec_product_'. WPSC_GOLD_PRODUCT_ID .'_license_active' );
 		$key = ! $license ? '' : $license->license_key;
 		// setup the updater
-		$wpec_updater = new WPEC_Product_Licensing_Updater( 'http://dev.devsource.co', __FILE__, array(
+		$wpec_updater = new WPEC_Product_Licensing_Updater( 'https://wpecommerce.org', __FILE__, array(
 				'version' 	=> WPSC_GOLD_VERSION, 				// current version number
 				'license' 	=> $key, 		// license key (used get_option above to retrieve from DB)
 				'item_id' 	=> WPSC_GOLD_PRODUCT_ID 	// name of this plugin
