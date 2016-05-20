@@ -28,44 +28,6 @@ if( is_admin() ) {
 		include( dirname( __FILE__ ) . '/WPEC_Product_Licensing_Updater.php' );
 	}
 	function wpec_gold_cart_plugin_updater() {
-		//Verify legacy licenses
-		$legacy_product = 140;
-		$licenses = get_option( 'wpec_license_active_products', array() );
-		if ( ! empty( $licenses ) ) {
-			foreach ( $licenses as $key => $license ) {
-				if ( in_array( $legacy_product, $license ) ) {
-					$old_key = $license['license'];
-
-					// data to send in our API request
-					$api_params = array(
-						'wpec_lic_action'=> 'check_license',
-						'license' 	=> $old_key,
-						'item_id' 	=> $legacy_product,
-						'url'       => home_url()
-					);
-					// Call the API
-					$response = wp_remote_post(
-						'https://wpecommerce.org',
-						array(
-							'timeout'   => 15,
-							'sslverify' => false,
-							'body'      => $api_params
-						)
-					);
-					// make sure the response came back okay
-					if ( is_wp_error( $response ) ) {
-						return false;
-					}
-					$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-					update_option( 'wpec_product_' . WPSC_GOLD_PRODUCT_ID . '_license_active', $license_data );
-
-					unset( $licenses[$key] );
-					array_values($licenses);
-					update_option( 'wpec_license_active_products', $licenses );
-				}
-			}
-		}
-	
 		// retrieve our license key from the DB
 		$license = get_option( 'wpec_product_'. WPSC_GOLD_PRODUCT_ID .'_license_active' );
 		$key = ! $license ? '' : $license->license_key;
