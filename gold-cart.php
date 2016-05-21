@@ -35,7 +35,7 @@ if( is_admin() ) {
 		$wpec_updater = new WPEC_Product_Licensing_Updater( 'https://wpecommerce.org', __FILE__, array(
 				'version' 	=> WPSC_GOLD_VERSION, 				// current version number
 				'license' 	=> $key, 		// license key (used get_option above to retrieve from DB)
-				'item_id' 	=> WPSC_GOLD_PRODUCT_ID 	// name of this plugin
+				'item_id' 	=> WPSC_GOLD_PRODUCT_ID 	// id of this plugin
 			)
 		);
 	}
