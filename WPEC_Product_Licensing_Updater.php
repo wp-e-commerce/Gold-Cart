@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Allows plugins to use their own update API.
  *
  * @author Pippin Williamson
- * @version 1.6.4
+ * @version 1.6.7
  */
 class WPEC_Product_Licensing_Updater {
 
@@ -20,7 +20,8 @@ class WPEC_Product_Licensing_Updater {
 	private $slug        = '';
 	private $version     = '';
 	private $wp_override = false;
-
+	private $cache_key   = '';
+	
 	/**
 	 * Class constructor.
 	 *
@@ -40,6 +41,10 @@ class WPEC_Product_Licensing_Updater {
 		$this->version     = $_api_data['version'];
 		$this->wp_override = isset( $_api_data['wp_override'] ) ? (bool) $_api_data['wp_override'] : false;
 
+		$this->cache_key   = md5( serialize( $this->slug . $this->api_data['license'] ) );
+
+		$edd_plugin_data[ $this->slug ] = $this->api_data;
+
 		// Set up hooks.
 		$this->init();
 
@@ -56,7 +61,7 @@ class WPEC_Product_Licensing_Updater {
 
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
 		add_filter( 'plugins_api', array( $this, 'plugins_api_filter' ), 10, 3 );
-		remove_action( 'after_plugin_row_' . $this->name, 'wp_plugin_update_row', 10, 2 );
+		remove_action( 'after_plugin_row_' . $this->name, 'wp_plugin_update_row', 10 );
 		add_action( 'after_plugin_row_' . $this->name, array( $this, 'show_update_notification' ), 10, 2 );
 		add_action( 'admin_init', array( $this, 'show_changelog' ) );
 		add_action( 'in_plugin_update_message-' . $this->name , array( $this, 'plugin_row_license_missing' ), 10, 2 );
@@ -109,7 +114,14 @@ class WPEC_Product_Licensing_Updater {
 			return $_transient_data;
 		}
 
-		$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug ) );
+		$version_info = $this->get_cached_version_info();
+
+		if ( false === $version_info ) {
+			$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug ) );
+
+			$this->set_version_info_cache( $version_info );
+
+		}
 
 		if ( false !== $version_info && is_object( $version_info ) && isset( $version_info->new_version ) ) {
 
@@ -119,7 +131,7 @@ class WPEC_Product_Licensing_Updater {
 
 			}
 
-			$_transient_data->last_checked           = time();
+			$_transient_data->last_checked           = current_time( 'timestamp' );
 			$_transient_data->checked[ $this->name ] = $this->version;
 
 		}
@@ -134,6 +146,10 @@ class WPEC_Product_Licensing_Updater {
 	 * @param array   $plugin
 	 */
 	public function show_update_notification( $file, $plugin ) {
+
+		if ( is_network_admin() ) {
+			return;
+		}
 
 		if( ! current_user_can( 'update_plugins' ) ) {
 			return;
@@ -156,27 +172,25 @@ class WPEC_Product_Licensing_Updater {
 
 		if ( empty( $update_cache->response ) || empty( $update_cache->response[ $this->name ] ) ) {
 
-			$cache_key    = md5( 'wpec_plugin_' . sanitize_key( $this->name ) . '_version_info' );
-			$version_info = get_transient( $cache_key );
+			$version_info = $this->get_cached_version_info();
 
-			if( false === $version_info ) {
-
+			if ( false === $version_info ) {
 				$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug ) );
 
-				set_transient( $cache_key, $version_info, 3600 );
+				$this->set_version_info_cache( $version_info );
 			}
 
-			if( ! is_object( $version_info ) ) {
+			if ( ! is_object( $version_info ) ) {
 				return;
 			}
 
-			if( version_compare( $this->version, $version_info->new_version, '<' ) ) {
+			if ( version_compare( $this->version, $version_info->new_version, '<' ) ) {
 
 				$update_cache->response[ $this->name ] = $version_info;
 
 			}
 
-			$update_cache->last_checked = time();
+			$update_cache->last_checked = current_time( 'timestamp' );
 			$update_cache->checked[ $this->name ] = $this->version;
 
 			set_site_transient( 'update_plugins', $update_cache );
@@ -194,7 +208,10 @@ class WPEC_Product_Licensing_Updater {
 
 			// build a plugin list row, with update notification
 			$wp_list_table = _get_list_table( 'WP_Plugins_List_Table' );
-			echo '<tr class="plugin-update-tr"><td colspan="' . $wp_list_table->get_column_count() . '" class="plugin-update colspanchange"><div class="update-message">';
+			# <tr class="plugin-update-tr"><td colspan="' . $wp_list_table->get_column_count() . '" class="plugin-update colspanchange">
+			echo '<tr class="plugin-update-tr" id="' . $this->slug . '-update" data-slug="' . $this->slug . '" data-plugin="' . $this->slug . '/' . $file . '">';
+			echo '<td colspan="3" class="plugin-update colspanchange">';
+			echo '<div class="update-message notice inline notice-warning notice-alt">';
 
 			$changelog_link = self_admin_url( 'index.php?wpec_lic_action=view_plugin_changelog&plugin=' . $this->name . '&slug=' . $this->slug . '&TB_iframe=true&width=772&height=911' );
 
@@ -223,7 +240,6 @@ class WPEC_Product_Licensing_Updater {
 			echo '</div></td></tr>';
 		}
 	}
-
 
 	/**
 	 * Updates information on the "View version x.x details" page with custom data.
@@ -258,15 +274,27 @@ class WPEC_Product_Licensing_Updater {
 			)
 		);
 
-		$api_response = $this->api_request( 'plugin_information', $to_send );
+		$cache_key = 'wpec_lic_api_request_' . md5( serialize( $this->slug . $this->api_data['license'] ) );
 
-		if ( false !== $api_response ) {
-			$_data = $api_response;
+		// Get the transient where we store the api request for this plugin for 24 hours
+		$edd_api_request_transient = $this->get_cached_version_info( $cache_key );
+
+		//If we have no transient-saved value, run the API, set a fresh transient with the API value, and return that value too right now.
+		if ( empty( $edd_api_request_transient ) ){
+
+			$api_response = $this->api_request( 'plugin_information', $to_send );
+
+			// Expires in 3 hours
+			$this->set_version_info_cache( $api_response, $cache_key );
+
+			if ( false !== $api_response ) {
+				$_data = $api_response;
+			}
+
 		}
 
 		return $_data;
 	}
-
 
 	/**
 	 * Disable SSL verification in order to prevent download update failures
@@ -353,7 +381,7 @@ class WPEC_Product_Licensing_Updater {
 
 		$data         = $edd_plugin_data[ $_REQUEST['slug'] ];
 		$cache_key    = md5( 'wpec_plugin_' . sanitize_key( $_REQUEST['plugin'] ) . '_version_info' );
-		$version_info = get_transient( $cache_key );
+		$version_info = $this->get_cached_version_info( $cache_key );
 
 		if( false === $version_info ) {
 
@@ -378,7 +406,7 @@ class WPEC_Product_Licensing_Updater {
 				$version_info = false;
 			}
 
-			set_transient( $cache_key, $version_info, 3600 );
+			$this->set_version_info_cache( $version_info, $cache_key );
 
 		}
 
@@ -387,5 +415,36 @@ class WPEC_Product_Licensing_Updater {
 		}
 
 		exit;
+	}
+
+	public function get_cached_version_info( $cache_key = '' ) {
+
+		if( empty( $cache_key ) ) {
+			$cache_key = $this->cache_key;
+		}
+
+		$cache = get_option( $cache_key );
+
+		if( empty( $cache['timeout'] ) || current_time( 'timestamp' ) > $cache['timeout'] ) {
+			return false; // Cache is expired
+		}
+
+		return json_decode( $cache['value'] );
+
+	}
+
+	public function set_version_info_cache( $value = '', $cache_key = '' ) {
+
+		if( empty( $cache_key ) ) {
+			$cache_key = $this->cache_key;
+		}
+
+		$data = array(
+			'timeout' => strtotime( '+3 hours', current_time( 'timestamp' ) ),
+			'value'   => json_encode( $value )
+		);
+
+		update_option( $cache_key, $data );
+
 	}
 }
