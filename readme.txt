@@ -1,10 +1,10 @@
 === WP eCommerce Gold Cart ===
 Contributors: WP eCommerce.org
 Tags: eCommerce, shop, cart, goldcart
-Version: 3.1
+Version: 3.2
 Requires at least: 4.0
-Tested up to: 4.5.2
-Stable tag: 3.1
+Tested up to: 4.8
+Stable tag: 3.2
 Requires: WP eCommerce: 3.11
 
 == Description ==
@@ -31,8 +31,11 @@ If you have any problems with Gold Cart or require more information here are you
 
 == Changelog ==
 
+= 3.2 =
+*Changed: Plugin updater code has been adjusted. No changes needed
+
 = 3.1 =
-* Changed: Plugin updater code has been adjusted. Licenses might need to be readded to the WPeC Licensing page.
+*Changed: Plugin updater code has been adjusted. Licenses might need to be readded
 
 = 3.0 =
 * Added: Welcome screen on Plugin activation
