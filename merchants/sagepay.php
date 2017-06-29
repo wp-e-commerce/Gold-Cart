@@ -248,10 +248,9 @@ class Sagepay_merchant extends wpsc_merchant {
         // helper vars to populate the following temporary vars
         $billInfo = $this->cart_data['billing_address'];
         $shipInfo = $this->cart_data['shipping_address'];
-		
-		
+
 		$strCustomerEMail      = $this->cleanInput( $this->cart_data['email_address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
-		
+
         // temporary vars that will be added to the $strPost string in url format
         $strBillingFirstnames  = $this->cleanInput( $billInfo['first_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
         $strBillingSurname     = $this->cleanInput( $billInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
@@ -260,9 +259,10 @@ class Sagepay_merchant extends wpsc_merchant {
         $strBillingPostCode    = $this->cleanInput( $billInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
         $strBillingCountry     = $this->cleanInput( $billInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
-        $strBillingState       = $this->cleanInput( $billInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+
         // no state required if not in the US
-        if($strBillingCountry != 'US') $strBillingState = '';		
+		$strBillingState = $strBillingCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'billingregion'   ), 'code' ) : $this->cleanInput( $billInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+
 		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
 			$strBillingPhone = $this->cleanInput( $billInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
 		}
@@ -272,12 +272,17 @@ class Sagepay_merchant extends wpsc_merchant {
         $strDeliverySurname    = isset( $shipInfo['last_name'] ) 	? $this->cleanInput( $shipInfo['last_name'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingSurname;
         $strDeliveryAddress1   = isset( $shipInfo['address'] ) 		? $this->cleanInput( $shipInfo['address'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingAddress1;
         $strDeliveryCity       = isset( $shipInfo['city'] ) 		? $this->cleanInput( $shipInfo['city'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCity;
-        $strDeliveryState      = isset( $shipInfo['state'] ) 		? $this->cleanInput( $shipInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingState;
         $strDeliveryCountry    = isset( $shipInfo['country'] ) 		? $this->cleanInput( $shipInfo['country'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingCountry;
         if($strDeliveryCountry == 'UK') $strDeliveryCountry= 'GB';
-        // no state required if not in the US
+
+	   // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
-		
+		if ( isset( $shipInfo['state'] ) ) {
+			$strDeliveryState = $strDeliveryCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'shippingregion'  ), 'code' ) : $this->cleanInput( $shipInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+		} else {
+			$strDeliveryState = $strBillingState;
+		}
+
 		$strDeliveryPostCode   = isset( $shipInfo['post_code'] )		? $this->cleanInput( $shipInfo['post_code'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT) : $strBillingPostCode;
 
 		if ( isset ( $shipInfo['phone'] ) && $shipInfo['phone'] != '' ) {
@@ -297,6 +302,7 @@ class Sagepay_merchant extends wpsc_merchant {
         //TODO check where this is ouput and if it looks ok
         $description = '';
         $comma_count = 0;
+
         foreach($this->cart_items as $cartItem){
         	if($comma_count > 0)
             	$description .= ' ,';
@@ -305,6 +311,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
             $comma_count++;
         }
+
         if( strlen($description) >= 100){
             $description = substr($description , 0 , 94) . '...';
 
@@ -333,8 +340,6 @@ class Sagepay_merchant extends wpsc_merchant {
         if (strlen($strBillingState) > 0) $strPost .= "&BillingState=" . $strBillingState;
         if ( isset( $strBillingPhone ) && strlen($strBillingPhone) > 0) $strPost .= "&BillingPhone=" . $strBillingPhone;
 
-
-		
 		// Shipping Details:
 		$strPost .= "&DeliveryFirstnames=" .  $strDeliveryFirstnames;
 		$strPost .= "&DeliverySurname=" . $strDeliverySurname;
@@ -342,7 +347,7 @@ class Sagepay_merchant extends wpsc_merchant {
 		$strPost .= "&DeliveryCity=" . $strDeliveryCity;
 		$strPost .= "&DeliveryPostCode=" . $strDeliveryPostCode;
 		$strPost .= "&DeliveryCountry=" . $strDeliveryCountry;
-		
+
        if (strlen($strDeliveryState) > 0 || strlen($strBillingState) > 0){
            if(strlen($strDeliveryState) > 0){
                $strPost .=  "&DeliveryState=" . $strDeliveryState;
@@ -371,7 +376,7 @@ class Sagepay_merchant extends wpsc_merchant {
             // another row for the discount row
             $basket_rows += 1;
         }
-        //The first value “The number of lines of detail in the basket” is
+        //The first value â€œThe number of lines of detail in the basketâ€ is
         //NOT the total number of items ordered, but the total number of rows
         //of basket information
         $cartString = $basket_rows ;
@@ -467,7 +472,7 @@ class Sagepay_merchant extends wpsc_merchant {
 
         if ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT){
 
-            $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&£$=%~*+\"\n\r";
+            $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&Â£$=%~*+\"\n\r";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, TRUE);
         }
         elseif ($filterType == WPSC_SAGEPAY_CLEAN_INPUT_FILTER_NUMERIC){
@@ -489,7 +494,7 @@ class Sagepay_merchant extends wpsc_merchant {
         }
         else{ // Widest Allowable Character Range
 
-            $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&£$=%~*+\"\n\r";
+            $strAllowableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,'/\\{}@():?-_&Â£$=%~*+\"\n\r";
             $strCleaned = $this->cleanInput2($strRawText, $strAllowableChars, TRUE);
         }
 
