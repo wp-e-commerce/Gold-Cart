@@ -261,7 +261,7 @@ class Sagepay_merchant extends wpsc_merchant {
         if($strBillingCountry == 'UK') $strBillingCountry= 'GB';
 
         // no state required if not in the US
-		$strBillingState = $strBillingCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'billingregion'   ), 'code' ) : $this->cleanInput( $billInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+		$strBillingState = $strBillingCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'billingregion'   ), 'code' ) : '';
 
 		if ( isset ( $billInfo['phone'] ) && $billInfo['phone'] != '' ) {
 			$strBillingPhone = $this->cleanInput( $billInfo['phone'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
@@ -278,7 +278,7 @@ class Sagepay_merchant extends wpsc_merchant {
 	   // no state required if not in the US
         if($strDeliveryCountry != 'US') $strDeliveryState = '';
 		if ( isset( $shipInfo['state'] ) ) {
-			$strDeliveryState = $strDeliveryCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'shippingregion'  ), 'code' ) : $this->cleanInput( $shipInfo['state'], WPSC_SAGEPAY_CLEAN_INPUT_FILTER_TEXT);
+			$strDeliveryState = $strDeliveryCountry == 'US' ? wpsc_get_state_by_id( wpsc_get_customer_meta( 'shippingregion'  ), 'code' ) : '';
 		} else {
 			$strDeliveryState = $strBillingState;
 		}
