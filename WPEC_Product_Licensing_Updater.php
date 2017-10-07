@@ -9,8 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Allows plugins to use their own update API.
  *
- * @author Pippin Williamson
- * @version 1.6.7
+ * @author Easy Digital Downloads
+ * @version 1.6.15
  */
 class WPEC_Product_Licensing_Updater {
 
@@ -21,7 +21,7 @@ class WPEC_Product_Licensing_Updater {
 	private $version     = '';
 	private $wp_override = false;
 	private $cache_key   = '';
-	
+
 	/**
 	 * Class constructor.
 	 *
@@ -40,14 +40,11 @@ class WPEC_Product_Licensing_Updater {
 		$this->slug        = basename( $_plugin_file, '.php' );
 		$this->version     = $_api_data['version'];
 		$this->wp_override = isset( $_api_data['wp_override'] ) ? (bool) $_api_data['wp_override'] : false;
-
-		$this->cache_key   = md5( serialize( $this->slug . $this->api_data['license'] ) );
-
-		$edd_plugin_data[ $this->slug ] = $this->api_data;
+		$this->beta        = ! empty( $this->api_data['beta'] ) ? true : false;
+		$this->cache_key   = 'wpec_sl_' . md5( serialize( $this->slug . $this->api_data['license'] . $this->beta ) );
 
 		// Set up hooks.
 		$this->init();
-
 	}
 
 	/**
@@ -75,16 +72,16 @@ class WPEC_Product_Licensing_Updater {
 	 * @return  void
 	 */
 	public function plugin_row_license_missing( $plugin_data, $version_info ) {
+		
 		static $showed_imissing_key_message;
+
 		$license = get_option( 'wpec_product_' . $this->api_data['item_id'] . '_license_active' );
 		if( ( ! is_object( $license ) || 'valid' !== $license->license ) && empty( $showed_imissing_key_message[ $this->name ] ) ) {
-			echo '&nbsp;<strong><a href="' . esc_url( admin_url( 'index.php?page=wpsc-upgrades' ) ) . '">' . __( 'Enter valid license key for automatic updates.', 'wp-e-commerce' ) . '</a></strong>';
+			echo '&nbsp;<strong><a href="' . esc_url( admin_url( 'index.php?page=wpsc-upgrades' ) ) . '">' . __( 'Enter valid license key for automatic updates.', 'wpec-licensing' ) . '</a></strong>';
 			$showed_imissing_key_message[ $this->name ] = true;
 		}
 	}
-	
 
-	
 	/**
 	 * Check for Updates at the defined API endpoint and modify the update array.
 	 *
@@ -117,7 +114,7 @@ class WPEC_Product_Licensing_Updater {
 		$version_info = $this->get_cached_version_info();
 
 		if ( false === $version_info ) {
-			$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug ) );
+			$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
 
 			$this->set_version_info_cache( $version_info );
 
@@ -167,7 +164,7 @@ class WPEC_Product_Licensing_Updater {
 		remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ), 10 );
 
 		$update_cache = get_site_transient( 'update_plugins' );
-		
+
 		$update_cache = is_object( $update_cache ) ? $update_cache : new stdClass();
 
 		if ( empty( $update_cache->response ) || empty( $update_cache->response[ $this->name ] ) ) {
@@ -175,7 +172,7 @@ class WPEC_Product_Licensing_Updater {
 			$version_info = $this->get_cached_version_info();
 
 			if ( false === $version_info ) {
-				$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug ) );
+				$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
 
 				$this->set_version_info_cache( $version_info );
 			}
@@ -196,9 +193,7 @@ class WPEC_Product_Licensing_Updater {
 			set_site_transient( 'update_plugins', $update_cache );
 
 		} else {
-
 			$version_info = $update_cache->response[ $this->name ];
-
 		}
 
 		// Restore our filter
@@ -269,18 +264,18 @@ class WPEC_Product_Licensing_Updater {
 			'slug'   => $this->slug,
 			'is_ssl' => is_ssl(),
 			'fields' => array(
-				'banners' => false, // These will be supported soon hopefully
+				'banners' => array(),
 				'reviews' => false
 			)
 		);
 
-		$cache_key = 'wpec_lic_api_request_' . md5( serialize( $this->slug . $this->api_data['license'] ) );
+		$cache_key = 'wpec_lic_api_request_' . md5( serialize( $this->slug . $this->api_data['license'] . $this->beta ) );
 
 		// Get the transient where we store the api request for this plugin for 24 hours
-		$edd_api_request_transient = $this->get_cached_version_info( $cache_key );
+		$wpec_api_request_transient = $this->get_cached_version_info( $cache_key );
 
 		//If we have no transient-saved value, run the API, set a fresh transient with the API value, and return that value too right now.
-		if ( empty( $edd_api_request_transient ) ){
+		if ( empty( $wpec_api_request_transient ) ) {
 
 			$api_response = $this->api_request( 'plugin_information', $to_send );
 
@@ -291,6 +286,28 @@ class WPEC_Product_Licensing_Updater {
 				$_data = $api_response;
 			}
 
+		} else {
+			$_data = $wpec_api_request_transient;
+		}
+
+		// Convert sections into an associative array, since we're getting an object, but Core expects an array.
+		if ( isset( $_data->sections ) && ! is_array( $_data->sections ) ) {
+			$new_sections = array();
+			foreach ( $_data->sections as $key => $value ) {
+				$new_sections[ $key ] = $value;
+			}
+
+			$_data->sections = $new_sections;
+		}
+
+		// Convert banners into an associative array, since we're getting an object, but Core expects an array.
+		if ( isset( $_data->banners ) && ! is_array( $_data->banners ) ) {
+			$new_banners = array();
+			foreach ( $_data->banners as $key => $value ) {
+				$new_banners[ $key ] = $value;
+			}
+
+			$_data->banners = $new_banners;
 		}
 
 		return $_data;
@@ -304,11 +321,13 @@ class WPEC_Product_Licensing_Updater {
 	 * @return object $array
 	 */
 	public function http_request_args( $args, $url ) {
-		// If it is an https request and we are performing a package download, disable ssl verification
+
+		$verify_ssl = $this->verify_ssl();
 		if ( strpos( $url, 'https://' ) !== false && strpos( $url, 'wpec_lic_action=package_download' ) ) {
-			$args['sslverify'] = false;
+			$args['sslverify'] = $verify_ssl;
 		}
 		return $args;
+
 	}
 
 	/**
@@ -341,12 +360,15 @@ class WPEC_Product_Licensing_Updater {
 			'license'    => ! empty( $data['license'] ) ? $data['license'] : '',
 			'item_name'  => isset( $data['item_name'] ) ? $data['item_name'] : false,
 			'item_id'    => isset( $data['item_id'] ) ? $data['item_id'] : false,
+			'version'    => isset( $data['version'] ) ? $data['version'] : false,
 			'slug'       => $data['slug'],
 			'author'     => isset( $data['author'] ) ? $data['author'] : false,
-			'url'        => home_url()
+			'url'        => home_url(),
+			'beta'       => ! empty( $data['beta'] ),
 		);
 
-		$request = wp_remote_post( $this->api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+		$verify_ssl = $this->verify_ssl();
+		$request    = wp_remote_post( $this->api_url, array( 'timeout' => 15, 'sslverify' => $verify_ssl, 'body' => $api_params ) );
 
 		if ( ! is_wp_error( $request ) ) {
 			$request = json_decode( wp_remote_retrieve_body( $request ) );
@@ -356,6 +378,16 @@ class WPEC_Product_Licensing_Updater {
 			$request->sections = maybe_unserialize( $request->sections );
 		} else {
 			$request = false;
+		}
+
+		if ( $request && isset( $request->banners ) ) {
+			$request->banners = maybe_unserialize( $request->banners );
+		}
+
+		if( ! empty( $request->sections ) ) {
+			foreach( $request->sections as $key => $section ) {
+				$request->$key = (array) $section;
+			}
 		}
 
 		return $request;
@@ -379,8 +411,9 @@ class WPEC_Product_Licensing_Updater {
 			wp_die( __( 'You do not have permission to install plugin updates', 'wpec-licensing' ), __( 'Error', 'wpec-licensing' ), array( 'response' => 403 ) );
 		}
 
-		$data         = $edd_plugin_data[ $_REQUEST['slug'] ];
-		$cache_key    = md5( 'wpec_plugin_' . sanitize_key( $_REQUEST['plugin'] ) . '_version_info' );
+		$data         = $_REQUEST['slug'];
+		$beta         = ! empty( $data['beta'] ) ? true : false;
+		$cache_key    = md5( 'wpec_plugin_' . sanitize_key( $_REQUEST['plugin'] ) . '_' . $beta . '_version_info' );
 		$version_info = $this->get_cached_version_info( $cache_key );
 
 		if( false === $version_info ) {
@@ -391,11 +424,13 @@ class WPEC_Product_Licensing_Updater {
 				'item_id'    => isset( $data['item_id'] ) ? $data['item_id'] : false,
 				'slug'       => $_REQUEST['slug'],
 				'author'     => isset( $data['author'] ) ? $data['author'] : false,
-				'url'        => home_url()
+				'url'        => home_url(),
+				'beta'       => ! empty( $data['beta'] )
 			);
 
-			$request = wp_remote_post( $this->api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-			
+			$verify_ssl = $this->verify_ssl();
+			$request    = wp_remote_post( $this->api_url, array( 'timeout' => 15, 'sslverify' => $verify_ssl, 'body' => $api_params ) );
+
 			if ( ! is_wp_error( $request ) ) {
 				$version_info = json_decode( wp_remote_retrieve_body( $request ) );
 			}
@@ -404,6 +439,12 @@ class WPEC_Product_Licensing_Updater {
 				$version_info->sections = maybe_unserialize( $version_info->sections );
 			} else {
 				$version_info = false;
+			}
+
+			if( ! empty( $version_info ) ) {
+				foreach( $version_info->sections as $key => $section ) {
+					$version_info->$key = (array) $section;
+				}
 			}
 
 			$this->set_version_info_cache( $version_info, $cache_key );
@@ -444,7 +485,18 @@ class WPEC_Product_Licensing_Updater {
 			'value'   => json_encode( $value )
 		);
 
-		update_option( $cache_key, $data );
+		update_option( $cache_key, $data, 'no' );
 
 	}
+
+	/**
+	 * Returns if the SSL of the store should be verified.
+	 *
+	 * @since  1.6.13
+	 * @return bool
+	 */
+	private function verify_ssl() {
+		return (bool) apply_filters( 'wpec_sl_api_request_verify_ssl', true, $this );
+	}
+
 }
